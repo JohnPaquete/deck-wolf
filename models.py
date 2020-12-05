@@ -8,9 +8,11 @@ class Schema:
         self.cursor = self.conn.cursor()
         self.create_record_table()
         self.create_sets_table()
+        self.create_oracle_cards_table()
+        self.create_cards_table()
         self.populate_sets_table()
-        self.create_oracle_table()
-        self.populate_oracle_table()
+        self.populate_oracle_cards_table()
+        self.populate_cards_table()
 
     def __del__(self):
         self.conn.commit()
@@ -41,20 +43,17 @@ class Schema:
         query= "INSERT OR IGNORE INTO records (name) VALUES ('sets')"
         self.cursor.execute(query)
     
-    def create_oracle_table(self):
+    def create_oracle_cards_table(self):
         query = """
         CREATE TABLE IF NOT EXISTS oracle_cards (
-          id TEXT PRIMARY KEY,
+          oracle_id TEXT PRIMARY KEY,
+          id TEXT,
           name TEXT NOT NULL,
           released TEXT NOT NULL,
           uri TEXT NOT NULL,
           scryfall_uri TEXT NOT NULL,
-          image_small TEXT,
-          image_normal TEXT,
-          image_large TEXT,
-          image_png TEXT,
-          image_border_crop TEXT,
-          image_art_crop TEXT,
+          rulings_uri TEXT NOT NULL,
+          image_uris TEXT,
           mana_cost TEXT,
           cmc REAL NOT NULL,
           type_line TEXT NOT NULL,
@@ -62,15 +61,58 @@ class Schema:
           color_identity TEXT NOT NULL,
           power TEXT,
           toughness TEXT,
+          loyalty TEXT,
           keywords TEXT NOT NULL,
           legalities TEXT NOT NULL,
           rarity TEXT NOT NULL,
+          flavor_name TEXT,
           flavor_text TEXT,
-          artist TEXT
+          artist TEXT,
+          set_code TEXT NOT NULL,
+          set_name TEXT NOT NULL,
+          set_type TEXT NOT NULL,
+          set_uri TEXT NOT NULL,
+          prices TEXT NOT NULL
         );
         """
         self.cursor.execute(query)
         query= "INSERT OR IGNORE INTO records (name) VALUES ('oracle_cards')"
+        self.cursor.execute(query)
+    
+    def create_cards_table(self):
+        query = """
+        CREATE TABLE IF NOT EXISTS cards (
+          oracle_id TEXT,
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          released TEXT NOT NULL,
+          uri TEXT NOT NULL,
+          scryfall_uri TEXT NOT NULL,
+          rulings_uri TEXT NOT NULL,
+          image_uris TEXT,
+          mana_cost TEXT,
+          cmc REAL NOT NULL,
+          type_line TEXT NOT NULL,
+          oracle_text TEXT,
+          color_identity TEXT NOT NULL,
+          power TEXT,
+          toughness TEXT,
+          loyalty TEXT,
+          keywords TEXT NOT NULL,
+          legalities TEXT NOT NULL,
+          rarity TEXT NOT NULL,
+          flavor_name TEXT,
+          flavor_text TEXT,
+          artist TEXT,
+          set_code TEXT NOT NULL,
+          set_name TEXT NOT NULL,
+          set_type TEXT NOT NULL,
+          set_uri TEXT NOT NULL,
+          prices TEXT NOT NULL
+        );
+        """
+        self.cursor.execute(query)
+        query= "INSERT OR IGNORE INTO records (name) VALUES ('cards')"
         self.cursor.execute(query)
 
     def populate_sets_table(self):
@@ -92,7 +134,7 @@ class Schema:
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'sets';"
             self.cursor.execute(query)
     
-    def populate_oracle_table(self):
+    def populate_oracle_cards_table(self):
         if (self.table_needs_update("oracle_cards") is not True):
             return
         print("Getting oracle cards from Scryfall...")
@@ -107,24 +149,46 @@ class Schema:
             print("Importing oracle cards...")
             for c in response.json():
                 query = f'INSERT INTO oracle_cards ' \
-                        f'(id, name, released, uri, scryfall_uri, image_small, image_normal, image_large, image_png, image_border_crop, image_art_crop, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, keywords, legalities, rarity, flavor_text, artist) ' \
-                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, '
-                if (c.get("image_uris") is not None):
-                    images = c.get("image_uris")
-                    query += f'{val(images.get("small"))}, {val(images.get("normal"))}, {val(images.get("large"))}, {val(images.get("png"))}, {val(images.get("border_crop"))}, {val(images.get("art_crop"))}, '
-                else:
-                    query += 'NULL, NULL, NULL, NULL, NULL, NULL, '
-                query += f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))});'
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, prices) ' \
+                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
+                        f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
+                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("prices"))});'
                 self.cursor.execute(query)
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'oracle_cards';"
             self.cursor.execute(query)
+            print("Oracle cards imported successfully")
+    
+    def populate_cards_table(self):
+        if (self.table_needs_update("cards") is not True):
+            return
+        print("Getting cards from Scryfall...")
+        query = "DELETE FROM cards;"
+        self.cursor.execute(query)
+        response = requests.get("https://api.scryfall.com/bulk-data/default-cards")
+        if (self.validate_request(response)):
+            response = requests.get(response.json().get("download_uri"))
+        else:
+            return
+        if (self.validate_request(response)):
+            print("Importing cards...")
+            for c in response.json():
+                query = f'INSERT INTO cards ' \
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, prices) ' \
+                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
+                        f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
+                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("prices"))});'
+                self.cursor.execute(query)
+            date = datetime.now()
+            query = f"UPDATE records SET updated = '{date}' WHERE name = 'cards';"
+            self.cursor.execute(query)
+            print("Cards imported successfully")
     
     def table_needs_update(self, table):
         query = f"SELECT updated FROM records WHERE name = '{table}';"
         self.cursor.execute(query)
         row = self.cursor.fetchone()
-        if (row is not None):
+        if (row is not None and row[0] is not None):
             current_time = datetime.now()
             update_time = datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S.%f')
             diff = current_time - update_time

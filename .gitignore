@@ -1,3 +1,4 @@
 
 *.db
 To-Do.txt
+__pycache__
