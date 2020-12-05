@@ -1,4 +1,4 @@
-from bottle import Bottle, run, template, static_file
+from bottle import Bottle, run, template, static_file, BaseRequest
 from bottle_sqlite import SQLitePlugin
 from models import Schema
 from service import DeckMakerService
@@ -24,6 +24,11 @@ def collection():
 @app.route('/decks')
 @app.route('/decks/')
 def decks():
+    return template('index')
+
+@app.route('/search')
+@app.route('/search/')
+def search():
     return template('index')
 
 @app.route('/assets/<filepath:path>')
