@@ -1,4 +1,5 @@
 from bottle import template
+import models as m
 
 class DeckMakerService:
     def __init__(self):
@@ -7,8 +8,14 @@ class DeckMakerService:
     def index(self):
         return template('index')
 
-    def cards(self):
+    def card_index(self, db):
         return template('index')
+
+    def oracle_card(self, db, item):
+        try:
+            return template('card', model=m.OracleCard(db, item))
+        except (ValueError):
+            return template('card_404')
 
     def collection(self):
         return template('index')

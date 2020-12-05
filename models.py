@@ -205,6 +205,45 @@ class Schema:
         print(request.json().get("details"))
         return False
 
+class Card:
+    def __init__(self, data=None):
+        if (data is not None):
+            self.oracle_id = data[0]
+            self.id = data[1]
+            self.name = data[2]
+            self.released = data[3]
+            self.uri = data[4]
+            self.scryfall_uri = data[5]
+            self.rulings_uri = data[6]
+            self.image_uris = data[7]
+            self.mana_cost = data[8]
+            self.cmc = data[9]
+            self.type_line = data[10]
+            self.oracle_text = data[11]
+            self.color_identity = data[12]
+            self.power = data[13]
+            self.toughness = data[14]
+            self.loyalty = data[15]
+            self.keywords = data[16]
+            self.legalities = data[17]
+            self.rarity = data[18]
+            self.flavor_name = data[19]
+            self.flavor_text = data[20]
+            self.artist = data[21]
+            self.set_code = data[22]
+            self.set_name = data[23]
+            self.set_type = data[24]
+            self.set_uri = data[25]
+            self.prices = data[26]
+        else:
+            raise ValueError('No match found in database.')
+
+class OracleCard(Card):
+    def __init__(self, db, oracle_id):
+        query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{oracle_id}\'"
+        row = db.execute(query).fetchone()
+        super().__init__(data=row)
+    
 def val(data):
     if (data is None):
         return "NULL"

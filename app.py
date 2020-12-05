@@ -13,8 +13,12 @@ def index():
 
 @app.route('/cards')
 @app.route('/cards/')
-def cards():
+def card_index():
     return template('index')
+
+@app.route('/cards/oracle/:item')
+def oracle_card(item, db):
+    return DeckMakerService().oracle_card(db, item)
 
 @app.route('/collection')
 @app.route('/collection/')
