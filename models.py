@@ -1,6 +1,8 @@
 import sqlite3
 import requests
+import ast
 from datetime import datetime
+
 
 class Schema:
     def __init__(self):
@@ -215,7 +217,9 @@ class Card:
             self.uri = data[4]
             self.scryfall_uri = data[5]
             self.rulings_uri = data[6]
-            self.image_uris = data[7]
+            self.image_uris = {}
+            if (data[7] is not None):
+                self.image_uris = ast.literal_eval(data[7])
             self.mana_cost = data[8]
             self.cmc = data[9]
             self.type_line = data[10]
@@ -225,7 +229,9 @@ class Card:
             self.toughness = data[14]
             self.loyalty = data[15]
             self.keywords = data[16]
-            self.legalities = data[17]
+            self.legalities = {}
+            if (data[17] is not None):
+                self.legalities = ast.literal_eval(data[17])
             self.rarity = data[18]
             self.flavor_name = data[19]
             self.flavor_text = data[20]
@@ -234,7 +240,9 @@ class Card:
             self.set_name = data[23]
             self.set_type = data[24]
             self.set_uri = data[25]
-            self.prices = data[26]
+            self.prices = {}
+            if (data[26] is not None):
+                self.prices = ast.literal_eval(data[26])
         else:
             raise ValueError('No match found in database.')
 

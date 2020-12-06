@@ -16,6 +16,7 @@ class DeckMakerService:
             return template('card', model=m.OracleCard(db, item))
         except (ValueError):
             return template('card_404')
+            
 
     def collection(self):
         return template('index')
