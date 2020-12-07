@@ -142,7 +142,7 @@
     % if (model.rulings is not None and len(model.rulings) > 0):
     <hr></hr>
     <div>
-        <h3 class="mb-2">Rulings for {{model.card.name}}</h3>
+        <h3 class="mb-3">Rulings for {{model.card.name}}</h3>
         % count = 0
         % for r in model.rulings:
             % if (count % 2 == 0):

@@ -350,7 +350,6 @@ class Ruling:
         rows = db.execute(query).fetchall()
         rulings = []
         for r in rows:
-            print(r[0])
             rulings.append(cls(data=r))
         return rulings
 
