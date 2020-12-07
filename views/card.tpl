@@ -23,8 +23,14 @@
                 <div class="card-body">
                     <p class="card-text font-weight-bold">{{model.card.type_line}}</p>
                     % text = model.card.oracle_text.split('\n')
+                    % count = 1
                     % for line in text:
+                        % if (count == len(text)):
                         <p class="card-text">{{line}}</p>
+                        % else:
+                        <p class="card-text mb-1">{{line}}</p>
+                        % end
+                        % count += 1
                     % end
                     % if (model.card.flavor_text is not None):
                     <p class="card-text font-italic">{{model.card.flavor_text}}</p>
