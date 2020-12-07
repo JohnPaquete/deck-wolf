@@ -114,7 +114,7 @@
                     % end
                     % if (model.card.prices is not None):
                     <div>
-                        <table class="table table-sm table-striped">
+                        <table class="table table-sm table-striped mb-0">
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="rounded-left border-top-0"></th>
@@ -123,6 +123,7 @@
                                     <th class="rounded-right border-top-0">TIX</th>
                                 </tr>
                             </thead>
+                            <tbody>
                                 <tr>
                                     <th>Non-foil</th>
                                     <td class="text-success">{{util.usd(model.card.prices.get("usd"))}}</td>
@@ -135,8 +136,6 @@
                                     <td class="text-info">{{util.eur(model.card.prices.get("eur_foil"))}}</td>
                                     <td class="text-warning"></td>
                                 </tr>
-                            <tbody>
-
                             </tbody>
                         </table>
                     </div>
