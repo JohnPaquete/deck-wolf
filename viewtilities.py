@@ -30,3 +30,12 @@ def rarity(s):
     if (s == "mythic"):
         return 'Mythic Rare'
     return 'NO ENTRY'
+
+def usd(s):
+    if (s is not None):
+        return '$' + s
+    return '--'
+def eur(s):
+    if (s is not None):
+        return '€' + s
+    return '--'

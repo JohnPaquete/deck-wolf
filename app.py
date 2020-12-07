@@ -1,4 +1,4 @@
-from bottle import Bottle, run, template, static_file, BaseRequest
+from bottle import Bottle, run, template, static_file
 from bottle_sqlite import SQLitePlugin
 from models import Schema
 from service import DeckMakerService

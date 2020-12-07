@@ -12,9 +12,11 @@ class Schema:
         self.create_sets_table()
         self.create_oracle_cards_table()
         self.create_cards_table()
+        self.create_rulings_table()
         self.populate_sets_table()
         self.populate_oracle_cards_table()
         self.populate_cards_table()
+        self.populate_rulings_table()
 
     def __del__(self):
         self.conn.commit()
@@ -119,6 +121,18 @@ class Schema:
         query= "INSERT OR IGNORE INTO records (name) VALUES ('cards')"
         self.cursor.execute(query)
 
+    def create_rulings_table(self):
+        query = """CREATE TABLE IF NOT EXISTS rulings (
+                  oracle_id TEXT NOT NULL,
+                  source TEXT NOT NULL,
+                  published_at TEXT NOT NULL,
+                  comment TEXT NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+        query= "INSERT OR IGNORE INTO records (name) VALUES ('rulings')"
+        self.cursor.execute(query)
+
     def populate_sets_table(self):
         if (self.table_needs_update("sets") is not True):
             return
@@ -137,7 +151,7 @@ class Schema:
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'sets';"
             self.cursor.execute(query)
-    
+        
     def populate_oracle_cards_table(self):
         if (self.table_needs_update("oracle_cards") is not True):
             return
@@ -188,6 +202,29 @@ class Schema:
             self.cursor.execute(query)
             print("Cards imported successfully")
     
+    def populate_rulings_table(self):
+        if (self.table_needs_update("rulings") is not True):
+            return
+        print("Getting rulings from Scryfall...")
+        query = "DELETE FROM rulings;"
+        self.cursor.execute(query)
+        response = requests.get("https://api.scryfall.com/bulk-data/rulings")
+        if (self.validate_request(response)):
+            response = requests.get(response.json().get("download_uri"))
+        else:
+            return
+        if (self.validate_request(response)):
+            print("Importing rulings...")
+            for r in response.json():
+                query = f'INSERT INTO rulings ' \
+                        f'(oracle_id, source, published_at, comment) ' \
+                        f'VALUES ({val(r.get("oracle_id"))}, {val(r.get("source"))}, {val(r.get("published_at"))}, {val(r.get("comment"))})'
+                self.cursor.execute(query)
+            date = datetime.now()
+            query = f"UPDATE records SET updated = '{date}' WHERE name = 'rulings';"
+            self.cursor.execute(query)
+            print("Rulings imported successfully")
+
     def table_needs_update(self, table):
         query = f"SELECT updated FROM records WHERE name = '{table}';"
         self.cursor.execute(query)
@@ -251,7 +288,7 @@ class Card:
     
     @classmethod
     def get_by_id(cls, db, card_id):
-        query = f"SELECT * FROM cards WHERE id = \'{card_id}\'"
+        query = f"SELECT * FROM cards WHERE id = \'{card_id}\';"
         row = db.execute(query).fetchone()
         return cls(data=row)
 
@@ -261,14 +298,14 @@ class OracleCard(Card):
     
     @classmethod
     def get_by_id(cls, db, card_id):
-        query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{card_id}\'"
+        query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{card_id}\';"
         row = db.execute(query).fetchone()
         return cls(row)
 
 class Set:
     def __init__(self, data=None):
         if (data is not None):
-            self.id = data[0]
+            self.set_id = data[0]
             self.code = data[1]
             self.name = data[2]
             self.search_uri = data[3]
@@ -281,32 +318,61 @@ class Set:
     
     @classmethod
     def get_by_id(cls, db, set_id):
-        query = f"SELECT * FROM sets WHERE id = \'{set_id}\'"
+        query = f"SELECT * FROM sets WHERE id = \'{set_id}\';"
         row = db.execute(query).fetchone()
         return cls(data=row)
     
     @classmethod
     def get_by_code(cls, db, set_code):
-        query = f"SELECT * FROM sets WHERE code = \'{set_code}\'"
+        query = f"SELECT * FROM sets WHERE code = \'{set_code}\';"
         row = db.execute(query).fetchone()
         return cls(data=row)
 
+class Ruling:
+    def __init__(self, data=None):
+        if (data is not None):
+            self.oracle_id = data[0]
+            self.source = data[1]
+            self.published_at = data[2]
+            self.comment = data[3]
+        else:
+            raise ValueError('No match found in database.')
+    
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        query = f"SELECT * FROM rulings WHERE oracle_id = \'{card_id}\';"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
+    
+    @classmethod
+    def get_list_by_id(cls, db, card_id):
+        query = f"SELECT * FROM rulings WHERE oracle_id = \'{card_id}\';"
+        rows = db.execute(query).fetchall()
+        rulings = []
+        for r in rows:
+            print(r[0])
+            rulings.append(cls(data=r))
+        return rulings
+
 class FullCard:
-    def __init__(self, card=None, card_set=None):
+    def __init__(self, card=None, card_set=None, rulings=None):
         self.card = card
         self.card_set = card_set
+        self.rulings = rulings
 
     @classmethod
     def get_by_id(cls, db, card_id):
         c = Card.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
-        return cls(card=c, card_set=s)
+        r = Ruling.get_list_by_id(db, c.oracle_id)
+        return cls(card=c, card_set=s, rulings=r)
     
     @classmethod
     def get_by_oracle_id(cls, db, card_id):
         c = OracleCard.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
-        return cls(card=c, card_set=s)
+        r = Ruling.get_list_by_id(db, c.oracle_id)
+        return cls(card=c, card_set=s, rulings=r)
 
 def val(data):
     if (data is None):

@@ -7,7 +7,7 @@
             <small class="text-muted ml-2">{{model.card_set.name}}<img class="ml-2 pb-2" style="width:3rem; filter: invert(40%)" src="{{model.card_set.icon_svg_uri}}"></img></small>
         </h2>
     </div>
-    <div class="row mt-4">
+    <div class="row my-4">
         <div class="col-lg-4">
             <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
             % if (model.card.artist is not None):
@@ -22,7 +22,10 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text font-weight-bold">{{model.card.type_line}}</p>
-                    <p class="card-text">{{model.card.oracle_text}}</p>
+                    % text = model.card.oracle_text.split('\n')
+                    % for line in text:
+                        <p class="card-text">{{line}}</p>
+                    % end
                     % if (model.card.flavor_text is not None):
                     <p class="card-text font-italic">{{model.card.flavor_text}}</p>
                     % end
@@ -116,14 +119,14 @@
                             </thead>
                                 <tr>
                                     <th>Non-foil</th>
-                                    <td class="text-success">${{model.card.prices.get("usd")}}</td>
-                                    <td class="text-info">€{{model.card.prices.get("eur")}}</td>
+                                    <td class="text-success">{{util.usd(model.card.prices.get("usd"))}}</td>
+                                    <td class="text-info">{{util.eur(model.card.prices.get("eur"))}}</td>
                                     <td class="text-warning">{{model.card.prices.get("tix")}}</td>
                                 </tr>
                                 <tr>
                                     <th>Foil</th>
-                                    <td class="text-success">${{model.card.prices.get("usd_foil")}}</td>
-                                    <td class="text-info">€{{model.card.prices.get("eur_foil")}}</td>
+                                    <td class="text-success">{{util.usd(model.card.prices.get("usd_foil"))}}</td>
+                                    <td class="text-info">{{util.eur(model.card.prices.get("eur_foil"))}}</td>
                                     <td class="text-warning"></td>
                                 </tr>
                             <tbody>
@@ -136,6 +139,29 @@
             </div>
         </div>
     </div>
+    % if (model.rulings is not None and len(model.rulings) > 0):
+    <hr></hr>
+    <div>
+        <h3 class="mb-2">Rulings for {{model.card.name}}</h3>
+        % count = 0
+        % for r in model.rulings:
+            % if (count % 2 == 0):
+            <div class="row mx-1">
+            % end
+                <blockquote class="blockquote col-md-6">
+                    <div style="line-height: 1.25"><small class="mb-0" >{{r.comment}}</small></div>
+                    <footer class="blockquote-footer">({{r.published_at}}) <cite title="Source Title">{{r.source}}</cite></footer>
+                </blockquote>
+            % if (count % 2 == 1):
+            </div>
+            % end
+            % count += 1
+        % end
+        % if (count % 2 == 1):
+            </div>
+        % end
+    </div>
+    % end
 </div>
 
 
