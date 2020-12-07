@@ -74,6 +74,7 @@ class Schema:
           set_name TEXT NOT NULL,
           set_type TEXT NOT NULL,
           set_uri TEXT NOT NULL,
+          collector_number TEXT NOT NULL,
           prices TEXT NOT NULL
         );
         """
@@ -110,6 +111,7 @@ class Schema:
           set_name TEXT NOT NULL,
           set_type TEXT NOT NULL,
           set_uri TEXT NOT NULL,
+          collector_number TEXT NOT NULL,
           prices TEXT NOT NULL
         );
         """
@@ -151,10 +153,10 @@ class Schema:
             print("Importing oracle cards...")
             for c in response.json():
                 query = f'INSERT INTO oracle_cards ' \
-                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, prices) ' \
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices) ' \
                         f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
                         f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
-                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("prices"))});'
+                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, {val(c.get("prices"))});'
                 self.cursor.execute(query)
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'oracle_cards';"
@@ -176,10 +178,10 @@ class Schema:
             print("Importing cards...")
             for c in response.json():
                 query = f'INSERT INTO cards ' \
-                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, prices) ' \
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices) ' \
                         f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
                         f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
-                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("prices"))});'
+                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, {val(c.get("prices"))});'
                 self.cursor.execute(query)
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'cards';"
@@ -240,18 +242,72 @@ class Card:
             self.set_name = data[23]
             self.set_type = data[24]
             self.set_uri = data[25]
+            self.collector_number = data[26]
             self.prices = {}
-            if (data[26] is not None):
-                self.prices = ast.literal_eval(data[26])
+            if (data[27] is not None):
+                self.prices = ast.literal_eval(data[27])
         else:
             raise ValueError('No match found in database.')
+    
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        query = f"SELECT * FROM cards WHERE id = \'{card_id}\'"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
 
 class OracleCard(Card):
-    def __init__(self, db, oracle_id):
-        query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{oracle_id}\'"
-        row = db.execute(query).fetchone()
+    def __init__(self, row):
         super().__init__(data=row)
     
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{card_id}\'"
+        row = db.execute(query).fetchone()
+        return cls(row)
+
+class Set:
+    def __init__(self, data=None):
+        if (data is not None):
+            self.id = data[0]
+            self.code = data[1]
+            self.name = data[2]
+            self.search_uri = data[3]
+            self.released = data[4]
+            self.set_type = data[5]
+            self.card_count = data[6]
+            self.icon_svg_uri = data[7]
+        else:
+            raise ValueError('No match found in database.')
+    
+    @classmethod
+    def get_by_id(cls, db, set_id):
+        query = f"SELECT * FROM sets WHERE id = \'{set_id}\'"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
+    
+    @classmethod
+    def get_by_code(cls, db, set_code):
+        query = f"SELECT * FROM sets WHERE code = \'{set_code}\'"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
+
+class FullCard:
+    def __init__(self, card=None, card_set=None):
+        self.card = card
+        self.card_set = card_set
+
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        c = Card.get_by_id(db, card_id)
+        s = Set.get_by_code(db, c.set_code)
+        return cls(card=c, card_set=s)
+    
+    @classmethod
+    def get_by_oracle_id(cls, db, card_id):
+        c = OracleCard.get_by_id(db, card_id)
+        s = Set.get_by_code(db, c.set_code)
+        return cls(card=c, card_set=s)
+
 def val(data):
     if (data is None):
         return "NULL"

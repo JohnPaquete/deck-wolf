@@ -13,7 +13,7 @@ class DeckMakerService:
 
     def oracle_card(self, db, item):
         try:
-            return template('card', model=m.OracleCard(db, item))
+            return template('card', model=m.FullCard.get_by_oracle_id(db, item))
         except (ValueError):
             return template('card_404')
             

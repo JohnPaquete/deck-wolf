@@ -19,3 +19,14 @@ def legality_bg(s):
         return 'table-warning'
     if (s == "banned"):
         return 'table-danger'
+
+def rarity(s):
+    if (s == "common"):
+        return 'Common'
+    if (s == "uncommon"):
+        return 'Uncommon'
+    if (s == "rare"):
+        return 'Rare'
+    if (s == "mythic"):
+        return 'Mythic Rare'
+    return 'NO ENTRY'

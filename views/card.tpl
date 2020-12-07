@@ -2,38 +2,37 @@
 % import viewtilities as util
 <div class="container">
     <div class="mt-3">
-        <h2>
-            {{model.name}}
-            <small class="text-muted">{{model.set_name}} [{{model.set_code}}]</small>
+        <h2 class="align-middle">
+            {{model.card.name}}
+            <small class="text-muted ml-2">{{model.card_set.name}}<img class="ml-2 pb-2" style="width:3rem; filter: invert(40%)" src="{{model.card_set.icon_svg_uri}}"></img></small>
         </h2>
     </div>
     <div class="row mt-4">
         <div class="col-lg-4">
-            <img class="w-100" src="{{model.image_uris.get('png')}}" alt="{{model.name}}">
-            % if (model.artist is not None):
-            <p class="mt-1 font-italic">Illustrated by {{model.artist}}</p>
+            <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
+            % if (model.card.artist is not None):
+            <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>
             % end
             <button type="button" class="mt-1 btn btn-outline-primary w-100">Add to Collection</button>
         </div>
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header h3">
-                    {{model.name}}
-                    {{model.mana_cost}}
+                    {{model.card.name}} {{model.card.mana_cost}}
                 </div>
                 <div class="card-body">
-                    <p class="card-text font-weight-bold">{{model.type_line}}</p>
-                    <p class="card-text">{{model.oracle_text}}</p>
-                    % if (model.flavor_text is not None):
-                    <p class="card-text font-italic">{{model.flavor_text}}</p>
+                    <p class="card-text font-weight-bold">{{model.card.type_line}}</p>
+                    <p class="card-text">{{model.card.oracle_text}}</p>
+                    % if (model.card.flavor_text is not None):
+                    <p class="card-text font-italic">{{model.card.flavor_text}}</p>
                     % end
                     <hr></hr>
-                    % if (model.power is not None and model.toughness is not None):
-                    <p class="card-text">{{model.power}}/{{model.toughness}}</p>
+                    % if (model.card.power is not None and model.card.toughness is not None):
+                    <p class="card-text">{{model.card.power}}/{{model.card.toughness}}</p>
                     <hr></hr>
                     % end
-                    % if (model.loyalty is not None):
-                    <p class="card-text">Loyalty: {{model.loyaly}}</p>
+                    % if (model.card.loyalty is not None):
+                    <p class="card-text">Loyalty: {{model.card.loyaly}}</p>
                     <hr></hr>
                     % end
                 </div>
@@ -41,57 +40,96 @@
         </div>
         <div class="col-lg-4">
             <div class="card">
+                <div class="card-header">
+                    <div class="d-flex">
+                        <img class="mr-3" style="width:3rem; filter: invert(90%)" src="{{model.card_set.icon_svg_uri}}"></img>
+                        <div>
+                            <p class="mb-1 h5">{{model.card_set.name}} ({{model.card_set.code}})</p>
+                            <p class="mb-0">#{{model.card.collector_number}}/{{model.card_set.card_count}} · {{util.rarity(model.card.rarity)}} · {{model.card.released}}</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
-                    % if (len(model.legalities) > 0):
+                    % if (len(model.card.legalities) > 0):
                     <div class="row justify-content-around">
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('standard'))}} p-1 rounded">{{util.legality(model.legalities.get('standard'))}}</div>
-                            <div class="w-50 p-1 float-left">Standard</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('standard'))}} p-1 rounded">{{util.legality(model.card.legalities.get('standard'))}}</small>
+                            <small class="w-50 p-1 float-left">Standard</small>
                         </div>
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('brawl'))}} p-1 rounded">{{util.legality(model.legalities.get('brawl'))}}</div>
-                            <div class="w-50 p-1 float-left">Brawl</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('brawl'))}} p-1 rounded">{{util.legality(model.card.legalities.get('brawl'))}}</small>
+                            <small class="w-50 p-1 float-left">Brawl</small>
                         </div>
                     </div>
                     <div class="row justify-content-around">
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('pioneer'))}} p-1 rounded">{{util.legality(model.legalities.get('pioneer'))}}</div>
-                            <div class="w-50 p-1 float-left">Pioneer</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('pioneer'))}} p-1 rounded">{{util.legality(model.card.legalities.get('pioneer'))}}</small>
+                            <small class="w-50 p-1 float-left">Pioneer</small>
                         </div>
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('historic'))}} p-1 rounded">{{util.legality(model.legalities.get('historic'))}}</div>
-                            <div class="w-50 p-1 float-left">Historic</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('historic'))}} p-1 rounded">{{util.legality(model.card.legalities.get('historic'))}}</small>
+                            <small class="w-50 p-1 float-left">Historic</small>
                         </div>
                     </div>
                     <div class="row justify-content-around">
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('modern'))}} p-1 rounded">{{util.legality(model.legalities.get('modern'))}}</div>
-                            <div class="w-50 p-1 float-left">Modern</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('modern'))}} p-1 rounded">{{util.legality(model.card.legalities.get('modern'))}}</small>
+                            <small class="w-50 p-1 float-left">Modern</small>
                         </div>
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('pauper'))}} p-1 rounded">{{util.legality(model.legalities.get('pauper'))}}</div>
-                            <div class="w-50 p-1 float-left">Pauper</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('pauper'))}} p-1 rounded">{{util.legality(model.card.legalities.get('pauper'))}}</small>
+                            <small class="w-50 p-1 float-left">Pauper</small>
                         </div>
                     </div>
                     <div class="row justify-content-around">
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('legacy'))}} p-1 rounded">{{util.legality(model.legalities.get('legacy'))}}</div>
-                            <div class="w-50 p-1 float-left">Legacy</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('legacy'))}} p-1 rounded">{{util.legality(model.card.legalities.get('legacy'))}}</small>
+                            <small class="w-50 p-1 float-left">Legacy</small>
                         </div>
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('penny'))}} p-1 rounded">{{util.legality(model.legalities.get('penny'))}}</div>
-                            <div class="w-50 p-1 float-left">Penny</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('penny'))}} p-1 rounded">{{util.legality(model.card.legalities.get('penny'))}}</small>
+                            <small class="w-50 p-1 float-left">Penny</small>
                         </div>
                     </div>
                     <div class="row justify-content-around">
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('vintage'))}} p-1 rounded">{{util.legality(model.legalities.get('vintage'))}}</div>
-                            <div class="w-50 p-1 float-left">Vintage</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('vintage'))}} p-1 rounded">{{util.legality(model.card.legalities.get('vintage'))}}</small>
+                            <small class="w-50 p-1 float-left">Vintage</small>
                         </div>
                         <div class="col-lg mt-1 px-1 clearfix">
-                            <div class="w-50 float-left text-center {{util.legality_bg(model.legalities.get('commander'))}} p-1 rounded">{{util.legality(model.legalities.get('commander'))}}</div>
-                            <div class="w-50 p-1 float-left">Commander</div>
+                            <small class="w-50 float-left text-center {{util.legality_bg(model.card.legalities.get('commander'))}} p-1 rounded">{{util.legality(model.card.legalities.get('commander'))}}</small>
+                            <small class="w-50 p-1 float-left">Commander</small>
                         </div>
+                    </div>
+                    <hr></hr>
+                    % end
+                    % if (model.card.prices is not None):
+                    <div>
+                        <table class="table table-sm table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="rounded-left border-top-0"></th>
+                                    <th class="border-top-0">USD</th>
+                                    <th class="border-top-0">EUR</th>
+                                    <th class="rounded-right border-top-0">TIX</th>
+                                </tr>
+                            </thead>
+                                <tr>
+                                    <th>Non-foil</th>
+                                    <td class="text-success">${{model.card.prices.get("usd")}}</td>
+                                    <td class="text-info">€{{model.card.prices.get("eur")}}</td>
+                                    <td class="text-warning">{{model.card.prices.get("tix")}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Foil</th>
+                                    <td class="text-success">${{model.card.prices.get("usd_foil")}}</td>
+                                    <td class="text-info">€{{model.card.prices.get("eur_foil")}}</td>
+                                    <td class="text-warning"></td>
+                                </tr>
+                            <tbody>
+
+                            </tbody>
+                        </table>
                     </div>
                     % end
                 </div>
