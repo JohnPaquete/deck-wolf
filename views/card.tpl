@@ -2,10 +2,10 @@
 % import viewtilities as util
 <div class="container">
     <div class="mt-3">
-        <h2 class="align-middle">
+        <h1 class="align-middle">
             {{model.card.name}}
             <small class="text-muted ml-2">{{model.card_set.name}}<img class="ml-2 pb-2" style="width:3rem; filter: invert(40%)" src="{{model.card_set.icon_svg_uri}}"></img></small>
-        </h2>
+        </h1>
     </div>
     <div class="row my-4">
         <div class="col-lg-4">
@@ -126,15 +126,15 @@
                             <tbody>
                                 <tr>
                                     <th>Non-foil</th>
-                                    <td class="text-success">{{util.usd(model.card.prices.get("usd"))}}</td>
-                                    <td class="text-info">{{util.eur(model.card.prices.get("eur"))}}</td>
-                                    <td class="text-warning">{{model.card.prices.get("tix")}}</td>
+                                    <td class="text-success">{{util.currency(model.card.prices.get("usd"), '$')}}</td>
+                                    <td class="text-info">{{util.currency(model.card.prices.get("eur"), '€')}}</td>
+                                    <td class="text-warning">{{util.currency(model.card.prices.get("tix"), '')}}</td>
                                 </tr>
                                 <tr>
                                     <th>Foil</th>
-                                    <td class="text-success">{{util.usd(model.card.prices.get("usd_foil"))}}</td>
-                                    <td class="text-info">{{util.eur(model.card.prices.get("eur_foil"))}}</td>
-                                    <td class="text-warning"></td>
+                                    <td class="text-success">{{util.currency(model.card.prices.get("usd_foil"), '$')}}</td>
+                                    <td class="text-info">{{util.currency(model.card.prices.get("eur_foil"), '€')}}</td>
+                                    <td class="text-warning">{{util.currency(None, '')}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -147,7 +147,7 @@
     % if (model.rulings is not None and len(model.rulings) > 0):
     <hr></hr>
     <div>
-        <h3 class="mb-3">Rulings for {{model.card.name}}</h3>
+        <h2 class="mb-3">Rulings for {{model.card.name}}</h2>
         % count = 0
         % for r in model.rulings:
             % if (count % 2 == 0):

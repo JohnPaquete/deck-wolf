@@ -40,6 +40,7 @@ class Schema:
           released TEXT,
           set_type TEXT NOT NULL,
           card_count INTEGER NOT NULL,
+          parent_set_code TEXT,
           icon_svg_uri TEXT NOT NULL
         );
         """
@@ -144,8 +145,8 @@ class Schema:
             print("Importing set list...")
             for s in response.json().get("data"):
                 query = f'INSERT INTO sets ' \
-                        f'(code, name, search_uri, released, set_type, card_count, icon_svg_uri) ' \
-                        f'VALUES ({val(s.get("code"))}, {val(s.get("name"))}, {val(s.get("search_uri"))}, {val(s.get("released_at"))}, {val(s.get("set_type"))}, {s.get("card_count")}, {val(s.get("icon_svg_uri"))});'
+                        f'(code, name, search_uri, released, set_type, card_count, parent_set_code, icon_svg_uri) ' \
+                        f'VALUES ({val(s.get("code"))}, {val(s.get("name"))}, {val(s.get("search_uri"))}, {val(s.get("released_at"))}, {val(s.get("set_type"))}, {s.get("card_count")}, {val(s.get("parent_set_code"))}, {val(s.get("icon_svg_uri"))});'
                 self.cursor.execute(query)
         
             date = datetime.now()
@@ -312,7 +313,8 @@ class Set:
             self.released = data[4]
             self.set_type = data[5]
             self.card_count = data[6]
-            self.icon_svg_uri = data[7]
+            self.parent_set_code = data[7]
+            self.icon_svg_uri = data[8]
         else:
             raise ValueError('No match found in database.')
     

@@ -16,6 +16,10 @@ def index():
 def card_index():
     return template('index')
 
+@app.route('/cards/:item')
+def card(item, db):
+    return DeckMakerService().card(db, item)
+
 @app.route('/cards/oracle/:item')
 def oracle_card(item, db):
     return DeckMakerService().oracle_card(db, item)
