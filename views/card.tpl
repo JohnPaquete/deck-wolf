@@ -1,5 +1,6 @@
 % rebase('base.tpl')
 % import viewtilities as util
+% import math
 <div class="container">
     <div class="mt-3">
         <h1 class="align-middle">
@@ -148,23 +149,22 @@
     <hr></hr>
     <div>
         <h2 class="mb-3">Rulings for {{model.card.name}}</h2>
+        <div class="row mx-1">
         % count = 0
         % for r in model.rulings:
-            % if (count % 2 == 0):
-            <div class="row mx-1">
+            % if (count == 0 or count == math.ceil(len(model.rulings) / 2)):
+            <div class="col-md-6">
             % end
-                <blockquote class="blockquote col-md-6">
+                <blockquote class="blockquote">
                     <div style="line-height: 1.25"><small class="mb-0" >{{r.comment}}</small></div>
                     <footer class="blockquote-footer">({{r.published_at}}) <cite title="Source Title">{{r.source}}</cite></footer>
                 </blockquote>
-            % if (count % 2 == 1):
+            % count += 1
+            % if (count == len(model.rulings) or count == math.ceil(len(model.rulings) / 2)):
             </div>
             % end
-            % count += 1
         % end
-        % if (count % 2 == 1):
-            </div>
-        % end
+        </div>
     </div>
     % end
 </div>

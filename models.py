@@ -293,6 +293,12 @@ class Card:
         row = db.execute(query).fetchone()
         return cls(data=row)
 
+    @classmethod
+    def get_random(cls, db):
+        query = f"SELECT * FROM cards LIMIT 1 OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM cards), 1);"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
+
 class OracleCard(Card):
     def __init__(self, row):
         super().__init__(data=row)
@@ -371,6 +377,13 @@ class FullCard:
     @classmethod
     def get_by_oracle_id(cls, db, card_id):
         c = OracleCard.get_by_id(db, card_id)
+        s = Set.get_by_code(db, c.set_code)
+        r = Ruling.get_list_by_id(db, c.oracle_id)
+        return cls(card=c, card_set=s, rulings=r)
+    
+    @classmethod
+    def get_random_card(cls, db):
+        c = Card.get_random(db)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r)

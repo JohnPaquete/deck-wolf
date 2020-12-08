@@ -14,7 +14,12 @@ def index():
 @app.route('/cards')
 @app.route('/cards/')
 def card_index():
-    return template('index')
+    return DeckMakerService().card_index()
+    
+@app.route('/cards/random')
+@app.route('/cards/random/')
+def card_random(db):
+    return DeckMakerService().card_random(db)
 
 @app.route('/cards/:item')
 def card(item, db):
@@ -23,6 +28,11 @@ def card(item, db):
 @app.route('/cards/oracle/:item')
 def oracle_card(item, db):
     return DeckMakerService().oracle_card(db, item)
+
+@app.route('/sets')
+@app.route('/sets/')
+def sets():
+    return template('index')
 
 @app.route('/collection')
 @app.route('/collection/')

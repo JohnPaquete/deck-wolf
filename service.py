@@ -8,8 +8,14 @@ class DeckMakerService:
     def index(self):
         return template('index')
 
-    def card_index(self, db):
-        return template('index')
+    def card_index(self):
+        return template('card_index')
+
+    def card_random(self, db):
+        try:
+            return template('card', model=m.FullCard.get_random_card(db))
+        except (ValueError):
+            return template('card_404')
 
     def card(self, db, item):
         try:

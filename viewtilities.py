@@ -1,3 +1,4 @@
+import random
 
 def legality(s):
     if (s == "legal"):
@@ -30,8 +31,12 @@ def rarity(s):
     if (s == "mythic"):
         return 'Mythic Rare'
     return 'NO ENTRY'
-    
+
 def currency(s, prefix):
     if (s is not None):
         return prefix + s
     return '--'
+
+def random_tutor():
+    options = ('Grim Tutor', 'Demonic Tutor', 'Cruel Tutor')
+    return random.choice(options)
