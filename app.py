@@ -31,8 +31,8 @@ def oracle_card(item, db):
 
 @app.route('/sets')
 @app.route('/sets/')
-def sets():
-    return template('index')
+def sets(db):
+    return DeckMakerService().sets_index(db)
 
 @app.route('/collection')
 @app.route('/collection/')

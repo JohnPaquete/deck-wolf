@@ -321,6 +321,7 @@ class Set:
             self.card_count = data[6]
             self.parent_set_code = data[7]
             self.icon_svg_uri = data[8]
+            self.parent = None
         else:
             raise ValueError('No match found in database.')
     
@@ -335,6 +336,20 @@ class Set:
         query = f"SELECT * FROM sets WHERE code = \'{set_code}\';"
         row = db.execute(query).fetchone()
         return cls(data=row)
+    
+    @classmethod
+    def get_list(cls, db):
+        query = f"SELECT * FROM sets;"
+        rows = db.execute(query).fetchall()
+        sets = []
+        for s in rows:
+            sets.append(cls(data=s))
+        for child in sets:
+            if (child.parent_set_code is not None):
+                for parent in sets:
+                    if (parent.code == child.parent_set_code):
+                        child.parent = parent
+        return sets
 
 class Ruling:
     def __init__(self, data=None):

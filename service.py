@@ -28,8 +28,10 @@ class DeckMakerService:
             return template('card', model=m.FullCard.get_by_oracle_id(db, item))
         except (ValueError):
             return template('card_404')
-            
-
+        
+    def sets_index(self, db):
+        return template('index')
+        
     def collection(self):
         return template('index')
 
