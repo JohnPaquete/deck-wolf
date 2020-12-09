@@ -403,6 +403,20 @@ class FullCard:
         r = Ruling.get_list_by_id(db, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r)
 
+class SetList:
+    def __init__(self, sets=None, set_types=None):
+        self.sets = sets
+        self.set_types = set_types
+    
+    @classmethod
+    def get_all(cls, db):
+        s = Set.get_list(db)
+        t = []
+        for x in s:
+            if (x.set_type not in t):
+                t.append(x.set_type)
+        return cls(sets=s, set_types=t)
+
 def val(data):
     if (data is None):
         return "NULL"

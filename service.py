@@ -29,8 +29,11 @@ class DeckMakerService:
         except (ValueError):
             return template('card_404')
         
-    def sets_index(self, db):
-        return template('index')
+    def sets_index(self, db, order=None, set_type=None, name=None):
+        try:
+            return template('set_index', model=m.SetList.get_all(db), order=order, set_type=set_type, name=name)
+        except (ValueError):
+            return template('card_404')
         
     def collection(self):
         return template('index')

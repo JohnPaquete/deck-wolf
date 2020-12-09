@@ -40,3 +40,13 @@ def currency(s, prefix):
 def random_tutor():
     options = ('Grim Tutor', 'Demonic Tutor', 'Cruel Tutor')
     return random.choice(options)
+
+def clean_text(s):
+    if s is None:
+        return 'NO ENTRY'
+    return s.replace("_", " ")
+
+def selected(value, s):
+    if (s == value):
+        return 'selected'
+    return ''

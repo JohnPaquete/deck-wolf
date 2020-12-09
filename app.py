@@ -1,4 +1,4 @@
-from bottle import Bottle, run, template, static_file
+from bottle import Bottle, run, template, static_file, request
 from bottle_sqlite import SQLitePlugin
 from models import Schema
 from service import DeckMakerService
@@ -31,8 +31,15 @@ def oracle_card(item, db):
 
 @app.route('/sets')
 @app.route('/sets/')
-def sets(db):
-    return DeckMakerService().sets_index(db)
+def sets_index(db):
+    order_query = request.query.order or None
+    type_query = request.query.type or None
+    name_query = request.query.name or None
+    return DeckMakerService().sets_index(db, order=order_query, set_type=type_query, name=name_query)
+
+@app.route('/sets/:item')
+def sets_card_list(item, db):
+    return DeckMakerService().card_random(db)
 
 @app.route('/collection')
 @app.route('/collection/')
