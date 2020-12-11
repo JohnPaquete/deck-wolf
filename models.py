@@ -294,6 +294,15 @@ class Card:
         return cls(data=row)
 
     @classmethod
+    def get_list_by_set_code(cls, db, set_code):
+        query = f"SELECT * FROM cards WHERE set_code = \'{set_code}\';"
+        rows = db.execute(query).fetchall()
+        cards = []
+        for c in rows:
+            cards.append(cls(data=c))
+        return cards
+
+    @classmethod
     def get_random(cls, db):
         query = f"SELECT * FROM cards LIMIT 1 OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM cards), 1);"
         row = db.execute(query).fetchone()
@@ -416,6 +425,17 @@ class SetList:
             if (x.set_type not in t):
                 t.append(x.set_type)
         return cls(sets=s, set_types=t)
+
+class SetCardList:
+    def __init__(self, selected_set=None, set_cards=None):
+        self.selected_set = selected_set
+        self.set_cards = set_cards
+    
+    @classmethod
+    def get_by_set_code(cls, db, set_code):
+        s = Set.get_by_code(db, set_code)
+        c = Card.get_list_by_set_code(db, set_code)
+        return cls(selected_set=s, set_cards=c)
 
 def val(data):
     if (data is None):

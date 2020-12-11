@@ -5,7 +5,6 @@
         <form class="form-inline" method="GET">
             <label class="mr-sm-2" for="order">Order By</label>
             <select class="custom-select mr-sm-3" name="order" id="order">
-
                 <option {{util.selected(order, 'release')}} value="release">Release Date</option>
                 <option {{util.selected(order, 'name')}} value="name">Name</option>
                 <option {{util.selected(order, 'cards')}} value="cards">Card Count</option>
