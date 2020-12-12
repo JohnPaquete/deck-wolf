@@ -1,6 +1,7 @@
 import sqlite3
 import requests
 import ast
+import json
 from datetime import datetime
 
 
@@ -58,7 +59,7 @@ class Schema:
           uri TEXT NOT NULL,
           scryfall_uri TEXT NOT NULL,
           rulings_uri TEXT NOT NULL,
-          image_uris TEXT,
+          image_uris JSON,
           mana_cost TEXT,
           cmc REAL NOT NULL,
           type_line TEXT NOT NULL,
@@ -68,7 +69,7 @@ class Schema:
           toughness TEXT,
           loyalty TEXT,
           keywords TEXT NOT NULL,
-          legalities TEXT NOT NULL,
+          legalities JSON NOT NULL,
           rarity TEXT NOT NULL,
           flavor_name TEXT,
           flavor_text TEXT,
@@ -78,7 +79,8 @@ class Schema:
           set_type TEXT NOT NULL,
           set_uri TEXT NOT NULL,
           collector_number TEXT NOT NULL,
-          prices TEXT NOT NULL
+          prices JSON NOT NULL,
+          faces JSON
         );
         """
         self.cursor.execute(query)
@@ -95,7 +97,7 @@ class Schema:
           uri TEXT NOT NULL,
           scryfall_uri TEXT NOT NULL,
           rulings_uri TEXT NOT NULL,
-          image_uris TEXT,
+          image_uris JSON,
           mana_cost TEXT,
           cmc REAL NOT NULL,
           type_line TEXT NOT NULL,
@@ -105,7 +107,7 @@ class Schema:
           toughness TEXT,
           loyalty TEXT,
           keywords TEXT NOT NULL,
-          legalities TEXT NOT NULL,
+          legalities JSON NOT NULL,
           rarity TEXT NOT NULL,
           flavor_name TEXT,
           flavor_text TEXT,
@@ -115,7 +117,8 @@ class Schema:
           set_type TEXT NOT NULL,
           set_uri TEXT NOT NULL,
           collector_number TEXT NOT NULL,
-          prices TEXT NOT NULL
+          prices JSON NOT NULL,
+          faces JSON
         );
         """
         self.cursor.execute(query)
@@ -168,11 +171,11 @@ class Schema:
             print("Importing oracle cards...")
             for c in response.json():
                 query = f'INSERT INTO oracle_cards ' \
-                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices) ' \
-                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices, faces) ' \
+                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, ?, ' \
                         f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
-                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, {val(c.get("prices"))});'
-                self.cursor.execute(query)
+                        f'{val(c.get("keywords"))}, ?, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, ?, ?);'
+                self.cursor.execute(query, [json.dumps(c.get("image_uris")), json.dumps(c.get("legalities")), json.dumps(c.get("prices")), json.dumps(c.get("card_faces"))])
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'oracle_cards';"
             self.cursor.execute(query)
@@ -193,11 +196,11 @@ class Schema:
             print("Importing cards...")
             for c in response.json():
                 query = f'INSERT INTO cards ' \
-                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices) ' \
-                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, {val(c.get("image_uris"))}, ' \
+                        f'(oracle_id, id, name, released, uri, scryfall_uri, rulings_uri, image_uris, mana_cost, cmc, type_line, oracle_text, color_identity, power, toughness, loyalty, keywords, legalities, rarity, flavor_name, flavor_text, artist, set_code, set_name, set_type, set_uri, collector_number, prices, faces) ' \
+                        f'VALUES ({val(c.get("oracle_id"))}, {val(c.get("id"))}, {val(c.get("name"))}, {val(c.get("released_at"))}, {val(c.get("uri"))}, {val(c.get("scryfall_uri"))}, {val(c.get("rulings_uri"))}, ?, ' \
                         f'{val(c.get("mana_cost"))}, {c.get("cmc")}, {val(c.get("type_line"))}, {val(c.get("oracle_text"))}, {val(c.get("color_identity"))}, {val(c.get("power"))}, {val(c.get("toughness"))}, {val(c.get("loyalty"))}, ' \
-                        f'{val(c.get("keywords"))}, {val(c.get("legalities"))}, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, {val(c.get("prices"))});'
-                self.cursor.execute(query)
+                        f'{val(c.get("keywords"))}, ?, {val(c.get("rarity"))}, {val(c.get("flavor_name"))}, {val(c.get("flavor_text"))}, {val(c.get("artist"))}, {val(c.get("set"))}, {val(c.get("set_name"))}, {val(c.get("set_type"))}, {val(c.get("set_uri"))}, {val(c.get("collector_number"))}, ?, ?);'
+                self.cursor.execute(query, [json.dumps(c.get("image_uris")), json.dumps(c.get("legalities")), json.dumps(c.get("prices")), json.dumps(c.get("card_faces"))])
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'cards';"
             self.cursor.execute(query)
@@ -257,9 +260,9 @@ class Card:
             self.uri = data[4]
             self.scryfall_uri = data[5]
             self.rulings_uri = data[6]
-            self.image_uris = {}
-            if (data[7] is not None):
-                self.image_uris = ast.literal_eval(data[7])
+            self.image_uris = json.loads(data[7])
+            if (self.image_uris is None):
+                self.image_uris = {}
             self.mana_cost = data[8]
             self.cmc = data[9]
             self.type_line = data[10]
@@ -269,9 +272,9 @@ class Card:
             self.toughness = data[14]
             self.loyalty = data[15]
             self.keywords = data[16]
-            self.legalities = {}
-            if (data[17] is not None):
-                self.legalities = ast.literal_eval(data[17])
+            self.legalities = json.loads(data[17])
+            if (self.legalities is None):
+                self.legalities = {}
             self.rarity = data[18]
             self.flavor_name = data[19]
             self.flavor_text = data[20]
@@ -281,9 +284,10 @@ class Card:
             self.set_type = data[24]
             self.set_uri = data[25]
             self.collector_number = data[26]
-            self.prices = {}
-            if (data[27] is not None):
-                self.prices = ast.literal_eval(data[27])
+            self.prices = json.loads(data[27])
+            if (self.prices is None):
+                self.prices = {}
+            self.faces = json.loads(data[28])
         else:
             raise ValueError('No match found in database.')
     
@@ -436,6 +440,12 @@ class SetCardList:
         s = Set.get_by_code(db, set_code)
         c = Card.get_list_by_set_code(db, set_code)
         return cls(selected_set=s, set_cards=c)
+
+def store_faces(data):
+    if (data is None):
+        return "NULL"
+    x = str(data).replace('"', '\'')
+    return f"\"{x}\""
 
 def val(data):
     if (data is None):

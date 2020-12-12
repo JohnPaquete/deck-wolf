@@ -10,18 +10,26 @@
     </div>
     <div class="row my-4">
         <div class="col-lg-4">
-            <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
+            % if (model.card.faces is not None and len(model.card.faces) > 0):
+            % include('multi_card_image.tpl')
+            % else:
+            <img class="w-100" src="{{util.card_primary_image(model.card, 'png')}}" alt="{{model.card.name}}">
+            % end
             % if (model.card.artist is not None):
             <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>
             % end
             <button type="button" class="mt-1 btn btn-outline-primary w-100">Add to Collection</button>
         </div>
         <div class="col-lg-4">
+            % if (model.card.faces is not None and len(model.card.faces) > 0):
+            % include('multi_card_info.tpl')
+            % else:
             <div class="card">
                 <div class="card-header h3">
                     {{model.card.name}} {{model.card.mana_cost}}
                 </div>
                 <div class="card-body">
+                    % if (model.card.oracle_text is not None):
                     <p class="card-text font-weight-bold">{{model.card.type_line}}</p>
                     % text = model.card.oracle_text.split('\n')
                     % count = 1
@@ -32,6 +40,7 @@
                         <p class="card-text mb-1">{{line}}</p>
                         % end
                         % count += 1
+                    % end
                     % end
                     % if (model.card.flavor_text is not None):
                     <p class="card-text font-italic">{{model.card.flavor_text}}</p>
@@ -47,6 +56,7 @@
                     % end
                 </div>
             </div>
+            % end
         </div>
         <div class="col-lg-4">
             <div class="card">
