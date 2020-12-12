@@ -13,7 +13,7 @@
             % if (model.card.faces is not None and len(model.card.faces) > 0):
             % include('multi_card_image.tpl')
             % else:
-            <img class="w-100" src="{{util.card_primary_image(model.card, 'png')}}" alt="{{model.card.name}}">
+            <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
             % end
             % if (model.card.artist is not None):
             <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>
@@ -51,7 +51,7 @@
                     <hr></hr>
                     % end
                     % if (model.card.loyalty is not None):
-                    <p class="card-text">Loyalty: {{model.card.loyaly}}</p>
+                    <p class="card-text">Loyalty: {{model.card.loyalty}}</p>
                     <hr></hr>
                     % end
                 </div>
