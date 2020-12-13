@@ -1,4 +1,4 @@
-from bottle import Bottle, run, template, static_file, request
+from bottle import Bottle, run, template, static_file, request, redirect
 from bottle_sqlite import SQLitePlugin
 from models import Schema
 from service import DeckMakerService
@@ -24,6 +24,12 @@ def card_random(db):
 @app.route('/cards/:item')
 def card(item, db):
     return DeckMakerService().card(db, item)
+
+@app.route('/cards/:item', method='POST')
+def card_post(item, db):
+    quantity = request.forms.get('quantity')
+    DeckMakerService().card_post(db, item, quantity)
+    redirect(f"/cards/{item}")
 
 @app.route('/cards/oracle/:item')
 def oracle_card(item, db):

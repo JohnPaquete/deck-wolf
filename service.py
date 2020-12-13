@@ -22,6 +22,9 @@ class DeckMakerService:
             return template('card', model=m.FullCard.get_by_id(db, item))
         except (ValueError):
             return template('card_404')
+    
+    def card_post(self, db, item, quantity):
+        m.Collection(data=(item, quantity)).save(db)
 
     def oracle_card(self, db, item):
         try:

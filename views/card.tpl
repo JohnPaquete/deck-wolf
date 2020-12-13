@@ -9,7 +9,7 @@
         </h1>
     </div>
     <div class="row my-4">
-        <div class="col-lg-4">
+        <div class="col-lg-4 mb-2">
             % if (model.card.faces is not None and len(model.card.faces) > 0):
             % include('multi_card_image.tpl')
             % else:
@@ -18,9 +18,17 @@
             % if (model.card.artist is not None):
             <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>
             % end
-            <button type="button" class="mt-1 btn btn-outline-primary w-100">Add to Collection</button>
+            <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#collection_form" aria-expanded="false" aria-controls="collection_form">Add to Collection</button>
+            <div class="collapse" id="collection_form">
+                <form class=" mt-2" action="/cards/{{model.card.id}}" method="POST">
+                    <div class="input-group">
+                        <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" aria-describedby="quantity" value="{{model.collection.quantity}}" min="0">
+                        <button class="btn btn-outline-primary" type="submit">Apply</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 mb-2">
             % if (model.card.faces is not None and len(model.card.faces) > 0):
             % include('multi_card_info.tpl')
             % else:
@@ -58,7 +66,7 @@
             </div>
             % end
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 mb-2">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex">

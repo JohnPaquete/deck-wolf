@@ -9,19 +9,21 @@ class Schema:
     def __init__(self):
         self.conn = sqlite3.connect('data/test.db')
         self.cursor = self.conn.cursor()
+        self.create_tables()
+        self.populate_tables()
+        
+
+    def __del__(self):
+        self.conn.commit()
+        self.conn.close()
+    
+    def create_tables(self):
         self.create_record_table()
         self.create_sets_table()
         self.create_oracle_cards_table()
         self.create_cards_table()
         self.create_rulings_table()
-        self.populate_sets_table()
-        self.populate_oracle_cards_table()
-        self.populate_cards_table()
-        self.populate_rulings_table()
-
-    def __del__(self):
-        self.conn.commit()
-        self.conn.close()
+        self.create_collection_table()
         
     def create_record_table(self):
         query = """CREATE TABLE IF NOT EXISTS records (
@@ -136,6 +138,20 @@ class Schema:
         self.cursor.execute(query)
         query= "INSERT OR IGNORE INTO records (name) VALUES ('rulings')"
         self.cursor.execute(query)
+    
+    def create_collection_table(self):
+        query = """CREATE TABLE IF NOT EXISTS collection (
+                  id TEXT PRIMARY KEY NOT NULL,
+                  quantity INTEGER NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+
+    def populate_tables(self):
+        self.populate_sets_table()
+        self.populate_oracle_cards_table()
+        self.populate_cards_table()
+        self.populate_rulings_table()
 
     def populate_sets_table(self):
         if (self.table_needs_update("sets") is not True):
@@ -389,32 +405,69 @@ class Ruling:
             rulings.append(cls(data=r))
         return rulings
 
+class Collection:
+    def __init__(self, data=None, card_id=None):
+        if (data is not None):
+            self.id = data[0]
+            self.quantity = data[1]
+        elif (card_id is not None):
+            self.id = card_id
+            self.quantity = 0
+        else:
+            raise ValueError('No match found in database.')
+
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        query = f"SELECT * FROM collection WHERE id = \'{card_id}\';"
+        row = db.execute(query).fetchone()
+        return cls(data=row, card_id=card_id)
+    
+    @classmethod
+    def get_list(cls, db):
+        query = f"SELECT * FROM collection;"
+        rows = db.execute(query).fetchall()
+        collection = []
+        for c in rows:
+            collection.append(cls(data=c))
+        return collection
+
+    def save(self, db):
+        if (self.id is None or self.quantity is None):
+            raise ValueError('Invalid Collection value.')
+        else:
+            query = f"INSERT OR REPLACE INTO collection (id, quantity) VALUES (\'{self.id}\', {self.quantity});"
+            db.execute(query)
+
 class FullCard:
-    def __init__(self, card=None, card_set=None, rulings=None):
+    def __init__(self, card=None, card_set=None, rulings=None, collection=None):
         self.card = card
         self.card_set = card_set
         self.rulings = rulings
+        self.collection = collection
 
     @classmethod
     def get_by_id(cls, db, card_id):
         c = Card.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        return cls(card=c, card_set=s, rulings=r)
+        q = Collection.get_by_id(db, c.id)
+        return cls(card=c, card_set=s, rulings=r, collection=q)
     
     @classmethod
     def get_by_oracle_id(cls, db, card_id):
         c = OracleCard.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        return cls(card=c, card_set=s, rulings=r)
+        q = Collection.get_by_id(db, c.id)
+        return cls(card=c, card_set=s, rulings=r, collection=q)
     
     @classmethod
     def get_random_card(cls, db):
         c = Card.get_random(db)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        return cls(card=c, card_set=s, rulings=r)
+        q = Collection.get_by_id(db, c.id)
+        return cls(card=c, card_set=s, rulings=r, collection=q)
 
 class SetList:
     def __init__(self, sets=None, set_types=None):
