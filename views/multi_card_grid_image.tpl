@@ -8,7 +8,12 @@
             % else:
         <div class="carousel-item">
             % end
+            
+            % if (face.get('image_uris') is not None):
             <a href="/cards/{{card.id}}"><img class="d-block w-100 card-rounded" src="{{face.get('image_uris').get('normal')}}" alt="{{face.get('name')}}"></a>
+            % else:
+            <a href="/cards/{{card.id}}"><img class="d-block w-100 card-rounded" src="/assets/img/card_back.jpg" alt="{{face.get('name')}}"></a>
+            % end
         </div>
         % count += 1
         % end

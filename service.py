@@ -49,3 +49,6 @@ class DeckMakerService:
 
     def decks(self):
         return template('index')
+
+    def search(self, db, query):
+        return template('search', query=query, model=m.Card.get_by_query(db, query))

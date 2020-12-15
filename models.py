@@ -328,6 +328,20 @@ class Card:
         row = db.execute(query).fetchone()
         return cls(data=row)
 
+    @classmethod
+    def get_by_query(cls, db, q):
+        clauses = q.decode()
+        query = f"SELECT * FROM cards WHERE "
+        for key, value in clauses.items():
+            if (key == 'q'):
+                query += f"name like \'%{value}%\'"
+        query += f" GROUP BY oracle_id HAVING MAX(released);"
+        rows = db.execute(query).fetchall()
+        cards = []
+        for c in rows:
+            cards.append(cls(data=c))
+        return cards
+
 class OracleCard(Card):
     def __init__(self, row):
         super().__init__(data=row)

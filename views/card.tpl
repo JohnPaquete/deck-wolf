@@ -10,10 +10,12 @@
     </div>
     <div class="row my-4">
         <div class="col-lg-4 mb-2">
-            % if (model.card.faces is not None and len(model.card.faces) > 0):
+            % if (model.card.image_uris.get('png') is not None):
+            <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
+            % elif (model.card.faces is not None and len(model.card.faces) > 0):
             % include('multi_card_image.tpl')
             % else:
-            <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
+            <img class="w-100" src="/assets/img/card_back.jpg" alt="{{model.card.name}}">
             % end
             % if (model.card.artist is not None):
             <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>

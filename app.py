@@ -59,8 +59,8 @@ def decks():
 
 @app.route('/search')
 @app.route('/search/')
-def search():
-    return template('index')
+def search(db):
+    return DeckMakerService().search(db, request.query)
 
 @app.route('/assets/<filepath:path>')
 def asset(filepath):
