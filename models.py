@@ -332,10 +332,17 @@ class Card:
     def get_by_query(cls, db, q):
         clauses = q.decode()
         query = f"SELECT * FROM cards WHERE "
+        count = 0
         for key, value in clauses.items():
             if (key == 'q'):
+                if (count > 1):
+                    query += ", "
                 query += f"name like \'%{value}%\'"
+                count += 1
         query += f" GROUP BY oracle_id HAVING MAX(released);"
+
+        if (count <= 0):
+            return []
         rows = db.execute(query).fetchall()
         cards = []
         for c in rows:
@@ -507,6 +514,20 @@ class SetCardList:
         s = Set.get_by_code(db, set_code)
         c = Card.get_list_by_set_code(db, set_code)
         return cls(selected_set=s, set_cards=c)
+
+class CardSearch:
+    def __init__(self, cards=None, cards_per_page=None, page=None):
+        self.cards = cards
+        self.cards_per_page = cards_per_page
+        self.page = page
+    
+    @classmethod
+    def get_by_query(cls, db, q):
+        c = Card.get_by_query(db, q)
+        r = int(q.get('results') or 60)
+        p = int(q.get('page') or 1)
+        return cls(cards=c, cards_per_page=r, page=p)
+
 
 def store_faces(data):
     if (data is None):

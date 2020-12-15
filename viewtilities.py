@@ -50,3 +50,15 @@ def selected(value, s):
     if (s == value):
         return 'selected'
     return ''
+
+def paginate(query, page):
+    q = query.decode()
+    q.replace('page', page)
+    query_string = '?'
+    count = 0
+    for key, value in q.items():
+        if (count > 0):
+            query_string += '&'
+        query_string += f"{key}={value}"
+        count += 1
+    return query_string
