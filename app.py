@@ -45,7 +45,7 @@ def sets_index(db):
 
 @app.route('/sets/:item')
 def sets_card_list(item, db):
-    return DeckMakerService().sets_card_list(db, item)
+    return DeckMakerService().sets_card_list(db, request.query, item)
 
 @app.route('/collection')
 @app.route('/collection/')

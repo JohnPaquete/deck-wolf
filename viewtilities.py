@@ -62,3 +62,55 @@ def paginate(query, page):
         query_string += f"{key}={value}"
         count += 1
     return query_string
+
+def sort_by_rarity(card):
+    if (card.rarity == 'common'):
+        return 1
+    elif (card.rarity == 'uncommon'):
+        return 2
+    elif (card.rarity == 'rare'):
+        return 3
+    elif (card.rarity == 'mythic'):
+        return 4
+    return 0
+
+def sort_by_price(card):
+    if (card.prices.get('usd') is not None):
+        return float(card.prices.get('usd'))
+    if (card.prices.get('usd_foil') is not None):
+        return float(card.prices.get('usd_foil'))
+    return -1
+
+def sort_by_power(card):
+    if (card.faces is not None):
+        for f in card.faces:
+            if (f.get('power') is not None):
+                try:
+                    val = float(f.get('power'))
+                    return val
+                except ValueError:
+                    pass
+    if (card.power is None):
+        return -2
+    try:
+        val = float(card.power)
+        return val
+    except ValueError:
+        return -1
+
+def sort_by_toughness(card):
+    if (card.faces is not None):
+        for f in card.faces:
+            if (f.get('toughness') is not None):
+                try:
+                    val = float(f.get('toughness'))
+                    return val
+                except ValueError:
+                    pass
+    if (card.toughness is None):
+        return -2
+    try:
+        val = float(card.toughness)
+        return val
+    except ValueError:
+        return -1
