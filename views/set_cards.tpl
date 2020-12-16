@@ -6,20 +6,20 @@
             <img class="mr-2" style="max-width:3rem; max-height:3rem; filter: invert(60%)" src="{{model.selected_set.icon_svg_uri}}"></img>
             <div>
                 <p class="h4 mb-0">{{model.selected_set.name}} <span class="text-muted text-uppercase">({{model.selected_set.code}})</span></p>
-                <p class="mb-0 text-muted">Released {{model.selected_set.released}} • {{model.selected_set.card_count}} cards • <span class="text-capitalize">{{util.clean_text(model.selected_set.set_type)}}</span></p>
+                <p class="mb-0 text-muted">Released {{model.selected_set.released}} • {{model.selected_set.card_count}} Cards • <span class="text-capitalize">{{util.clean_text(model.selected_set.set_type)}}</span></p>
             </div>
         </div>
         <form class="col-md form-inline justify-content-end" method="GET">
             <label class="mr-sm-2" for="order">Order By</label>
             <select class="custom-select mr-sm-2" name="order" id="order">
-                <option  value="release">Release Date</option>
+                <option value="release">Release Date</option>
                 <option value="name">Name</option>
                 <option value="cards">Card Count</option>
             </select>
             <label class="mr-sm-2" for="direction">|</label>
             <select class="custom-select mr-sm-3" name="direction" id="direction">
-                <option value="name">Asc</option>
-                <option value="cards">Desc</option>
+                <option value="asc">Asc</option>
+                <option value="desc">Desc</option>
             </select>
             <button class="btn btn-outline-primary" type="submit">Apply</button>
         </form>

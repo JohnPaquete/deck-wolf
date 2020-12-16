@@ -2,13 +2,41 @@
 % import viewtilities as util
 % import math
 
+%first = (model.page - 1) * model.cards_per_page
+%last = min(first + model.cards_per_page, len(model.cards))
 <div class="container">
+    <div class="row mt-2">
+        <div class="col-md d-flex">
+            <i class="fa fa-fw fa-3x fa-search mr-2"></i>
+            <div>
+                <p class="h4 mb-0">{{len(model.cards)}} Cards Found</p>
+                <p class="mb-0 text-muted">Displaying {{first + 1}}-{{last}}</p>
+            </div>
+        </div>
+        <form class="col-md form-inline justify-content-end" method="GET">
+            <input type="hidden" id="q" name="q" value="{{query.q}}">
+            <label class="mr-sm-2" for="order">Order By</label>
+            <select class="custom-select mr-sm-2" name="order" id="order">
+                <option value="name">Name</option>
+                <option value="release">Release Date</option>
+                <option value="rarity">Rarity</option>
+                <option value="cmc">CMC</option>
+                <option value="color">Color</option>
+                <option value="power">Power</option>
+                <option value="toughness">Toughnes</option>
+                <option value="price">Price</option>
+            </select>
+            <label class="mr-sm-2" for="direction">|</label>
+            <select class="custom-select mr-sm-3" name="direction" id="direction">
+                <option value="asc">Asc</option>
+                <option value="desc">Desc</option>
+            </select>
+            <button class="btn btn-outline-primary" type="submit">Apply</button>
+        </form>
+    </div>
     <hr class="my-2"></hr>
     <div class="d-flex flex-wrap justify-content-between">
         %carousel_count = 0
-        %first = (model.page - 1) * model.cards_per_page
-        %last = min(first + model.cards_per_page, len(model.cards))
-
         % for x in range(first, last):
             % card = model.cards[x]
         <div class="grid-item my-1">
@@ -32,8 +60,8 @@
     % if (len(model.cards) > model.cards_per_page):
         % first = max(1, model.page - 2)
         % last = min(model.page + 2, math.ceil(len(model.cards)/model.cards_per_page))
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
         % if (model.page > 1):
         <li class="page-item">
         % else:
