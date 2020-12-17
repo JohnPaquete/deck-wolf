@@ -38,10 +38,7 @@ def oracle_card(item, db):
 @app.route('/sets')
 @app.route('/sets/')
 def sets_index(db):
-    order_query = request.query.order or None
-    type_query = request.query.type or None
-    name_query = request.query.name or None
-    return DeckMakerService().sets_index(db, order=order_query, set_type=type_query, name=name_query)
+    return DeckMakerService().sets_index(db, request.query)
 
 @app.route('/sets/:item')
 def sets_card_list(item, db):

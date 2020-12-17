@@ -455,6 +455,9 @@ class Collection:
     def save(self, db):
         if (self.id is None or self.quantity is None):
             raise ValueError('Invalid Collection value.')
+        elif (self.quantity == '0'):
+            query = f"DELETE FROM collection WHERE id = \'{self.id}\';"
+            db.execute(query)
         else:
             query = f"INSERT OR REPLACE INTO collection (id, quantity) VALUES (\'{self.id}\', {self.quantity});"
             db.execute(query)

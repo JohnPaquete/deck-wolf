@@ -1,6 +1,6 @@
 % rebase('base.tpl')
 <div class="container">
-    <div class="jumbotron mt-5">
+    <div class="mt-5">
         <h1 class="text-center">Oops...</h1>
         <p class="text-center h4 mb-5">We couldn't find what you were looking for.</p>
         <form class="form-inline justify-content-center mx-auto mb-3" action="/search" method="get">
