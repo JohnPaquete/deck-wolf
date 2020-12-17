@@ -13,7 +13,7 @@
             % if (model.card.image_uris.get('png') is not None):
             <img class="w-100" src="{{model.card.image_uris.get('png')}}" alt="{{model.card.name}}">
             % elif (model.card.faces is not None and len(model.card.faces) > 0):
-            % include('multi_card_image.tpl')
+            % include('partial/multi_card_image.tpl')
             % else:
             <img class="w-100" src="/assets/img/card_back.jpg" alt="{{model.card.name}}">
             % end
@@ -32,7 +32,7 @@
         </div>
         <div class="col-lg-4 mb-2">
             % if (model.card.faces is not None and len(model.card.faces) > 0):
-            % include('multi_card_info.tpl')
+            % include('partial/multi_card_info.tpl')
             % else:
             <div class="card">
                 <div class="card-header h3">

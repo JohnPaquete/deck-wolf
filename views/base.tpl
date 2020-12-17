@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 
-% include('header.tpl')
+% include('base/header.tpl')
 <body class="">
-    % include('navbar.tpl')
+    % include('base/navbar.tpl')
     {{!base}}
-% include('footer.tpl')
+% include('base/footer.tpl')
 </body>
 
 </html>

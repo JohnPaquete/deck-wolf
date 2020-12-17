@@ -444,7 +444,7 @@ class Collection:
         return cls(data=row, card_id=card_id)
     
     @classmethod
-    def get_list(cls, db):
+    def get_all(cls, db):
         query = f"SELECT * FROM collection;"
         rows = db.execute(query).fetchall()
         collection = []
