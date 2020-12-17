@@ -2,7 +2,7 @@
 
 A Local web application that aims to act as a personal database of Magic the Gathering cards, collections and decks.
 
-This is a personal project The project is currently in progress and is incomplete. Many features are not yet implemented and the ones that are may be unstable.
+This is a personal project with no commercial aspirations. The project is currently in progress and is incomplete. Many features are not yet implemented and the ones that are may be unstable.
 
 ## How to Use
 
