@@ -456,10 +456,16 @@ class Collection:
         if (self.id is None or self.quantity is None):
             raise ValueError('Invalid Collection value.')
         elif (self.quantity == '0'):
-            query = f"DELETE FROM collection WHERE id = \'{self.id}\';"
-            db.execute(query)
+            self.delete(db)
         else:
             query = f"INSERT OR REPLACE INTO collection (id, quantity) VALUES (\'{self.id}\', {self.quantity});"
+            db.execute(query)
+            
+    def delete(self, db):
+        if (self.id is None):
+            raise ValueError('Invalid Collection value.')
+        else:
+            query = f"DELETE FROM collection WHERE id = \'{self.id}\';"
             db.execute(query)
 
 class FullCard:
@@ -517,6 +523,18 @@ class SetCardList:
         s = Set.get_by_code(db, set_code)
         c = Card.get_list_by_set_code(db, set_code)
         return cls(selected_set=s, set_cards=c)
+
+class FullCollection:
+    def __init__(self, cards=None):
+        self.cards = cards
+    
+    @classmethod
+    def get_all(cls, db):
+        col = Collection.get_all(db)
+        cards = []
+        for c in col:
+            cards.append(FullCard.get_by_id(db, c.id))
+        return cls(cards=cards)
 
 class CardSearch:
     def __init__(self, cards=None, cards_per_page=None, page=None):

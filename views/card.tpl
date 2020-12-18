@@ -24,6 +24,7 @@
             <div class="collapse" id="collection_form">
                 <form class=" mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <div class="input-group">
+                        <input type="hidden" name="method" value="POST"> 
                         <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" aria-describedby="quantity" value="{{model.collection.quantity}}" min="0">
                         <button class="btn btn-outline-primary" type="submit">Apply</button>
                     </div>

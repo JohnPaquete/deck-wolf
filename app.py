@@ -27,8 +27,7 @@ def card(item, db):
 
 @app.route('/cards/:item', method='POST')
 def card_post(item, db):
-    quantity = request.forms.get('quantity')
-    DeckMakerService().card_post(db, item, quantity)
+    DeckMakerService().collection_post(db, item, request.forms)
     redirect(f"/cards/{item}")
 
 @app.route('/cards/oracle/:item')
@@ -46,8 +45,13 @@ def sets_card_list(item, db):
 
 @app.route('/collection')
 @app.route('/collection/')
-def collection():
-    return template('index')
+def collection(db):
+    return DeckMakerService().collection(db, request.query)
+
+@app.route('/collection/:item', method='POST')
+def collection_post(item, db):
+    DeckMakerService().collection_post(db, item, request.forms)
+    redirect("/collection")
 
 @app.route('/decks')
 @app.route('/decks/')

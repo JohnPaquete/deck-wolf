@@ -22,9 +22,6 @@ class DeckMakerService:
             return template('card', model=m.FullCard.get_by_id(db, item))
         except (ValueError):
             return template('card_404')
-    
-    def card_post(self, db, item, quantity):
-        m.Collection(data=(item, quantity)).save(db)
 
     def oracle_card(self, db, item):
         try:
@@ -44,8 +41,17 @@ class DeckMakerService:
         except (ValueError):
             return template('card_404')
         
-    def collection(self):
-        return template('index')
+    def collection(self, db, query):
+        try:
+            return template('collection', query=query, model=m.FullCollection.get_all(db))
+        except (ValueError):
+            return template('card_404')
+    
+    def collection_post(self, db, item, form):
+        if (form.get('method') == 'DELETE'):
+            m.Collection(card_id=item).delete(db)
+        else:
+            m.Collection(data=(item, form.get('quantity'))).save(db)
 
     def decks(self):
         return template('index')

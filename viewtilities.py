@@ -1,4 +1,5 @@
 import random
+from decimal import Decimal
 
 def legality(s):
     if (s == "legal"):
@@ -74,6 +75,17 @@ def sort_by_rarity(card):
         return 4
     return 0
 
+def sort_full_card_by_rarity(fullcard):
+    if (fullcard.card.rarity == 'common'):
+        return 1
+    elif (fullcard.card.rarity == 'uncommon'):
+        return 2
+    elif (fullcard.card.rarity == 'rare'):
+        return 3
+    elif (fullcard.card.rarity == 'mythic'):
+        return 4
+    return 0
+
 def sort_by_price(card):
     if (card.prices.get('usd') is not None):
         return float(card.prices.get('usd'))
@@ -114,3 +126,28 @@ def sort_by_toughness(card):
         return val
     except ValueError:
         return -1
+
+def sum_full_card_list(card_list):
+    total = Decimal(0.00)
+    for c in card_list:
+        total += card_price(c.card)
+    return total
+
+def card_price(card):
+    try:
+        if (card.prices.get('usd') is not None):
+            return Decimal(card.prices.get('usd'))
+        if (card.prices.get('usd_foil') is not None):
+            return Decimal(card.prices.get('usd_foil'))
+    except ValueError:
+        pass
+    return Decimal(0.00)
+
+def full_card_image(full_card, key):
+    if (full_card.card.image_uris.get(key) is not None):
+        return full_card.card.image_uris.get(key)
+    elif (full_card.card.faces is not None and len(full_card.card.faces) > 0):
+        for face in full_card.card.faces:
+            if (face.get('image_uris') is not None and face.get('image_uris').get(key) is not None):
+                return face.get('image_uris').get(key)
+    return '/assets/img/card_back.jpg'
