@@ -56,7 +56,12 @@ def collection_post(item, db):
 @app.route('/decks')
 @app.route('/decks/')
 def decks():
-    return template('index')
+    return template('decks_index')
+
+@app.route('/decks/create')
+@app.route('/decks/create/')
+def decks_create():
+    return template('decks_edit')
 
 @app.route('/search')
 @app.route('/search/')

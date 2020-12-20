@@ -1,6 +1,9 @@
 % rebase('base.tpl')
 % import viewtilities as util
+% import math
 
+% first = (model.page - 1) * model.cards_per_page
+% last = min(first + model.cards_per_page, len(model.cards))
 <div class="container">
     <div class="row py-2">
         <div class="col-md d-flex">
@@ -66,7 +69,8 @@
             end
             %>
 
-            % for fc in filtered_list:
+            % for x in range(first, last):
+                % fc = filtered_list[x]
             <tr>
                 <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('{{util.full_card_image(fc, 'art_crop')}}');" data-placement="bottom" data-toggle="tooltip" title="{{fc.card.artist}}"></div></td>
                 <td class="align-middle"><a href="/cards/{{fc.card.id}}">{{fc.card.name}}</a></td>
@@ -80,6 +84,44 @@
             % end
         </tbody>
     </table>
+    % if (len(model.cards) > model.cards_per_page):
+        % first = max(1, model.page - 2)
+        % last = min(model.page + 2, math.ceil(len(model.cards)/model.cards_per_page))
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
+        % if (model.page > 1):
+        <li class="page-item">
+        % else:
+        <li class="page-item disabled">
+        % end
+            % if (model.page > 1):
+            <a class="page-link" href="/collection{{util.paginate(query, model.page - 1)}}" aria-label="Previous">Previous</a>
+            % else:
+            <span class="page-link">Previous</span>
+            % end
+        </li>
+        % for x in range(first, last + 1):
+            % if (x == model.page):
+        <li class="page-item active"><a class="page-link" href="/collection{{util.paginate(query, x)}}">{{x}}</a></li>
+            % else:
+        <li class="page-item"><a class="page-link" href="/collection{{util.paginate(query, x)}}">{{x}}</a></li>
+            % end
+        % end
+
+        % if (model.page < math.ceil(len(model.cards)/model.cards_per_page)):
+        <li class="page-item">
+        % else:
+        <li class="page-item disabled">
+        % end
+            % if (model.page < math.ceil(len(model.cards)/model.cards_per_page)):
+            <a class="page-link" href="/search{{util.paginate(query, model.page + 1)}}" aria-label="Previous">Next</a>
+            % else:
+            <span class="page-link">Next</span>
+            % end
+        </li>
+        </ul>
+    </nav>
+    % end
 </div>
 
 <!-- Modal -->

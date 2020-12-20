@@ -43,7 +43,7 @@ class DeckMakerService:
         
     def collection(self, db, query):
         try:
-            return template('collection', query=query, model=m.FullCollection.get_all(db))
+            return template('collection', query=query, model=m.FullCollection.get_all(db, query))
         except (ValueError):
             return template('card_404')
     

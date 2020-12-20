@@ -2,8 +2,8 @@
 % import viewtilities as util
 % import math
 
-%first = (model.page - 1) * model.cards_per_page
-%last = min(first + model.cards_per_page, len(model.cards))
+% first = (model.page - 1) * model.cards_per_page
+% last = min(first + model.cards_per_page, len(model.cards))
 <div class="container">
     <div class="row mt-2">
         <div class="col-md d-flex">

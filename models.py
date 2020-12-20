@@ -24,6 +24,8 @@ class Schema:
         self.create_cards_table()
         self.create_rulings_table()
         self.create_collection_table()
+        self.create_decks_table()
+        self.create_deck_cards_table()
         
     def create_record_table(self):
         query = """CREATE TABLE IF NOT EXISTS records (
@@ -143,6 +145,35 @@ class Schema:
         query = """CREATE TABLE IF NOT EXISTS collection (
                   id TEXT PRIMARY KEY NOT NULL,
                   quantity INTEGER NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+
+    def create_decks_table(self):
+        query = """CREATE TABLE IF NOT EXISTS decks (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  created TEXT,
+                  updated TEXT,
+                  format TEXT NOT NULL,
+                  valid INTEGER NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+    
+    def create_deck_cards_table(self):
+        query = """CREATE TABLE IF NOT EXISTS deck_cards (
+                  deck_id INTEGER NOT NULL,
+                  card_id TEXT NOT NULL,
+                  quantity INTEGER NOT NULL,
+                  commander TEXT,
+                  partner TEXT,
+                  companion TEXT NOT NULL,
+                  valid INTEGER NOT NULL,
+                  FOREIGN KEY (deck_id)
+                    REFERENCES decks (id)
+                        ON UPDATE CASCADE
+                        ON DELETE CASCADE
                 );
                 """
         self.cursor.execute(query)
@@ -525,19 +556,23 @@ class SetCardList:
         return cls(selected_set=s, set_cards=c)
 
 class FullCollection:
-    def __init__(self, cards=None):
+    def __init__(self, cards=None, cards_per_page=60, page=1):
         self.cards = cards
+        self.cards_per_page = cards_per_page
+        self.page = page
     
     @classmethod
-    def get_all(cls, db):
+    def get_all(cls, db, q):
         col = Collection.get_all(db)
         cards = []
+        r = int(q.get('results') or 60)
+        p = int(q.get('page') or 1)
         for c in col:
             cards.append(FullCard.get_by_id(db, c.id))
-        return cls(cards=cards)
+        return cls(cards=cards, cards_per_page=r, page=p)
 
 class CardSearch:
-    def __init__(self, cards=None, cards_per_page=None, page=None):
+    def __init__(self, cards=None, cards_per_page=60, page=1):
         self.cards = cards
         self.cards_per_page = cards_per_page
         self.page = page
