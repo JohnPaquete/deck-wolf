@@ -58,3 +58,7 @@ class DeckMakerService:
 
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
+
+    def card_autocomplete(self, db, json):
+        data = m.OracleCard.autocomplete_name(db, json.get('term'))
+        return {'data' : data}

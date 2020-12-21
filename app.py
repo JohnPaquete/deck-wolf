@@ -72,6 +72,12 @@ def search(db):
 def asset(filepath):
     return static_file(filepath, root='./assets')
 
+@app.route('/api/card_autocomplete/', method='POST')
+@app.route('/api/card_autocomplete',  method='POST')
+def card_autocomplete(db):
+    print(request.json)
+    return DeckMakerService().card_autocomplete(db, request.json)
+
 if __name__ == "__main__":
     Schema()
     run(app, host='localhost', port=8080, debug=True, reloader=False)

@@ -27,17 +27,18 @@
         <div class="form-row mb-2">
             <div class="col-md-4">
                 <label for="name">Commander</label>
-                <input type="text" class="form-control" name="commander" id="commander" placeholder="">
+                <input type="text" class="form-control card-autocomplete" name="commander" id="commander" placeholder="">
             </div>
             <div class="col-md-4">
                 <label for="name">Partner</label>
-                <input type="text" class="form-control" name="partner" id="partner" placeholder="">
+                <input type="text" class="form-control card-autocomplete" name="partner" id="partner" placeholder="">
             </div>
             <div class="col-md-4">
                 <label for="name">Companion</label>
-                <input type="text" class="form-control" name="companion" id="companion" placeholder="">
+                <input type="text" class="form-control card-autocomplete" name="companion" id="companion" placeholder="">
             </div>
         </div>
         <button class="btn btn-primary" type="submit">Save</button>
     </form>
 </div>
+<script src="/assets/js/deck_builder.js" type="text/javascript" defer></script>

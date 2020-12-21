@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.standalone.min.css">
     <link rel="stylesheet" href="/assets/css/bootstrap-dark.css" type="text/css">
     <link rel="stylesheet" href="/assets/css/nucleo-icons.css" type="text/css">
-
+    <link rel="stylesheet" href="/assets/css/jquery-ui.css">
     <title>Deck Maker</title>
     <meta name="description" content="An application for organizing a Magic the Gathering card collection and storing deck lists. All card data is provided by Scryfall. This project is not affiliated with Wizards of the Coast.">
     <meta name="keywords" content="bootstrap 4, bootstrap, responsive bootstrap, mtg, Scryfall, Magic the Gathering">

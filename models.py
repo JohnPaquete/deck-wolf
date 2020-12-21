@@ -389,6 +389,18 @@ class OracleCard(Card):
         query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{card_id}\';"
         row = db.execute(query).fetchone()
         return cls(row)
+    
+    @classmethod
+    def autocomplete_name(cls, db, term):
+        t = str(term)
+        if (term is None):
+            t = ''
+        q = f"SELECT name FROM oracle_cards where name like \'{t}%\';"
+        rows = db.execute(q).fetchall()
+        result = []
+        for r in rows:
+            result.append(r[0])
+        return result
 
 class Set:
     def __init__(self, data=None):
