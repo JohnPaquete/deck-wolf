@@ -75,7 +75,6 @@ def asset(filepath):
 @app.route('/api/card_autocomplete/', method='POST')
 @app.route('/api/card_autocomplete',  method='POST')
 def card_autocomplete(db):
-    print(request.json)
     return DeckMakerService().card_autocomplete(db, request.json)
 
 if __name__ == "__main__":

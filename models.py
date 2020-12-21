@@ -400,6 +400,7 @@ class OracleCard(Card):
         result = []
         for r in rows:
             result.append(r[0])
+        result.sort()
         return result
 
 class Set:
