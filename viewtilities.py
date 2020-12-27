@@ -151,3 +151,8 @@ def full_card_image(full_card, key):
             if (face.get('image_uris') is not None and face.get('image_uris').get(key) is not None):
                 return face.get('image_uris').get(key)
     return '/assets/img/card_back.jpg'
+
+def is_valid(b):
+    if (b == 1):
+        return 'Valid'
+    return 'Invalid'

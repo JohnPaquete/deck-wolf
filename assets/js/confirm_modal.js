@@ -5,6 +5,9 @@ $('#confirm-modal').on('show.bs.modal', function (event) {
     var endpoint = button.attr('href')
     
     var modal = $(this)
-    modal.find('.modal-info').text(quantity + ' ' + name)
+    if (quantity != null)
+      modal.find('.modal-info').text(quantity + ' ' + name)
+    else
+      modal.find('.modal-info').text(name)
     modal.find('.modal-form').attr('action', endpoint)
   })

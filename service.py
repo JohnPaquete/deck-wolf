@@ -54,8 +54,8 @@ class DeckMakerService:
         else:
             m.Collection(data=(item, form.get('quantity'))).save(db)
 
-    def decks(self):
-        return template('index')
+    def decks(self, db, query):
+        return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))
     
     def decks_save(self, db, form):
         data = (None, form.get("name"), str(datetime.now()), None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)

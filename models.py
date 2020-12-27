@@ -623,6 +623,30 @@ class FullDeck:
             self.deck = deck
         else:
             raise ValueError('No deck data.')
+        self.maindeck_cards = {}
+        self.error = {}
+    
+    @classmethod
+    def get_all(cls, db):
+        query = f"SELECT * FROM decks;"
+        rows = db.execute(query).fetchall()
+        decks = []
+        for r in rows:
+            decks.append(cls(deck=Deck(data=r)))
+        return decks
+
+class DeckSearch:
+    def __init__(self, full_decks=None, decks_per_page=60, page=1):
+        self.full_decks = full_decks
+        self.decks_per_page = decks_per_page
+        self.page = page
+
+    @classmethod
+    def get_all(cls, db, q):
+        d = FullDeck.get_all(db)
+        r = int(q.get('results') or 60)
+        p = int(q.get('page') or 1)
+        return cls(full_decks=d, decks_per_page=r, page=p)
 
 def store_faces(data):
     if (data is None):

@@ -2,8 +2,32 @@
 % import viewtilities as util
 % import math
 
+<%
+filtered_list = model.cards
+if (query.name != ''):
+    filtered_list = [item for item in filtered_list if query.name.lower() in item.card.name.lower()]
+end
+if (query.get('order') is not None):
+    r = False
+    if (query.get('direction') == 'desc'):
+        r = True
+    end
+    if (query.get('order') == 'name'):
+        filtered_list.sort(key=lambda x: x.card.name, reverse=r)
+    elif (query.get('order') == 'set'):
+        filtered_list.sort(key=lambda x: x.card_set.name, reverse=r)
+    elif (query.get('order') == 'release'):
+        filtered_list.sort(key=lambda x: x.card.released, reverse=r)
+    elif (query.get('order') == 'rarity'):
+        filtered_list.sort(key=util.sort_full_card_by_rarity, reverse=r)
+    elif (query.get('order') == 'quantity'):
+        filtered_list.sort(key=lambda x: x.collection.quantity, reverse=r)
+    end
+end
+%>
+
 % first = (model.page - 1) * model.cards_per_page
-% last = min(first + model.cards_per_page, len(model.cards))
+% last = min(first + model.cards_per_page, len(filtered_list))
 <div class="container">
     <div class="row py-2">
         <div class="col-md d-flex">
@@ -45,30 +69,6 @@
             </tr>
         </thead>
         <tbody>
-            <%
-            filtered_list = model.cards
-            if (query.name != ''):
-                filtered_list = [item for item in filtered_list if query.name.lower() in item.card.name.lower()]
-            end
-            if (query.get('order') is not None):
-                r = False
-                if (query.get('direction') == 'desc'):
-                    r = True
-                end
-                if (query.get('order') == 'name'):
-                    filtered_list.sort(key=lambda x: x.card.name, reverse=r)
-                elif (query.get('order') == 'set'):
-                    filtered_list.sort(key=lambda x: x.card_set.name, reverse=r)
-                elif (query.get('order') == 'release'):
-                    filtered_list.sort(key=lambda x: x.card.released, reverse=r)
-                elif (query.get('order') == 'rarity'):
-                    filtered_list.sort(key=util.sort_full_card_by_rarity, reverse=r)
-                elif (query.get('order') == 'quantity'):
-                    filtered_list.sort(key=lambda x: x.collection.quantity, reverse=r)
-                end
-            end
-            %>
-
             % for x in range(first, last):
                 % fc = filtered_list[x]
             <tr>
@@ -84,9 +84,9 @@
             % end
         </tbody>
     </table>
-    % if (len(model.cards) > model.cards_per_page):
+    % if (len(filtered_list) > model.cards_per_page):
         % first = max(1, model.page - 2)
-        % last = min(model.page + 2, math.ceil(len(model.cards)/model.cards_per_page))
+        % last = min(model.page + 2, math.ceil(len(filtered_list)/model.cards_per_page))
     <nav aria-label="Page navigation" class="mt-3">
         <ul class="pagination justify-content-center">
         % if (model.page > 1):
@@ -108,13 +108,13 @@
             % end
         % end
 
-        % if (model.page < math.ceil(len(model.cards)/model.cards_per_page)):
+        % if (model.page < math.ceil(len(filtered_list)/model.cards_per_page)):
         <li class="page-item">
         % else:
         <li class="page-item disabled">
         % end
-            % if (model.page < math.ceil(len(model.cards)/model.cards_per_page)):
-            <a class="page-link" href="/search{{util.paginate(query, model.page + 1)}}" aria-label="Previous">Next</a>
+            % if (model.page < math.ceil(len(filtered_list)/model.cards_per_page)):
+            <a class="page-link" href="/collection{{util.paginate(query, model.page + 1)}}" aria-label="Next">Next</a>
             % else:
             <span class="page-link">Next</span>
             % end
@@ -135,7 +135,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <strong class="modal-info"></strong> be removed from your collection.
+            <strong class="modal-info"></strong> will be removed from your collection.
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -55,8 +55,8 @@ def collection_post(item, db):
 
 @app.route('/decks')
 @app.route('/decks/')
-def decks():
-    return template('decks_index')
+def decks(db):
+    return DeckMakerService().decks(db, request.query)
 
 @app.route('/decks/create')
 @app.route('/decks/create/')
