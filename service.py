@@ -1,4 +1,5 @@
 from bottle import template
+from datetime import datetime
 import models as m
 
 class DeckMakerService:
@@ -55,6 +56,10 @@ class DeckMakerService:
 
     def decks(self):
         return template('index')
+    
+    def decks_save(self, db, form):
+        data = (None, form.get("name"), str(datetime.now()), None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
+        m.Deck(data=data).save(db)
 
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))

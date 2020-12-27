@@ -63,6 +63,12 @@ def decks():
 def decks_create():
     return template('decks_edit')
 
+@app.route('/decks/create', method='POST')
+@app.route('/decks/create/', method='POST')
+def decks_post(db):
+    DeckMakerService().decks_save(db, request.forms)
+    redirect("/decks")
+
 @app.route('/search')
 @app.route('/search/')
 def search(db):

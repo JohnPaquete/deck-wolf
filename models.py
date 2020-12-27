@@ -25,7 +25,6 @@ class Schema:
         self.create_rulings_table()
         self.create_collection_table()
         self.create_decks_table()
-        self.create_deck_cards_table()
         
     def create_record_table(self):
         query = """CREATE TABLE IF NOT EXISTS records (
@@ -155,25 +154,13 @@ class Schema:
                   name TEXT NOT NULL,
                   created TEXT,
                   updated TEXT,
+                  maindeck TEXT,
+                  sideboard TEXT,
                   format TEXT NOT NULL,
-                  valid INTEGER NOT NULL
-                );
-                """
-        self.cursor.execute(query)
-    
-    def create_deck_cards_table(self):
-        query = """CREATE TABLE IF NOT EXISTS deck_cards (
-                  deck_id INTEGER NOT NULL,
-                  card_id TEXT NOT NULL,
-                  quantity INTEGER NOT NULL,
                   commander TEXT,
                   partner TEXT,
-                  companion TEXT NOT NULL,
-                  valid INTEGER NOT NULL,
-                  FOREIGN KEY (deck_id)
-                    REFERENCES decks (id)
-                        ON UPDATE CASCADE
-                        ON DELETE CASCADE
+                  companion TEXT,
+                  valid INTEGER NOT NULL
                 );
                 """
         self.cursor.execute(query)
@@ -597,6 +584,45 @@ class CardSearch:
         p = int(q.get('page') or 1)
         return cls(cards=c, cards_per_page=r, page=p)
 
+class Deck:
+    def __init__(self, data=None):
+        if (data is not None):
+            self.id = data[0]
+            self.name = data[1]
+            self.created = data[2]
+            self.updated = data[3]
+            self.maindeck = data[4]
+            self.sideboard = data[5]
+            self.format = data[6]
+            self.commander = data[7]
+            self.partner = data[8]
+            self.companion = data[9]
+            self.valid = data[10]
+        else:
+            raise ValueError('No match found in database.')
+    
+    def save(self, db):
+        if (self.id is None):
+            query = f"INSERT INTO decks (name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
+                    f"VALUES ({val(self.name)}, {val(self.created)}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
+        else:
+            query = f"INSERT OR REPLACE INTO decks (id, name, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
+                    f"VALUES ({val(self.id)}, {val(self.name)}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
+        db.execute(query)
+            
+    def delete(self, db):
+        if (self.id is None):
+            raise ValueError('Invalid Deck value.')
+        else:
+            query = f"DELETE FROM decks WHERE id = {self.id};"
+            db.execute(query)
+    
+class FullDeck:
+    def __init__(self, deck=None):
+        if (deck is not None):
+            self.deck = deck
+        else:
+            raise ValueError('No deck data.')
 
 def store_faces(data):
     if (data is None):
@@ -616,4 +642,8 @@ def val(data):
     if (type(data) is str):
         x = data.replace('"', '\'')
         return f"\"{x}\""
+    if (type(data) is int):
+        return data
+    if (type(data) is float):
+        return data
     return f"\"{data}\""
