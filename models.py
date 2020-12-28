@@ -347,6 +347,12 @@ class Card:
         return cls(data=row)
 
     @classmethod
+    def get_by_name(cls, db, card_id):
+        query = f"SELECT * FROM cards WHERE id = \'{card_id}\';"
+        row = db.execute(query).fetchone()
+        return cls(data=row)
+
+    @classmethod
     def get_by_query(cls, db, q):
         clauses = q.decode()
         query = f"SELECT * FROM cards WHERE "
@@ -368,14 +374,35 @@ class Card:
         return cards
 
 class OracleCard(Card):
-    def __init__(self, row):
-        super().__init__(data=row)
+    def __init__(self, data):
+        super().__init__(data=data)
     
     @classmethod
     def get_by_id(cls, db, card_id):
         query = f"SELECT * FROM oracle_cards WHERE oracle_id = \'{card_id}\';"
         row = db.execute(query).fetchone()
         return cls(row)
+    
+    @classmethod
+    def get_by_query(cls, db, q):
+        clauses = q.decode()
+        query = f"SELECT * FROM oracle_cards WHERE "
+        count = 0
+        for key, value in clauses.items():
+            if (key == 'q'):
+                if (count > 1):
+                    query += ", "
+                query += f"name like \'%{value}%\'"
+                count += 1
+        query += f";"
+
+        if (count <= 0):
+            return []
+        rows = db.execute(query).fetchall()
+        cards = []
+        for c in rows:
+            cards.append(cls(data=c))
+        return cards
     
     @classmethod
     def autocomplete_name(cls, db, term):
@@ -579,7 +606,7 @@ class CardSearch:
     
     @classmethod
     def get_by_query(cls, db, q):
-        c = Card.get_by_query(db, q)
+        c = OracleCard.get_by_query(db, q)
         r = int(q.get('results') or 60)
         p = int(q.get('page') or 1)
         return cls(cards=c, cards_per_page=r, page=p)
@@ -632,7 +659,7 @@ class FullDeck:
 
     def get_cards(self):
         pass
-    
+
     @classmethod
     def get_by_id(cls, db, id):
         query = f"SELECT * FROM decks WHERE id = {id};"
