@@ -1,6 +1,7 @@
 % rebase('base.tpl')
 <div class="container">
     <form novalidate method="POST">
+        <input type="hidden" name="method" value="CREATE"> 
         <div class="form-row my-2 justify-content-around">
             <div class="col-md-6">
                 <label for="name">Name</label>

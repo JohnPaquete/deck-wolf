@@ -27,7 +27,7 @@ end
 <div class="container">
     <div class="row py-2">
         <div class="col-md d-flex">
-            <i class="fa fa-fw fa-3x fa-archive mr-2"></i>
+            <i class="fa fa-fw fa-3x fa-box mr-2"></i>
             <div>
                 <p class="h4 mb-0">{{len(model.full_decks)}} Decks in Your Library</p>
                 <p class="mb-0 text-muted">Placeholder</p>
@@ -63,8 +63,6 @@ end
             </tr>
         </thead>
         <tbody>
-            
-
             % for x in range(first, last):
                 % fd = filtered_list[x]
             <tr>

@@ -604,7 +604,7 @@ class Deck:
     def save(self, db):
         if (self.id is None):
             query = f"INSERT INTO decks (name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
-                    f"VALUES ({val(self.name)}, {val(self.created)}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
+                    f"VALUES ({val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
         else:
             query = f"INSERT OR REPLACE INTO decks (id, name, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
                     f"VALUES ({val(self.id)}, {val(self.name)}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"

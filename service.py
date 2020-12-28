@@ -57,10 +57,18 @@ class DeckMakerService:
     def decks(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))
     
-    def decks_save(self, db, form):
-        data = (None, form.get("name"), str(datetime.now()), None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
-        m.Deck(data=data).save(db)
-
+    def decks_post(self, db, form, item=None):
+        if (form.get('method') == 'CREATE'):
+            data = (None, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
+            m.Deck(data=data).save(db)
+        elif (form.get('method') == 'UPDATE'):
+            data = (item, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
+            m.Deck(data=data).save(db)
+        elif (form.get('method') == 'DELETE'):
+            data= (item, None, None, None, None, None, None, None, None, None, None)
+            m.Deck(data=data).delete(db)
+        else:
+            print('ERROR - - Unknown deck operation.')
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
 
