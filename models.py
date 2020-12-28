@@ -624,7 +624,28 @@ class FullDeck:
         else:
             raise ValueError('No deck data.')
         self.maindeck_cards = {}
+        self.sidedeck_cards = {}
+        self.commander = None
+        self.partner = None
+        self.companion = None
         self.error = {}
+
+    def get_cards(self):
+        pass
+    
+    @classmethod
+    def get_by_id(cls, db, id):
+        query = f"SELECT * FROM decks WHERE id = {id};"
+        row = db.execute(query).fetchone()
+        return cls(deck=Deck(data=row))
+
+class PreviewDeck:
+    def __init__(self, deck=None):
+        if (deck is not None):
+            self.deck = deck
+        else:
+            raise ValueError('No deck data.')
+        self.preview_card = None
     
     @classmethod
     def get_all(cls, db):
@@ -636,17 +657,17 @@ class FullDeck:
         return decks
 
 class DeckSearch:
-    def __init__(self, full_decks=None, decks_per_page=60, page=1):
-        self.full_decks = full_decks
+    def __init__(self, preview_decks=None, decks_per_page=60, page=1):
+        self.preview_decks = preview_decks
         self.decks_per_page = decks_per_page
         self.page = page
 
     @classmethod
     def get_all(cls, db, q):
-        d = FullDeck.get_all(db)
+        d = PreviewDeck.get_all(db)
         r = int(q.get('results') or 60)
         p = int(q.get('page') or 1)
-        return cls(full_decks=d, decks_per_page=r, page=p)
+        return cls(preview_decks=d, decks_per_page=r, page=p)
 
 def store_faces(data):
     if (data is None):

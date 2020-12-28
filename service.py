@@ -69,6 +69,7 @@ class DeckMakerService:
             m.Deck(data=data).delete(db)
         else:
             print('ERROR - - Unknown deck operation.')
+            
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
 

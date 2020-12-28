@@ -3,7 +3,7 @@
 % import math
 
 <%
-filtered_list = model.full_decks
+filtered_list = model.preview_decks
 if (query.name != ''):
     filtered_list = [item for item in filtered_list if query.name.lower() in item.deck.name.lower()]
 end
@@ -29,7 +29,7 @@ end
         <div class="col-md d-flex">
             <i class="fa fa-fw fa-3x fa-box mr-2"></i>
             <div>
-                <p class="h4 mb-0">{{len(model.full_decks)}} Decks in Your Library</p>
+                <p class="h4 mb-0">{{len(model.preview_decks)}} Decks in Your Library</p>
                 <p class="mb-0 text-muted">Placeholder</p>
             </div>
         </div>
