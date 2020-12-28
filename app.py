@@ -82,23 +82,30 @@ def decks_create_post(db):
     DeckMakerService().decks_post(db, request.forms)
     redirect("/decks")
 
+# Deck edit form by id
+@app.route('/decks/edit/:item')
+@app.route('/decks/edit/:item/')
+def decks_edit(db, item):
+    return template('index')
+
+# Deck edit form post
+@app.route('/decks/edit/:item', method='POST')
+@app.route('/decks/edit/:item/', method='POST')
+def decks_edit_post(db, item):
+    DeckMakerService().decks_post(db, request.forms, item=item)
+    redirect(f"/decks/{item}")
+
 # Deck view page by id
 @app.route('/decks/:item')
 @app.route('/decks/:item/')
 def decks_view(db, item):
     return template('index')
 
-# Deck edit form by id
-@app.route('/decks/:item/edit')
-@app.route('/decks/:item/edit/')
-def decks_edit(db, item):
-    return template('index')
-
-# Deck edit form post
-@app.route('/decks/:item/edit', method='POST')
-@app.route('/decks/:item/edit/', method='POST')
-def decks_edit_post(db, item):
-    DeckMakerService().decks_post(db, request.forms)
+# Deck delete by id
+@app.route('/decks/:item', method='POST')
+@app.route('/decks/:item/', method='POST')
+def decks_delete(db, item):
+    DeckMakerService().decks_post(db, request.forms, item=item)
     redirect("/decks/")
 
 # Search index page
