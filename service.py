@@ -1,5 +1,6 @@
 from bottle import template
 from datetime import datetime
+import json
 import models as m
 
 class DeckMakerService:
@@ -54,8 +55,14 @@ class DeckMakerService:
         else:
             m.Collection(data=(item, form.get('quantity'))).save(db)
 
-    def decks(self, db, query):
+    def decks_index(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))
+    
+    def decks(self, db, query, item):
+        try:
+            return template('decks', query=query, model=m.FullDeck.get_by_id(db, item))
+        except (ValueError):
+            return template('card_404')
     
     def decks_post(self, db, form, item=None):
         if (form.get('method') == 'CREATE'):
@@ -69,7 +76,7 @@ class DeckMakerService:
             m.Deck(data=data).delete(db)
         else:
             print('ERROR - - Unknown deck operation.')
-            
+
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
 

@@ -67,7 +67,7 @@ def collection_post(item, db):
 @app.route('/decks')
 @app.route('/decks/')
 def decks(db):
-    return DeckMakerService().decks(db, request.query)
+    return DeckMakerService().decks_index(db, request.query)
 
 # Deck creation form page
 @app.route('/decks/create')
@@ -99,7 +99,7 @@ def decks_edit_post(db, item):
 @app.route('/decks/:item')
 @app.route('/decks/:item/')
 def decks_view(db, item):
-    return template('index')
+    return DeckMakerService().decks(db, request.query, item)
 
 # Deck delete by id
 @app.route('/decks/:item', method='POST')

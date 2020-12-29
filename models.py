@@ -405,6 +405,12 @@ class OracleCard(Card):
         return cards
     
     @classmethod
+    def get_by_name(cls, db, name):
+        query = f"SELECT * FROM oracle_cards WHERE name LIKE \'{name}\';"
+        row = db.execute(query).fetchone()
+        return cls(row)
+    
+    @classmethod
     def autocomplete_name(cls, db, term):
         t = str(term)
         if (term is None):
@@ -651,20 +657,86 @@ class FullDeck:
         else:
             raise ValueError('No deck data.')
         self.maindeck_cards = {}
-        self.sidedeck_cards = {}
+        self.sideboard_cards = {}
         self.commander = None
         self.partner = None
         self.companion = None
         self.error = {}
 
-    def get_cards(self):
-        pass
+    def get_cards(self, db):
+        try:
+            self.commander = OracleCard.get_by_name(db, self.deck.commander)
+        except (ValueError):
+            self.commander = None
+        try:
+            self.partner = OracleCard.get_by_name(db, self.deck.partner)
+        except (ValueError):
+            self.partner = None
+        try:
+            self.companion = OracleCard.get_by_name(db, self.deck.companion)
+        except (ValueError):
+            self.companion = None
+        self.maindeck_cards = FullDeck.get_card_dict(db, self.deck.maindeck)
+        self.sideboard_cards = FullDeck.get_card_dict(db, self.deck.sideboard)
+
+    def get_card_dict(db, card_list):
+        cards = {}
+        for line in card_list.split('\n'):
+            words = line.strip().split(maxsplit=1)
+            if (len(words) < 1):
+                continue
+            try:
+                quantity = int(words[0])
+                words.pop(0)
+                name = ' '.join(words)
+            except (ValueError):
+                quantity = 1
+                name = line.strip()
+            try:
+                card = OracleCard.get_by_name(db, name)
+            except (ValueError):
+                card = None
+            if (name not in cards):
+                cards[name] = {}
+                cards[name]['quantity'] = 0
+            cards[name]['card'] = card
+            cards[name]['quantity'] += quantity
+        return cards
+
+    # General validation
+    # TO-DO individual format validations
+    def validate(self):
+        if (self.deck.commander != '' and self.commander is None):
+            self.error['commander'] = f"Invalid commander: {self.deck.commander}"
+        if (self.deck.partner != '' and self.partner is None):
+            self.error['partner'] = f"Invalid partner: {self.deck.partner}"
+        if (self.deck.companion != '' and self.companion is None):
+            self.error['companion'] = f"Invalid companion: {self.deck.companion}"
+        
+        for key in self.maindeck_cards:
+            if (self.maindeck_cards[key]['card'] is None):
+                if ('maindeck' not in self.error):
+                    self.error['maindeck'] = 'Invalid maindeck card(s): '
+                    self.error['maindeck'] += key
+                else:
+                    self.error['maindeck'] += ', ' + key
+        
+        for key in self.sideboard_cards:
+            if (self.sideboard_cards[key]['card'] is None):
+                if ('sideboard' not in self.error):
+                    self.error['sideboard'] = 'Invalid sideboard card(s): '
+                    self.error['sideboard'] += key
+                else:
+                    self.error['sideboard'] += ', ' + key
 
     @classmethod
     def get_by_id(cls, db, id):
         query = f"SELECT * FROM decks WHERE id = {id};"
         row = db.execute(query).fetchone()
-        return cls(deck=Deck(data=row))
+        fd = cls(deck=Deck(data=row))
+        fd.get_cards(db)
+        fd.validate()
+        return fd
 
 class PreviewDeck:
     def __init__(self, deck=None):
