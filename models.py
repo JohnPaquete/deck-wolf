@@ -634,13 +634,26 @@ class Deck:
         else:
             raise ValueError('No match found in database.')
     
+    @classmethod
+    def get_by_id(cls, db, id):
+        query = f"SELECT * FROM decks WHERE id = {id};"
+        row = db.execute(query).fetchone()
+        return cls(row)
+    
+    @classmethod
+    def get_empty(cls):
+        return cls((None, '', '', '', '', '', '', '', '', '', 0))
+    
     def save(self, db):
         if (self.id is None):
             query = f"INSERT INTO decks (name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
                     f"VALUES ({val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
         else:
-            query = f"INSERT OR REPLACE INTO decks (id, name, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
-                    f"VALUES ({val(self.id)}, {val(self.name)}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
+            query = f"INSERT OR IGNORE INTO decks (id, name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
+                    f"VALUES ({val(self.id)}, {val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});\n"
+            db.execute(query)
+            query = f"UPDATE decks SET name = {val(self.name)}, updated = {val(str(datetime.now()))}, maindeck = {val(self.maindeck)}, sideboard = {val(self.sideboard)}, format = {val(self.format)}, commander = {val(self.commander)}, partner = {val(self.partner)}, companion = {val(self.companion)}, valid = {val(self.valid)} " \
+                    f"WHERE id = {val(self.id)};"
         db.execute(query)
             
     def delete(self, db):

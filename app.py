@@ -73,7 +73,7 @@ def decks(db):
 @app.route('/decks/create')
 @app.route('/decks/create/')
 def decks_create():
-    return template('decks_edit')
+    return DeckMakerService().decks_create()
 
 # Deck creation form post
 @app.route('/decks/create', method='POST')
@@ -86,7 +86,7 @@ def decks_create_post(db):
 @app.route('/decks/edit/:item')
 @app.route('/decks/edit/:item/')
 def decks_edit(db, item):
-    return template('index')
+    return DeckMakerService().decks_edit(db, item)
 
 # Deck edit form post
 @app.route('/decks/edit/:item', method='POST')

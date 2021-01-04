@@ -63,6 +63,18 @@ class DeckMakerService:
             return template('decks', query=query, model=m.FullDeck.get_by_id(db, item))
         except (ValueError):
             return template('card_404')
+
+    def decks_create(self):
+        try:
+            return template('decks_edit', method="CREATE", model=m.Deck.get_empty())
+        except (ValueError):
+            return template('card_404')
+    
+    def decks_edit(self, db, item):
+        try:
+            return template('decks_edit', method="UPDATE", model=m.Deck.get_by_id(db, item))
+        except (ValueError):
+            return template('card_404')
     
     def decks_post(self, db, form, item=None):
         if (form.get('method') == 'CREATE'):

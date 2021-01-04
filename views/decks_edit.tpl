@@ -1,36 +1,37 @@
 % rebase('base.tpl')
+% import viewtilities as util
 <div class="container">
     <form novalidate method="POST">
-        <input type="hidden" name="method" value="CREATE"> 
+        <input type="hidden" name="method" value="{{method}}"> 
         <div class="form-row my-2 justify-content-around">
             <div class="col-md-6">
                 <label for="name">Name</label>
-                <input type="text" class="form-control mb-2" name="name" id="name" placeholder="Name" required>
+                <input type="text" class="form-control mb-2" name="name" id="name" placeholder="Name" value="{{model.name}}" required>
                 <div class="invalid-feedback">
                     Please choose a deck name.
                 </div>
 
                 <label for="format">Format</label>
                 <select class="custom-select mb-2" name="format" id="format">
-                    <option value="standard">Standard</option>
-                    <option value="brawl">Brawl</option>
-                    <option value="pioneer">Pioneer</option>
-                    <option value="historic">Historic</option>
-                    <option value="modern">Modern</option>
-                    <option value="pauper">Pauper</option>
-                    <option value="penny">Penny</option>
-                    <option value="vintage">Vintage</option>
-                    <option value="commander">Commander</option>
+                    <option {{util.selected(model.format, 'standard')}} value="standard">Standard</option>
+                    <option {{util.selected(model.format, 'brawl')}} value="brawl">Brawl</option>
+                    <option {{util.selected(model.format, 'pioneer')}} value="pioneer">Pioneer</option>
+                    <option {{util.selected(model.format, 'historic')}} value="historic">Historic</option>
+                    <option {{util.selected(model.format, 'modern')}} value="modern">Modern</option>
+                    <option {{util.selected(model.format, 'pauper')}} value="pauper">Pauper</option>
+                    <option {{util.selected(model.format, 'penny')}} value="penny">Penny</option>
+                    <option {{util.selected(model.format, 'vintage')}} value="vintage">Vintage</option>
+                    <option {{util.selected(model.format, 'commander')}} value="commander">Commander</option>
                 </select>
 
                 <label for="companion">Companion</label>
-                <input type="text" class="form-control card-autocomplete mb-2" name="companion" id="companion" placeholder="">
+                <input type="text" class="form-control card-autocomplete mb-2" name="companion" id="companion" placeholder="" value="{{model.companion}}">
                 <div class="commander-row collapse">
                     <label for="commander">Commander</label>
-                    <input type="text" class="form-control card-autocomplete mb-2" name="commander" id="commander" placeholder="">
+                    <input type="text" class="form-control card-autocomplete mb-2" name="commander" id="commander" placeholder="" value="{{model.commander}}">
 
                     <label for="partner">Partner</label>
-                    <input type="text" class="form-control card-autocomplete mb-2" name="partner" id="partner" placeholder="">
+                    <input type="text" class="form-control card-autocomplete mb-2" name="partner" id="partner" placeholder="" value="{{model.partner}}">
                 </div>
                 <button class="btn btn-primary" type="submit">Save</button>
             </div>
@@ -45,7 +46,7 @@
                 </ul>
                 <div class="tab-content">
                     <div id="maindeck-content" class="tab-pane active">
-                        <textarea class="form-control mb-2" name="maindeck" id="maindeck" rows="10"></textarea>
+                        <textarea class="form-control mb-2" name="maindeck" id="maindeck" rows="10">{{model.maindeck}}</textarea>
                         <input type="text" class="form-control card-autocomplete mb-2" name="maindeck-search" id="maindeck-search" placeholder="" aria-label="Search maindeck">
                         <div class="form-row mb-2">
                             <div class="col-md-9 d-flex align-items-center">
@@ -58,7 +59,7 @@
                         </div>
                     </div>
                     <div id="sideboard-content" class="tab-pane">
-                        <textarea class="form-control mb-2" name="sideboard" id="sideboard" rows="10"></textarea>
+                        <textarea class="form-control mb-2" name="sideboard" id="sideboard" rows="10">{{model.sideboard}}</textarea>
                         <input type="text" class="form-control card-autocomplete mb-2" name="sideboard-search" id="sideboard-search" placeholder="" aria-label="Search sideboard">
                         <div class="form-row mb-2">
                             <div class="col-md-9 d-flex align-items-center">
