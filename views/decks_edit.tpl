@@ -26,7 +26,7 @@
 
                 <label for="companion">Companion</label>
                 <input type="text" class="form-control card-autocomplete mb-2" name="companion" id="companion" placeholder="" value="{{model.companion}}">
-                <div class="commander-row collapse">
+                <div class="commander-row collapse {{util.show(model.format, 'commander')}}">
                     <label for="commander">Commander</label>
                     <input type="text" class="form-control card-autocomplete mb-2" name="commander" id="commander" placeholder="" value="{{model.commander}}">
 

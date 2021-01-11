@@ -34,7 +34,7 @@ end
             <i class="fa fa-fw fa-3x fa-archive mr-2"></i>
             <div>
                 <p class="h4 mb-0">{{len(model.cards)}} Cards in Your Collection</p>
-                <p class="mb-0 text-muted">Total Value of ${{util.sum_full_card_list(model.cards)}} USD</p>
+                <p class="mb-0 text-muted">Total Value of ${{util.total_price_usd(model.cards)}} USD</p>
             </div>
         </div>
         <form class="col-md-8 form-inline justify-content-end" method="GET">

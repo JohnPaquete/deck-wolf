@@ -554,6 +554,14 @@ class FullCard:
         r = Ruling.get_list_by_id(db, c.oracle_id)
         q = Collection.get_by_id(db, c.id)
         return cls(card=c, card_set=s, rulings=r, collection=q)
+
+    @classmethod
+    def get_by_name(cls, db, name):
+        c = OracleCard.get_by_name(db, name)
+        s = Set.get_by_code(db, c.set_code)
+        r = Ruling.get_list_by_id(db, c.oracle_id)
+        q = Collection.get_by_id(db, c.id)
+        return cls(card=c, card_set=s, rulings=r, collection=q)
     
     @classmethod
     def get_random_card(cls, db):
@@ -678,15 +686,15 @@ class FullDeck:
 
     def get_cards(self, db):
         try:
-            self.commander = OracleCard.get_by_name(db, self.deck.commander)
+            self.commander = FullCard.get_by_name(db, self.deck.commander)
         except (ValueError):
             self.commander = None
         try:
-            self.partner = OracleCard.get_by_name(db, self.deck.partner)
+            self.partner = FullCard.get_by_name(db, self.deck.partner)
         except (ValueError):
             self.partner = None
         try:
-            self.companion = OracleCard.get_by_name(db, self.deck.companion)
+            self.companion = FullCard.get_by_name(db, self.deck.companion)
         except (ValueError):
             self.companion = None
         self.maindeck_cards = FullDeck.get_card_dict(db, self.deck.maindeck)
@@ -706,7 +714,7 @@ class FullDeck:
                 quantity = 1
                 name = line.strip()
             try:
-                card = OracleCard.get_by_name(db, name)
+                card = FullCard.get_by_name(db, name)
             except (ValueError):
                 card = None
             if (name not in cards):

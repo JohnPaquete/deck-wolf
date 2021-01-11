@@ -52,6 +52,11 @@ def selected(value, s):
         return 'selected'
     return ''
 
+def show(value, s):
+    if (s == value):
+        return 'show'
+    return ''
+
 def paginate(query, page):
     q = query.decode()
     q.replace('page', page)
@@ -127,20 +132,36 @@ def sort_by_toughness(card):
     except ValueError:
         return -1
 
-def sum_full_card_list(card_list):
+def total_price_usd(card_list):
     total = Decimal(0.00)
     for c in card_list:
         total += card_price(c.card)
     return total
 
 def card_price(card):
-    try:
-        if (card.prices.get('usd') is not None):
-            return Decimal(card.prices.get('usd'))
-        if (card.prices.get('usd_foil') is not None):
-            return Decimal(card.prices.get('usd_foil'))
-    except ValueError:
-        pass
+    if (card is not None):
+        try:
+            if (card.prices.get('usd') is not None):
+                return Decimal(card.prices.get('usd'))
+            if (card.prices.get('usd_foil') is not None):
+                return Decimal(card.prices.get('usd_foil'))
+        except ValueError:
+            pass
+    return Decimal(0.00)
+
+def total_price_tix(card_list):
+    total = Decimal(0.00)
+    for c in card_list:
+        total += card_price_tix(c.card)
+    return total
+
+def card_price_tix(card):
+    if (card is not None):
+        try:
+            if (card.prices.get('tix') is not None):
+                return Decimal(card.prices.get('tix'))
+        except ValueError:
+            pass
     return Decimal(0.00)
 
 def full_card_image(full_card, key):
