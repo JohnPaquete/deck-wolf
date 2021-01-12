@@ -52,7 +52,7 @@ end
                 <h1 class="mr-4 my-0">{{model.deck.name}}</h1>
                 <strong class="h3 my-0 pb-sm-1 text-capitalize">{{model.deck.format}}</strong>
             </div>
-            <p class=" my-0">Created {{model.deck.created}}</p>
+            <p class=" my-0">Created {{model.deck.created.strftime("%a %b %d, %Y %I:%M:%S %p")}}</p>
         </div>
         <div class="col-md-6">
             <div class="d-block clearfix">

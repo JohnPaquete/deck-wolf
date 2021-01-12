@@ -79,10 +79,10 @@ class DeckMakerService:
     def decks_post(self, db, form, item=None):
         if (form.get('method') == 'CREATE'):
             data = (None, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
-            m.Deck(data=data).save(db)
+            m.FullDeck.get_by_deck(db, m.Deck(data=data)).deck.save(db)
         elif (form.get('method') == 'UPDATE'):
             data = (item, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
-            m.Deck(data=data).save(db)
+            m.FullDeck.get_by_deck(db, m.Deck(data=data)).deck.save(db)
         elif (form.get('method') == 'DELETE'):
             data= (item, None, None, None, None, None, None, None, None, None, None)
             m.Deck(data=data).delete(db)

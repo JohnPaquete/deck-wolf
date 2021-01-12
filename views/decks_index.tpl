@@ -68,8 +68,8 @@ end
             <tr>
                 <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('/assets/img/card_back.jpg');" data-placement="bottom" data-toggle="tooltip" title="placeholder"></div></td>
                 <td class="align-middle"><a href="/decks/{{fd.deck.id}}">{{fd.deck.name}}</a></td>
-                <td class="align-middle">{{fd.deck.created}}</a></td>
-                <td class="align-middle">{{fd.deck.updated}}</td>
+                <td class="align-middle">{{fd.deck.created.strftime("%a %b %d, %Y %I:%M:%S %p")}}</a></td>
+                <td class="align-middle">{{fd.deck.updated.strftime("%a %b %d, %Y %I:%M:%S %p")}}</td>
                 <td class="align-middle text-capitalize">{{fd.deck.format}}</td>
                 <td class="align-middle">{{util.is_valid(fd.deck.valid)}}</td>
                 <td class="align-middle text-center"><a href="/decks/edit/{{fd.deck.id}}"><i class="fa fa-lg fa-edit"></i></a></td>

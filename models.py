@@ -630,8 +630,14 @@ class Deck:
         if (data is not None):
             self.id = data[0]
             self.name = data[1]
-            self.created = data[2]
-            self.updated = data[3]
+            try:
+                self.created = datetime.strptime(data[2], "%Y-%m-%d %H:%M:%S.%f")
+            except (Exception):
+                self.created = datetime.now()
+            try:
+                self.updated = datetime.strptime(data[3], "%Y-%m-%d %H:%M:%S.%f")
+            except (Exception):
+                self.updated = datetime.now()
             self.maindeck = data[4]
             self.sideboard = data[5]
             self.format = data[6]
@@ -749,12 +755,24 @@ class FullDeck:
                     self.error['sideboard'] += key
                 else:
                     self.error['sideboard'] += ', ' + key
+        
+        if (len(self.error) > 0):
+            self.deck.valid = 0
+        else:
+            self.deck.valid = 1
 
     @classmethod
     def get_by_id(cls, db, id):
         query = f"SELECT * FROM decks WHERE id = {id};"
         row = db.execute(query).fetchone()
         fd = cls(deck=Deck(data=row))
+        fd.get_cards(db)
+        fd.validate()
+        return fd
+    
+    @classmethod
+    def get_by_deck(cls, db, deck):
+        fd = cls(deck=deck)
         fd.get_cards(db)
         fd.validate()
         return fd
