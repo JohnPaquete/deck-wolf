@@ -688,25 +688,36 @@ class FullDeck:
         self.commander = None
         self.partner = None
         self.companion = None
+        self.card_total = 0
+        self.card_count = 0
         self.error = {}
 
     def get_cards(self, db):
         try:
+            if (self.deck.commander != ''):
+                self.card_count += 1
+                self.card_total += 1
             self.commander = FullCard.get_by_name(db, self.deck.commander)
         except (ValueError):
             self.commander = None
         try:
+            if (self.deck.partner != ''):
+                self.card_count += 1
+                self.card_total += 1
             self.partner = FullCard.get_by_name(db, self.deck.partner)
         except (ValueError):
             self.partner = None
         try:
+            if (self.deck.companion != ''):
+                self.card_count += 1
+                self.card_total += 1
             self.companion = FullCard.get_by_name(db, self.deck.companion)
         except (ValueError):
             self.companion = None
-        self.maindeck_cards = FullDeck.get_card_dict(db, self.deck.maindeck)
-        self.sideboard_cards = FullDeck.get_card_dict(db, self.deck.sideboard)
+        self.maindeck_cards = self.get_card_dict(db, self.deck.maindeck)
+        self.sideboard_cards = self.get_card_dict(db, self.deck.sideboard)
 
-    def get_card_dict(db, card_list):
+    def get_card_dict(self, db, card_list):
         cards = {}
         for line in card_list.split('\n'):
             words = line.strip().split(maxsplit=1)
@@ -726,8 +737,10 @@ class FullDeck:
             if (name not in cards):
                 cards[name] = {}
                 cards[name]['quantity'] = 0
+                self.card_count += 1
             cards[name]['card'] = card
             cards[name]['quantity'] += quantity
+            self.card_total += quantity
         return cards
 
     # General validation

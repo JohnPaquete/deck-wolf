@@ -68,9 +68,15 @@ end
     </div>
     <hr class="my-1"></hr>
     <div class="row">
-        <div class="col-md-8 bg-primary">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-2 border-right">
+                </div>
+                <div class="col-md-10">
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 bg-primary">
+        <div class="col-md-3">
         </div>
     </div>
 </div>
