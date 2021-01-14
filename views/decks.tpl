@@ -6,7 +6,6 @@
 price_usd = Decimal('0.00')
 price_tix = Decimal('0.00')
 rarity = {'common': 0, 'uncommon': 0, 'rare': 0, 'mythic': 0}
-
 curr_card = 0
 
 if (model.commander is not None):
@@ -115,31 +114,35 @@ end
                                     % end
                                     
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Creatures']
-                                    % include('partial/deck_card_category.tpl', category='Creatures')
+                                    % include('partial/deck_card_category.tpl', category='Creatures', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Planeswalkers']
-                                    % include('partial/deck_card_category.tpl', category='Planeswalkers')
+                                    % include('partial/deck_card_category.tpl', category='Planeswalkers', count = curr_card)
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Sorceries']
+                                    % include('partial/deck_card_category.tpl', category='Sorceries', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Instants']
-                                    % include('partial/deck_card_category.tpl', category='Instants')
+                                    % include('partial/deck_card_category.tpl', category='Instants', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Artifacts']
-                                    % include('partial/deck_card_category.tpl', category='Artifacts')
+                                    % include('partial/deck_card_category.tpl', category='Artifacts', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Enchanments']
-                                    % include('partial/deck_card_category.tpl', category='Enchanments')
+                                    % include('partial/deck_card_category.tpl', category='Enchanments', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Lands']
-                                    % include('partial/deck_card_category.tpl', category='Lands')
+                                    % include('partial/deck_card_category.tpl', category='Lands', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Other']
-                                    % include('partial/deck_card_category.tpl', category='Other')
+                                    % include('partial/deck_card_category.tpl', category='Other', count = curr_card)
                                     % curr_card += len(category_cards)
 
                                     % if len(model.sideboard_cards) > 0:
@@ -154,6 +157,9 @@ end
                                             % include('partial/deck_table_break.tpl')
                                         % end
                                     % end
+                                    <tr>
+                                        <th colspan="4">Total Cards ({{model.card_total}})</th>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

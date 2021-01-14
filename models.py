@@ -392,7 +392,7 @@ class OracleCard(Card):
             if (key == 'q'):
                 if (count > 1):
                     query += ", "
-                query += f"name like \'%{value}%\'"
+                query += f"name like \"%{value}%\""
                 count += 1
         query += f";"
 
@@ -406,7 +406,7 @@ class OracleCard(Card):
     
     @classmethod
     def get_by_name(cls, db, name):
-        query = f"SELECT * FROM oracle_cards WHERE name LIKE \'{name}\';"
+        query = f"SELECT * FROM oracle_cards WHERE name LIKE \"{name}\";"
         row = db.execute(query).fetchone()
         return cls(row)
     
@@ -415,7 +415,7 @@ class OracleCard(Card):
         t = str(term)
         if (term is None):
             t = ''
-        q = f"SELECT name FROM oracle_cards where name like \'{t}%\';"
+        q = f"SELECT name FROM oracle_cards where name like \"{t}%\";"
         rows = db.execute(q).fetchall()
         result = []
         for r in rows:
@@ -664,10 +664,10 @@ class Deck:
                     f"VALUES ({val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
         else:
             query = f"INSERT OR IGNORE INTO decks (id, name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
-                    f"VALUES ({val(self.id)}, {val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});\n"
+                    f"VALUES ({self.id}, {val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
             db.execute(query)
-            query = f"UPDATE decks SET name = {val(self.name)}, updated = {val(str(datetime.now()))}, maindeck = {val(self.maindeck)}, sideboard = {val(self.sideboard)}, format = {val(self.format)}, commander = {val(self.commander)}, partner = {val(self.partner)}, companion = {val(self.companion)}, valid = {val(self.valid)} " \
-                    f"WHERE id = {val(self.id)};"
+            query = f"UPDATE decks SET name = '{self.name}', updated = {val(str(datetime.now()))}, maindeck = {val(self.maindeck)}, sideboard = {val(self.sideboard)}, format = '{self.format}', commander = '{self.commander}', partner = '{self.partner}', companion = '{self.companion}', valid = {val(self.valid)} " \
+                    f"WHERE id = {self.id};"
         db.execute(query)
             
     def delete(self, db):
