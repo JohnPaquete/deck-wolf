@@ -739,9 +739,30 @@ class FullDeck:
                 cards[name]['quantity'] = 0
                 self.card_count += 1
             cards[name]['card'] = card
+            cards[name]['type'] = self.card_type(card)
             cards[name]['quantity'] += quantity
             self.card_total += quantity
         return cards
+    
+    def card_type(self, card):
+        if card is None or card.card.type_line is None:
+            return 'Other'
+        c = card.card
+        if 'planeswalker' in c.type_line.lower():
+            return 'Planeswalkers'
+        if 'creature' in c.type_line.lower():
+            return 'Creatures'
+        if 'sorcery' in c.type_line.lower():
+            return 'Sorceries'
+        if 'instant' in c.type_line.lower():
+            return 'Instants'
+        if 'artifact' in c.type_line.lower():
+            return 'Artifacts'
+        if 'enchantment' in c.type_line.lower():
+            return 'Enchanments'
+        if 'land' in c.type_line.lower():
+            return 'Lands'
+        return 'Other'
 
     # General validation
     # TO-DO individual format validations

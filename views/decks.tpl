@@ -7,6 +7,8 @@ price_usd = Decimal('0.00')
 price_tix = Decimal('0.00')
 rarity = {'common': 0, 'uncommon': 0, 'rare': 0, 'mythic': 0}
 
+curr_card = 0
+
 if (model.commander is not None):
     price_usd += util.card_price(model.commander.card)
     price_tix += util.card_price_tix(model.commander.card)
@@ -70,9 +72,92 @@ end
     <div class="row">
         <div class="col-md-9">
             <div class="row">
-                <div class="col-md-2 border-right">
+                <div class="col-md-2 border-right pr-1 py-2">
+                    <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="/decks/edit/{{model.deck.id}}"><span class="far fa-edit mr-1"></span>Edit</a>
+                    <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="#"><span class="far fa-copy mr-1"></span>Edit Copy</a>
+                    <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="#"><span class="fas fa-download mr-1"></span>Download</a>
+                    <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2" href="#"><span class="fas fa-file-export mr-1"></span>Export</a>
                 </div>
                 <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6 px-1">
+                            <table class="table table-sm table-borderless table-striped">
+                                <tbody>
+                                    % if model.deck.commander != '':
+                                    <tr>
+                                        <th colspan="4">Commander</th>
+                                    </tr>
+                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.commander, model = model.commander)
+                                        % curr_card += 1
+                                        % if curr_card == int(model.card_count/2):
+                                            % include('partial/deck_table_break.tpl')
+                                        % end
+                                    % end
+                                    % if model.deck.partner != '':
+                                    <tr>
+                                        <th colspan="4">Partner</th>
+                                    </tr>
+                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.partner, model = model.partner)
+                                        % curr_card += 1
+                                        % if curr_card == int(model.card_count/2):
+                                            % include('partial/deck_table_break.tpl')
+                                        % end
+                                    % end
+                                    % if model.deck.companion != '':
+                                    <tr>
+                                        <th colspan="4">Companion</th>
+                                    </tr>
+                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.companion, model = model.companion)
+                                        % curr_card += 1
+                                        % if curr_card == int(model.card_count/2):
+                                            % include('partial/deck_table_break.tpl')
+                                        % end
+                                    % end
+                                    
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Creatures']
+                                    % include('partial/deck_card_category.tpl', category='Creatures')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Planeswalkers']
+                                    % include('partial/deck_card_category.tpl', category='Planeswalkers')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Instants']
+                                    % include('partial/deck_card_category.tpl', category='Instants')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Artifacts']
+                                    % include('partial/deck_card_category.tpl', category='Artifacts')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Enchanments']
+                                    % include('partial/deck_card_category.tpl', category='Enchanments')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Lands']
+                                    % include('partial/deck_card_category.tpl', category='Lands')
+                                    % curr_card += len(category_cards)
+
+                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Other']
+                                    % include('partial/deck_card_category.tpl', category='Other')
+                                    % curr_card += len(category_cards)
+
+                                    % if len(model.sideboard_cards) > 0:
+                                    <tr>
+                                        <th colspan="4">Sideboard ({{sum(model.sideboard_cards[key]['quantity'] for key in model.sideboard_cards)}})</th>
+                                    </tr>
+                                    % end
+                                    % for key in model.sideboard_cards:
+                                        % include('partial/deck_card_row.tpl', quantity = model.sideboard_cards[key]['quantity'], name = key, model = model.sideboard_cards[key]['card'])
+                                        % curr_card += 1
+                                        % if curr_card == int(model.card_count/2):
+                                            % include('partial/deck_table_break.tpl')
+                                        % end
+                                    % end
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
