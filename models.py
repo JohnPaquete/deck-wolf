@@ -11,12 +11,11 @@ class Schema:
         self.cursor = self.conn.cursor()
         self.create_tables()
         self.populate_tables()
-        
 
     def __del__(self):
         self.conn.commit()
         self.conn.close()
-    
+
     def create_tables(self):
         self.create_record_table()
         self.create_sets_table()
@@ -25,7 +24,7 @@ class Schema:
         self.create_rulings_table()
         self.create_collection_table()
         self.create_decks_table()
-        
+
     def create_record_table(self):
         query = """CREATE TABLE IF NOT EXISTS records (
                   name TEXT NOT NULL UNIQUE,
@@ -51,7 +50,7 @@ class Schema:
         self.cursor.execute(query)
         query= "INSERT OR IGNORE INTO records (name) VALUES ('sets')"
         self.cursor.execute(query)
-    
+
     def create_oracle_cards_table(self):
         query = """
         CREATE TABLE IF NOT EXISTS oracle_cards (
@@ -89,7 +88,7 @@ class Schema:
         self.cursor.execute(query)
         query= "INSERT OR IGNORE INTO records (name) VALUES ('oracle_cards')"
         self.cursor.execute(query)
-    
+
     def create_cards_table(self):
         query = """
         CREATE TABLE IF NOT EXISTS cards (
@@ -139,7 +138,7 @@ class Schema:
         self.cursor.execute(query)
         query= "INSERT OR IGNORE INTO records (name) VALUES ('rulings')"
         self.cursor.execute(query)
-    
+
     def create_collection_table(self):
         query = """CREATE TABLE IF NOT EXISTS collection (
                   id TEXT PRIMARY KEY NOT NULL,
@@ -172,36 +171,36 @@ class Schema:
         self.populate_rulings_table()
 
     def populate_sets_table(self):
-        if (self.table_needs_update("sets") is not True):
+        if self.table_needs_update("sets") is not True:
             return
         print("Getting set list from Scryfall...")
         query = "DELETE FROM sets;"
         self.cursor.execute(query)
         response = requests.get("https://api.scryfall.com/sets")
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             print("Importing set list...")
             for s in response.json().get("data"):
                 query = f'INSERT INTO sets ' \
                         f'(code, name, search_uri, released, set_type, card_count, parent_set_code, icon_svg_uri) ' \
                         f'VALUES ({val(s.get("code"))}, {val(s.get("name"))}, {val(s.get("search_uri"))}, {val(s.get("released_at"))}, {val(s.get("set_type"))}, {s.get("card_count")}, {val(s.get("parent_set_code"))}, {val(s.get("icon_svg_uri"))});'
                 self.cursor.execute(query)
-        
+
             date = datetime.now()
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'sets';"
             self.cursor.execute(query)
-        
+
     def populate_oracle_cards_table(self):
-        if (self.table_needs_update("oracle_cards") is not True):
+        if self.table_needs_update("oracle_cards") is not True:
             return
         print("Getting oracle cards from Scryfall...")
         query = "DELETE FROM oracle_cards;"
         self.cursor.execute(query)
         response = requests.get("https://api.scryfall.com/bulk-data/oracle-cards")
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             response = requests.get(response.json().get("download_uri"))
         else:
             return
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             print("Importing oracle cards...")
             for c in response.json():
                 query = f'INSERT OR IGNORE INTO oracle_cards ' \
@@ -214,19 +213,19 @@ class Schema:
             query = f"UPDATE records SET updated = '{date}' WHERE name = 'oracle_cards';"
             self.cursor.execute(query)
             print("Oracle cards imported successfully")
-    
+
     def populate_cards_table(self):
-        if (self.table_needs_update("cards") is not True):
+        if self.table_needs_update("cards") is not True:
             return
         print("Getting cards from Scryfall...")
         query = "DELETE FROM cards;"
         self.cursor.execute(query)
         response = requests.get("https://api.scryfall.com/bulk-data/default-cards")
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             response = requests.get(response.json().get("download_uri"))
         else:
             return
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             print("Importing cards...")
             for c in response.json():
                 query = f'INSERT OR IGNORE INTO cards ' \
@@ -241,17 +240,17 @@ class Schema:
             print("Cards imported successfully")
     
     def populate_rulings_table(self):
-        if (self.table_needs_update("rulings") is not True):
+        if self.table_needs_update("rulings") is not True:
             return
         print("Getting rulings from Scryfall...")
         query = "DELETE FROM rulings;"
         self.cursor.execute(query)
         response = requests.get("https://api.scryfall.com/bulk-data/rulings")
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             response = requests.get(response.json().get("download_uri"))
         else:
             return
-        if (self.validate_request(response)):
+        if self.validate_request(response):
             print("Importing rulings...")
             for r in response.json():
                 query = f'INSERT INTO rulings ' \
@@ -267,17 +266,17 @@ class Schema:
         query = f"SELECT updated FROM records WHERE name = '{table}';"
         self.cursor.execute(query)
         row = self.cursor.fetchone()
-        if (row is not None and row[0] is not None):
+        if row is not None and row[0] is not None:
             current_time = datetime.now()
             update_time = datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S.%f')
             diff = current_time - update_time
-            if (diff.days >= 1):
+            if diff.days >= 1:
                 return True
             return False
         return True
 
     def validate_request(self, request):
-        if (request.status_code == 200):
+        if request.status_code == 200:
             print("Scryfall request returned status code 200: SUCCESS")
             return True
         print("Scryfall request returned status code" + str(request.status_code) + ": FAILURE")
@@ -286,7 +285,7 @@ class Schema:
 
 class Card:
     def __init__(self, data=None):
-        if (data is not None):
+        if data is not None:
             self.oracle_id = data[0]
             self.id = data[1]
             self.name = data[2]
@@ -295,7 +294,7 @@ class Card:
             self.scryfall_uri = data[5]
             self.rulings_uri = data[6]
             self.image_uris = json.loads(data[7])
-            if (self.image_uris is None):
+            if self.image_uris is None:
                 self.image_uris = {}
             self.mana_cost = data[8]
             self.cmc = data[9]
@@ -307,7 +306,7 @@ class Card:
             self.loyalty = data[15]
             self.keywords = data[16]
             self.legalities = json.loads(data[17])
-            if (self.legalities is None):
+            if self.legalities is None:
                 self.legalities = {}
             self.rarity = data[18]
             self.flavor_name = data[19]
@@ -319,7 +318,7 @@ class Card:
             self.set_uri = data[25]
             self.collector_number = data[26]
             self.prices = json.loads(data[27])
-            if (self.prices is None):
+            if self.prices is None:
                 self.prices = {}
             self.faces = json.loads(data[28])
         else:
@@ -358,14 +357,14 @@ class Card:
         query = f"SELECT * FROM cards WHERE "
         count = 0
         for key, value in clauses.items():
-            if (key == 'q'):
-                if (count > 1):
+            if key == 'q':
+                if count > 1:
                     query += ", "
                 query += f"name like \'%{value}%\'"
                 count += 1
         query += f" GROUP BY oracle_id HAVING MAX(released);"
 
-        if (count <= 0):
+        if count <= 0:
             return []
         rows = db.execute(query).fetchall()
         cards = []
@@ -389,14 +388,14 @@ class OracleCard(Card):
         query = f"SELECT * FROM oracle_cards WHERE "
         count = 0
         for key, value in clauses.items():
-            if (key == 'q'):
-                if (count > 1):
+            if key == 'q':
+                if count > 1:
                     query += ", "
                 query += f"name like \"%{value}%\""
                 count += 1
         query += f";"
 
-        if (count <= 0):
+        if count <= 0:
             return []
         rows = db.execute(query).fetchall()
         cards = []
@@ -413,7 +412,7 @@ class OracleCard(Card):
     @classmethod
     def autocomplete_name(cls, db, term):
         t = str(term)
-        if (term is None):
+        if term is None:
             t = ''
         q = f"SELECT name FROM oracle_cards where name like \"{t}%\";"
         rows = db.execute(q).fetchall()
@@ -425,7 +424,7 @@ class OracleCard(Card):
 
 class Set:
     def __init__(self, data=None):
-        if (data is not None):
+        if data is not None:
             self.set_id = data[0]
             self.code = data[1]
             self.name = data[2]
@@ -459,15 +458,15 @@ class Set:
         for s in rows:
             sets.append(cls(data=s))
         for child in sets:
-            if (child.parent_set_code is not None):
+            if child.parent_set_code is not None:
                 for parent in sets:
-                    if (parent.code == child.parent_set_code):
+                    if parent.code == child.parent_set_code:
                         child.parent = parent
         return sets
 
 class Ruling:
     def __init__(self, data=None):
-        if (data is not None):
+        if data is not None:
             self.oracle_id = data[0]
             self.source = data[1]
             self.published_at = data[2]
@@ -492,10 +491,10 @@ class Ruling:
 
 class Collection:
     def __init__(self, data=None, card_id=None):
-        if (data is not None):
+        if data is not None:
             self.id = data[0]
             self.quantity = data[1]
-        elif (card_id is not None):
+        elif card_id is not None:
             self.id = card_id
             self.quantity = 0
         else:
@@ -517,16 +516,16 @@ class Collection:
         return collection
 
     def save(self, db):
-        if (self.id is None or self.quantity is None):
+        if self.id is None or self.quantity is None:
             raise ValueError('Invalid Collection value.')
-        elif (self.quantity == '0'):
+        elif self.quantity == '0':
             self.delete(db)
         else:
             query = f"INSERT OR REPLACE INTO collection (id, quantity) VALUES (\'{self.id}\', {self.quantity});"
             db.execute(query)
             
     def delete(self, db):
-        if (self.id is None):
+        if self.id is None:
             raise ValueError('Invalid Collection value.')
         else:
             query = f"DELETE FROM collection WHERE id = \'{self.id}\';"
@@ -581,7 +580,7 @@ class SetList:
         s = Set.get_list(db)
         t = []
         for x in s:
-            if (x.set_type not in t):
+            if x.set_type not in t:
                 t.append(x.set_type)
         return cls(sets=s, set_types=t)
 
@@ -627,16 +626,16 @@ class CardSearch:
 
 class Deck:
     def __init__(self, data=None):
-        if (data is not None):
+        if data is not None:
             self.id = data[0]
             self.name = data[1]
             try:
                 self.created = datetime.strptime(data[2], "%Y-%m-%d %H:%M:%S.%f")
-            except (Exception):
+            except Exception:
                 self.created = datetime.now()
             try:
                 self.updated = datetime.strptime(data[3], "%Y-%m-%d %H:%M:%S.%f")
-            except (Exception):
+            except Exception:
                 self.updated = datetime.now()
             self.maindeck = data[4]
             self.sideboard = data[5]
@@ -659,7 +658,7 @@ class Deck:
         return cls((None, '', '', '', '', '', '', '', '', '', 0))
     
     def save(self, db):
-        if (self.id is None):
+        if self.id is None:
             query = f"INSERT INTO decks (name, created, updated, maindeck, sideboard, format, commander, partner, companion, valid) " \
                     f"VALUES ({val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {val(self.maindeck)}, {val(self.sideboard)}, {val(self.format)}, {val(self.commander)}, {val(self.partner)}, {val(self.companion)}, {val(self.valid)});"
         else:
@@ -671,7 +670,7 @@ class Deck:
         db.execute(query)
             
     def delete(self, db):
-        if (self.id is None):
+        if self.id is None:
             raise ValueError('Invalid Deck value.')
         else:
             query = f"DELETE FROM decks WHERE id = {self.id};"
@@ -679,7 +678,7 @@ class Deck:
     
 class FullDeck:
     def __init__(self, deck=None):
-        if (deck is not None):
+        if deck is not None:
             self.deck = deck
         else:
             raise ValueError('No deck data.')
@@ -694,25 +693,25 @@ class FullDeck:
 
     def get_cards(self, db):
         try:
-            if (self.deck.commander != ''):
+            if self.deck.commander != '':
                 self.card_count += 1
                 self.card_total += 1
             self.commander = FullCard.get_by_name(db, self.deck.commander)
-        except (ValueError):
+        except ValueError:
             self.commander = None
         try:
-            if (self.deck.partner != ''):
+            if self.deck.partner != '':
                 self.card_count += 1
                 self.card_total += 1
             self.partner = FullCard.get_by_name(db, self.deck.partner)
-        except (ValueError):
+        except ValueError:
             self.partner = None
         try:
-            if (self.deck.companion != ''):
+            if self.deck.companion != '':
                 self.card_count += 1
                 self.card_total += 1
             self.companion = FullCard.get_by_name(db, self.deck.companion)
-        except (ValueError):
+        except ValueError:
             self.companion = None
         self.maindeck_cards = self.get_card_dict(db, self.deck.maindeck)
         self.sideboard_cards = self.get_card_dict(db, self.deck.sideboard)
@@ -721,20 +720,20 @@ class FullDeck:
         cards = {}
         for line in card_list.split('\n'):
             words = line.strip().split(maxsplit=1)
-            if (len(words) < 1):
+            if len(words) < 1:
                 continue
             try:
                 quantity = int(words[0])
                 words.pop(0)
                 name = ' '.join(words)
-            except (ValueError):
+            except ValueError:
                 quantity = 1
                 name = line.strip()
             try:
                 card = FullCard.get_by_name(db, name)
-            except (ValueError):
+            except ValueError:
                 card = None
-            if (name not in cards):
+            if name not in cards:
                 cards[name] = {}
                 cards[name]['quantity'] = 0
                 self.card_count += 1
@@ -767,30 +766,30 @@ class FullDeck:
     # General validation
     # TO-DO individual format validations
     def validate(self):
-        if (self.deck.commander != '' and self.commander is None):
+        if self.deck.commander != '' and self.commander is None:
             self.error['commander'] = f"Invalid commander: {self.deck.commander}"
-        if (self.deck.partner != '' and self.partner is None):
+        if self.deck.partner != '' and self.partner is None:
             self.error['partner'] = f"Invalid partner: {self.deck.partner}"
-        if (self.deck.companion != '' and self.companion is None):
+        if self.deck.companion != '' and self.companion is None:
             self.error['companion'] = f"Invalid companion: {self.deck.companion}"
         
         for key in self.maindeck_cards:
-            if (self.maindeck_cards[key]['card'] is None):
-                if ('maindeck' not in self.error):
+            if self.maindeck_cards[key]['card'] is None:
+                if 'maindeck' not in self.error:
                     self.error['maindeck'] = 'Invalid maindeck card(s): '
                     self.error['maindeck'] += key
                 else:
                     self.error['maindeck'] += ', ' + key
         
         for key in self.sideboard_cards:
-            if (self.sideboard_cards[key]['card'] is None):
-                if ('sideboard' not in self.error):
+            if self.sideboard_cards[key]['card'] is None:
+                if 'sideboard' not in self.error:
                     self.error['sideboard'] = 'Invalid sideboard card(s): '
                     self.error['sideboard'] += key
                 else:
                     self.error['sideboard'] += ', ' + key
         
-        if (len(self.error) > 0):
+        if len(self.error) > 0:
             self.deck.valid = 0
         else:
             self.deck.valid = 1
@@ -813,7 +812,7 @@ class FullDeck:
 
 class PreviewDeck:
     def __init__(self, deck=None):
-        if (deck is not None):
+        if deck is not None:
             self.deck = deck
         else:
             raise ValueError('No deck data.')
@@ -842,25 +841,25 @@ class DeckSearch:
         return cls(preview_decks=d, decks_per_page=r, page=p)
 
 def store_faces(data):
-    if (data is None):
+    if data is None:
         return "NULL"
     x = str(data).replace('"', '\'')
     return f"\"{x}\""
 
 def val(data):
-    if (data is None):
+    if data is None:
         return "NULL"
-    if (type(data) is list):
+    if type(data) is list:
         x = " ".join(data)
         return f"\"{x}\""
-    if (type(data) is dict):
+    if type(data) is dict:
         x = str(data)
         return f"\"{x}\""
-    if (type(data) is str):
+    if type(data) is str:
         x = data.replace('"', '\'')
         return f"\"{x}\""
-    if (type(data) is int):
+    if type(data) is int:
         return data
-    if (type(data) is float):
+    if type(data) is float:
         return data
     return f"\"{data}\""

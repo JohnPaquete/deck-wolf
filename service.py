@@ -16,41 +16,41 @@ class DeckMakerService:
     def card_random(self, db):
         try:
             return template('card', model=m.FullCard.get_random_card(db))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
 
     def card(self, db, item):
         try:
             return template('card', model=m.FullCard.get_by_id(db, item))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
 
     def oracle_card(self, db, item):
         try:
             return template('card', model=m.FullCard.get_by_oracle_id(db, item))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
-        
+
     def sets_index(self, db, query):
         try:
             return template('set_index', query=query, model=m.SetList.get_all(db))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
 
     def sets_card_list(self, db, query, item):
         try:
             return template('set_cards', query=query, model=m.SetCardList.get_by_set_code(db, item))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
         
     def collection(self, db, query):
         try:
             return template('collection', query=query, model=m.FullCollection.get_all(db, query))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
     
     def collection_post(self, db, item, form):
-        if (form.get('method') == 'DELETE'):
+        if form.get('method') == 'DELETE':
             m.Collection(card_id=item).delete(db)
         else:
             m.Collection(data=(item, form.get('quantity'))).save(db)
@@ -61,29 +61,29 @@ class DeckMakerService:
     def decks(self, db, query, item):
         try:
             return template('decks', query=query, model=m.FullDeck.get_by_id(db, item))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
 
     def decks_create(self):
         try:
             return template('decks_edit', method="CREATE", model=m.Deck.get_empty())
-        except (ValueError):
+        except ValueError:
             return template('card_404')
     
     def decks_edit(self, db, item):
         try:
             return template('decks_edit', method="UPDATE", model=m.Deck.get_by_id(db, item))
-        except (ValueError):
+        except ValueError:
             return template('card_404')
     
     def decks_post(self, db, form, item=None):
-        if (form.get('method') == 'CREATE'):
+        if form.get('method') == 'CREATE':
             data = (None, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
             m.FullDeck.get_by_deck(db, m.Deck(data=data)).deck.save(db)
-        elif (form.get('method') == 'UPDATE'):
+        elif form.get('method') == 'UPDATE':
             data = (item, form.get("name"), None, None, form.get("maindeck"), form.get("sideboard"), form.get("format"), form.get("commander"), form.get("partner"), form.get("companion"), 0)
             m.FullDeck.get_by_deck(db, m.Deck(data=data)).deck.save(db)
-        elif (form.get('method') == 'DELETE'):
+        elif form.get('method') == 'DELETE':
             data= (item, None, None, None, None, None, None, None, None, None, None)
             m.Deck(data=data).delete(db)
         else:
