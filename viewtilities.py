@@ -133,7 +133,7 @@ def sort_by_toughness(card):
         return -1
 
 def total_price_usd(card_list):
-    total = Decimal(0.00)
+    total = Decimal('0.00')
     for c in card_list:
         total += card_price(c.card)
     return total
@@ -147,10 +147,10 @@ def card_price(card):
                 return Decimal(card.prices.get('usd_foil'))
         except ValueError:
             pass
-    return Decimal(0.00)
+    return Decimal('0.00')
 
 def total_price_tix(card_list):
-    total = Decimal(0.00)
+    total = Decimal('0.00')
     for c in card_list:
         total += card_price_tix(c.card)
     return total
@@ -162,18 +162,42 @@ def card_price_tix(card):
                 return Decimal(card.prices.get('tix'))
         except ValueError:
             pass
-    return Decimal(0.00)
+    return Decimal('0.00')
 
 def full_card_image(full_card, key):
-    if (full_card.card.image_uris.get(key) is not None):
+    if full_card.card.image_uris.get(key) is not None:
         return full_card.card.image_uris.get(key)
-    elif (full_card.card.faces is not None and len(full_card.card.faces) > 0):
+    elif full_card.card.faces is not None and len(full_card.card.faces) > 0:
         for face in full_card.card.faces:
-            if (face.get('image_uris') is not None and face.get('image_uris').get(key) is not None):
+            if face.get('image_uris') is not None and face.get('image_uris').get(key) is not None:
                 return face.get('image_uris').get(key)
     return '/assets/img/card_back.jpg'
 
 def is_valid(b):
-    if (b == 1):
+    if b == 1:
         return 'Valid'
     return 'Invalid'
+
+def card_cost(card, display):
+    if display == 'paper':
+        if (card is not None):
+            try:
+                if (card.prices.get('usd') is not None):
+                    return '$' + str(Decimal(card.prices.get('usd')))
+                if (card.prices.get('usd_foil') is not None):
+                    return '$' + str(Decimal(card.prices.get('usd_foil')))
+            except ValueError:
+                pass
+        return '--'
+    if display == 'mtgo':
+        if (card is not None):
+            try:
+                if (card.prices.get('tix') is not None):
+                    return str(Decimal(card.prices.get('tix'))) + 'tix'
+            except ValueError:
+                pass
+        return '--'
+    if display == 'rarity':
+        if (card is not None):
+            return card.rarity
+    return '--'

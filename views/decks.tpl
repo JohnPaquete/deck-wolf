@@ -78,90 +78,26 @@ end
                     <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2" href="#"><span class="fas fa-file-export mr-1"></span>Export</a>
                 </div>
                 <div class="col-md-10">
-                    <div class="row">
-                        <div class="col-md-6 px-1">
-                            <table class="table table-sm table-borderless table-striped">
-                                <tbody>
-                                    % if model.deck.commander != '':
-                                    <tr>
-                                        <th colspan="4">Commander</th>
-                                    </tr>
-                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.commander, model = model.commander)
-                                        % curr_card += 1
-                                        % if curr_card == int(model.card_count/2):
-                                            % include('partial/deck_table_break.tpl')
-                                        % end
-                                    % end
-                                    % if model.deck.partner != '':
-                                    <tr>
-                                        <th colspan="4">Partner</th>
-                                    </tr>
-                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.partner, model = model.partner)
-                                        % curr_card += 1
-                                        % if curr_card == int(model.card_count/2):
-                                            % include('partial/deck_table_break.tpl')
-                                        % end
-                                    % end
-                                    % if model.deck.companion != '':
-                                    <tr>
-                                        <th colspan="4">Companion</th>
-                                    </tr>
-                                        % include('partial/deck_card_row.tpl', quantity = 1 , name = model.deck.companion, model = model.companion)
-                                        % curr_card += 1
-                                        % if curr_card == int(model.card_count/2):
-                                            % include('partial/deck_table_break.tpl')
-                                        % end
-                                    % end
-                                    
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Creatures']
-                                    % include('partial/deck_card_category.tpl', category='Creatures', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Planeswalkers']
-                                    % include('partial/deck_card_category.tpl', category='Planeswalkers', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Sorceries']
-                                    % include('partial/deck_card_category.tpl', category='Sorceries', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Instants']
-                                    % include('partial/deck_card_category.tpl', category='Instants', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Artifacts']
-                                    % include('partial/deck_card_category.tpl', category='Artifacts', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Enchanments']
-                                    % include('partial/deck_card_category.tpl', category='Enchanments', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Lands']
-                                    % include('partial/deck_card_category.tpl', category='Lands', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % category_cards = [name for name, value in model.maindeck_cards.items() if value['type'] == 'Other']
-                                    % include('partial/deck_card_category.tpl', category='Other', count = curr_card)
-                                    % curr_card += len(category_cards)
-
-                                    % if len(model.sideboard_cards) > 0:
-                                    <tr>
-                                        <th colspan="4">Sideboard ({{sum(model.sideboard_cards[key]['quantity'] for key in model.sideboard_cards)}})</th>
-                                    </tr>
-                                    % end
-                                    % for key in model.sideboard_cards:
-                                        % include('partial/deck_card_row.tpl', quantity = model.sideboard_cards[key]['quantity'], name = key, model = model.sideboard_cards[key]['card'])
-                                        % curr_card += 1
-                                        % if curr_card == int(model.card_count/2):
-                                            % include('partial/deck_table_break.tpl')
-                                        % end
-                                    % end
-                                    <tr>
-                                        <th colspan="4">Total Cards ({{model.card_total}})</th>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <ul class="nav nav-pills border-bottom justify-content-end py-2 mb-1" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-paper" role="tab" aria-controls="pills-paper" aria-selected="true">Paper</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-mtgo" role="tab" aria-controls="pills-mtgo" aria-selected="false">MTGO</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-rarity" role="tab" aria-controls="pills-rarity" aria-selected="false">Rarity</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane show active" id="pills-paper" role="tabpanel" aria-labelledby="pills-paper-tab">
+                            % include('partial/deck_table.tpl', tab = 'paper')
+                        </div>
+                        <div class="tab-pane" id="pills-mtgo" role="tabpanel" aria-labelledby="pills-mtgo-tab">
+                            % include('partial/deck_table.tpl', tab = 'mtgo')
+                        </div>
+                        <div class="tab-pane" id="pills-rarity" role="tabpanel" aria-labelledby="pills-rarity-tab">
+                            % include('partial/deck_table.tpl', tab = 'rarity')
                         </div>
                     </div>
                 </div>
