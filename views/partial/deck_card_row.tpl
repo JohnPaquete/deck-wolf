@@ -9,7 +9,17 @@
     % elif tab == 'mtgo':
     <td class="text-right text-warning">{{util.card_cost(model.card, tab)}}</td>
     % elif tab == 'rarity':
-    <td class="text-right text-capitalize">{{util.card_cost(model.card, tab)}}</td>
+        % if model.card.rarity == 'common':
+    <td class="text-right text-common">C</td>
+        % elif model.card.rarity == 'uncommon':
+    <td class="text-right text-uncommon">U</td>
+        % elif model.card.rarity == 'rare':
+    <td class="text-right text-rare">R</td>
+        % elif model.card.rarity == 'mythic':
+    <td class="text-right text-mythic">M</td>
+        % else:
+    <td class="text-right">--</td>
+        % end
     % end
     % else:
     <td class="text-danger">{{name}}</td>

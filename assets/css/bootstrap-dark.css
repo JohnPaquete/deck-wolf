@@ -7363,3 +7363,16 @@ a.text-dark:hover, a.text-dark:focus {
 .fa-lg {
   font-size: 1.5rem;
 }
+
+.text-common {
+  color: #bbbbbb !important;
+}
+.text-uncommon {
+  color: #617a8b !important;
+}
+.text-rare {
+  color: #ceb47c !important;
+}
+.text-mythic {
+  color: #ce5f20 !important;
+}
