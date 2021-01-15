@@ -51,9 +51,17 @@ class DeckMakerService:
     
     def collection_post(self, db, item, form):
         if form.get('method') == 'DELETE':
-            m.Collection(card_id=item).delete(db)
+            try:
+                card = m.Card.get_by_id(db, item)
+                m.Collection(card_id=item, oracle_id=card.oracle_id).delete(db)
+            except ValueError:
+                print('ERROR - - Invalid card id in collection. Failed to delete.')
         else:
-            m.Collection(data=(item, form.get('quantity'))).save(db)
+            try:
+                card = m.Card.get_by_id(db, item)
+                m.Collection(data=(item, card.oracle_id, form.get('quantity'))).save(db)
+            except ValueError:
+                print('ERROR - - Invalid card id in collection. Failed to save')
 
     def decks_index(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))

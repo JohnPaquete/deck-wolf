@@ -30,7 +30,7 @@ def rarity(s):
     if s == "rare":
         return 'Rare'
     if s == "mythic":
-        return 'Mythic Rare'
+        return 'Mythic'
     return 'NO ENTRY'
 
 def currency(s, prefix):

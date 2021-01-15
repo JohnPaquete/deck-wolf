@@ -142,6 +142,7 @@ class Schema:
     def create_collection_table(self):
         query = """CREATE TABLE IF NOT EXISTS collection (
                   id TEXT PRIMARY KEY NOT NULL,
+                  oracle_id TEXT,
                   quantity INTEGER NOT NULL
                 );
                 """
@@ -490,21 +491,23 @@ class Ruling:
         return rulings
 
 class Collection:
-    def __init__(self, data=None, card_id=None):
+    def __init__(self, data=None, card_id=None, oracle_id=None):
         if data is not None:
             self.id = data[0]
-            self.quantity = data[1]
-        elif card_id is not None:
+            self.oracle_id = data[1]
+            self.quantity = data[2]
+        elif card_id is not None and oracle_id is not None:
             self.id = card_id
+            self.oracle_id = oracle_id
             self.quantity = 0
         else:
             raise ValueError('No match found in database.')
 
     @classmethod
-    def get_by_id(cls, db, card_id):
+    def get_by_id(cls, db, card_id, oracle_id):
         query = f"SELECT * FROM collection WHERE id = \'{card_id}\';"
         row = db.execute(query).fetchone()
-        return cls(data=row, card_id=card_id)
+        return cls(data=row, card_id=card_id, oracle_id=oracle_id)
     
     @classmethod
     def get_all(cls, db):
@@ -521,7 +524,7 @@ class Collection:
         elif self.quantity == '0':
             self.delete(db)
         else:
-            query = f"INSERT OR REPLACE INTO collection (id, quantity) VALUES (\'{self.id}\', {self.quantity});"
+            query = f"INSERT OR REPLACE INTO collection (id, oracle_id, quantity) VALUES (\'{self.id}\', \'{self.oracle_id}\', {self.quantity});"
             db.execute(query)
             
     def delete(self, db):
@@ -543,7 +546,7 @@ class FullCard:
         c = Card.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        q = Collection.get_by_id(db, c.id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r, collection=q)
     
     @classmethod
@@ -551,7 +554,7 @@ class FullCard:
         c = OracleCard.get_by_id(db, card_id)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        q = Collection.get_by_id(db, c.id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r, collection=q)
 
     @classmethod
@@ -559,7 +562,7 @@ class FullCard:
         c = OracleCard.get_by_name(db, name)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        q = Collection.get_by_id(db, c.id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r, collection=q)
     
     @classmethod
@@ -567,7 +570,7 @@ class FullCard:
         c = Card.get_random(db)
         s = Set.get_by_code(db, c.set_code)
         r = Ruling.get_list_by_id(db, c.oracle_id)
-        q = Collection.get_by_id(db, c.id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
         return cls(card=c, card_set=s, rulings=r, collection=q)
 
 class SetList:
