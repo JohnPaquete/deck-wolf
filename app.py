@@ -125,6 +125,11 @@ def asset(filepath):
 def card_autocomplete(db):
     return DeckMakerService().card_autocomplete(db, request.json)
 
+# 404 page
+@app.error(404)
+def error404(error):
+    return template('card_404')
+
 if __name__ == "__main__":
     Schema()
     run(app, host='localhost', port=8080, debug=True, reloader=False)
