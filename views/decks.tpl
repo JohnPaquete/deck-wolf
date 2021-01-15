@@ -80,13 +80,13 @@ end
                 <div class="col-md-10">
                     <ul class="nav nav-pills border-bottom justify-content-end py-2 mb-1" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-paper" role="tab" aria-controls="pills-paper" aria-selected="true">Paper</a>
+                            <a class="nav-link active" id="pills-paper-tab" data-toggle="pill" href="#pills-paper" role="tab" aria-controls="pills-paper" aria-selected="true">Paper</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-mtgo" role="tab" aria-controls="pills-mtgo" aria-selected="false">MTGO</a>
+                            <a class="nav-link" id="pills-mtgo-tab" data-toggle="pill" href="#pills-mtgo" role="tab" aria-controls="pills-mtgo" aria-selected="false">MTGO</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-rarity" role="tab" aria-controls="pills-rarity" aria-selected="false">Rarity</a>
+                            <a class="nav-link" id="pills-rarity-tab" data-toggle="pill" href="#pills-rarity" role="tab" aria-controls="pills-rarity" aria-selected="false">Rarity</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
