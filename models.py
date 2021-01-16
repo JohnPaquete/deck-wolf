@@ -699,21 +699,21 @@ class FullDeck:
             if self.deck.commander != '':
                 self.card_count += 1
                 self.card_total += 1
-            self.commander = FullCard.get_by_name(db, self.deck.commander)
+            self.commander = DeckCard.get_by_name(db, self.deck.commander)
         except ValueError:
             self.commander = None
         try:
             if self.deck.partner != '':
                 self.card_count += 1
                 self.card_total += 1
-            self.partner = FullCard.get_by_name(db, self.deck.partner)
+            self.partner = DeckCard.get_by_name(db, self.deck.partner)
         except ValueError:
             self.partner = None
         try:
             if self.deck.companion != '':
                 self.card_count += 1
                 self.card_total += 1
-            self.companion = FullCard.get_by_name(db, self.deck.companion)
+            self.companion = DeckCard.get_by_name(db, self.deck.companion)
         except ValueError:
             self.companion = None
         self.maindeck_cards = self.get_card_dict(db, self.deck.maindeck)
@@ -733,7 +733,7 @@ class FullDeck:
                 quantity = 1
                 name = line.strip()
             try:
-                card = FullCard.get_by_name(db, name)
+                card = DeckCard.get_by_name(db, name)
             except ValueError:
                 card = None
             if name not in cards:
@@ -829,6 +829,36 @@ class PreviewDeck:
         for r in rows:
             decks.append(cls(deck=Deck(data=r)))
         return decks
+
+class DeckCard:
+    def __init__(self, card=None, collection=None):
+        self.card = card
+        self.collection = collection
+
+    @classmethod
+    def get_by_id(cls, db, card_id):
+        c = Card.get_by_id(db, card_id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        return cls(card=c, collection=q)
+    
+    @classmethod
+    def get_by_oracle_id(cls, db, card_id):
+        c = OracleCard.get_by_id(db, card_id)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        return cls(card=c, collection=q)
+
+    @classmethod
+    def get_by_name(cls, db, name):
+        c = OracleCard.get_by_name(db, name)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        return cls(card=c, collection=q)
+    
+    @classmethod
+    def get_random_card(cls, db):
+        c = Card.get_random(db)
+        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        return cls(card=c, collection=q)
+
 
 class DeckSearch:
     def __init__(self, preview_decks=None, decks_per_page=60, page=1):
