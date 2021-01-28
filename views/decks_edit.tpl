@@ -1,17 +1,18 @@
 % rebase('base.tpl')
 % import viewtilities as util
 <div class="container">
+    <h1 class="mt-2">Deck Editor</h1>
     <form novalidate method="POST">
         <input type="hidden" name="method" value="{{method}}"> 
-        <div class="form-row my-2 justify-content-around">
+        <div class="form-row my-2 justify-content-between">
             <div class="col-md-6">
-                <label for="name">Name</label>
+                <label class="mt-2" for="name">Name</label>
                 <input type="text" class="form-control mb-2" name="name" id="name" placeholder="Name" value="{{model.name}}" required>
                 <div class="invalid-feedback">
                     Please choose a deck name.
                 </div>
 
-                <label for="format">Format</label>
+                <label class="mt-2" for="format">Format</label>
                 <select class="custom-select mb-2" name="format" id="format">
                     <option {{util.selected(model.format, 'standard')}} value="standard">Standard</option>
                     <option {{util.selected(model.format, 'brawl')}} value="brawl">Brawl</option>
@@ -24,16 +25,16 @@
                     <option {{util.selected(model.format, 'commander')}} value="commander">Commander</option>
                 </select>
 
-                <label for="companion">Companion</label>
+                <label class="mt-2" for="companion">Companion</label>
                 <input type="text" class="form-control card-autocomplete mb-2" name="companion" id="companion" placeholder="" value="{{model.companion}}">
                 <div class="commander-row collapse {{util.show(model.format, 'commander')}}">
-                    <label for="commander">Commander</label>
+                    <label class="mt-2" for="commander">Commander</label>
                     <input type="text" class="form-control card-autocomplete mb-2" name="commander" id="commander" placeholder="" value="{{model.commander}}">
 
-                    <label for="partner">Partner</label>
+                    <label class="mt-2" for="partner">Partner</label>
                     <input type="text" class="form-control card-autocomplete mb-2" name="partner" id="partner" placeholder="" value="{{model.partner}}">
                 </div>
-                <button class="btn btn-primary" type="submit">Save</button>
+                <div class="clearfix"><button class="btn btn-primary float-right mt-2" type="submit">Save</button></div>
             </div>
             <div class="col-md-5">
                 <ul class="nav nav-tabs">

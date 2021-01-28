@@ -29,11 +29,11 @@ end
         <div class="col-md d-flex">
             <i class="fa fa-fw fa-3x fa-box mr-2"></i>
             <div>
-                <p class="h4 mb-0">{{len(model.preview_decks)}} Decks in Your Library</p>
+                <p class="h4 mb-0">{{len(model.preview_decks)}} Decks in Your Library <a class="ml-1 text-primary" href="/decks/create"><i class="far fa-plus-square"></i></a></p>
                 <p class="mb-0 text-muted">Placeholder</p>
             </div>
         </div>
-        <form class="col-md-8 form-inline justify-content-end" method="GET">
+        <form class="col-md-7 form-inline justify-content-end" method="GET">
             <label class="mr-sm-2" for="order">Order By</label>
             <select class="custom-select mr-sm-2" name="order" id="order">
                 <option {{util.selected(query.order, 'name')}} value="name">Name</option>

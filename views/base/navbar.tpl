@@ -15,12 +15,8 @@
             <li class="nav-item mx-1 align-items-center d-flex justify-content-center">
                 <a class="nav-link" href="/collection/">Collection</a>
             </li>
-            <li class="nav-item dropdown mx-1 align-items-center d-flex justify-content-center">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Decks</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/decks/">My Decks</a>
-                    <a class="dropdown-item" href="/decks/create">New Deck</a>
-                </div>
+            <li class="nav-item mx-1 align-items-center d-flex justify-content-center">
+                <a class="nav-link" href="/decks/">Decks</a>
             </li>
         </ul>
         <ul class="navbar-nav flex-row justify-content-center mt-2 mt-md-0">
