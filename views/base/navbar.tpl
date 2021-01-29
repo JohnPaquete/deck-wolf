@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark border-bottom bg-dark">
     <div class="container">
-    <a class="navbar-brand" href="/">Home</a>
+    <a class="navbar-brand" href="/"><img src="/assets/img/wolf-icon.svg" alt="Wolf icon" class="d-inline-block align-top" style="width:1.75rem;height:1.75rem;filter:invert(95%)">
+        Home
+    </a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
         <span class="navbar-toggler-icon"></span>
     </button>
