@@ -7376,3 +7376,7 @@ a.text-dark:hover, a.text-dark:focus {
 .text-mythic {
   color: #ce5f20 !important;
 }
+
+.body-sizing {
+  min-height: 80vh !important;;
+}

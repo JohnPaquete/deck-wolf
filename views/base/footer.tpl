@@ -1,6 +1,15 @@
-<div class="container">
-    <div class="row">
-        
+<div class="bg-dark">
+    <div class="container">
+        <div class="row py-4">
+            <div class="col">
+                <h2><img src="/assets/img/wolf-icon.svg" alt="Wolf icon" class="mr-3" style="width:72px;height:72px;filter:invert(95%)">Deck Wolf</h2>
+            </div>
+            <div class="col d-flex align-items-center justify-content-end">
+                <a class="h4 mr-3" href="/about/">About</a>
+                <a class="h4 mr-3" href="https://scryfall.com/">Scryfall</a>
+                <a class="h4" href="https://github.com/JohnPaquete/deck-maker/">Source</a>
+            </div>
+        </div>
     </div>
 </div>
 

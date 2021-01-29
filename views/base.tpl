@@ -2,9 +2,11 @@
 <html>
 
 % include('base/header.tpl')
-<body class="">
+<body>
     % include('base/navbar.tpl')
-    {{!base}}
+    <div class="body-sizing">
+        {{!base}}
+    </div>
 % include('base/footer.tpl')
 </body>
 
