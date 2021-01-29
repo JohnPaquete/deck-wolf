@@ -1,4 +1,4 @@
-# Deck Maker
+# Deck Wolf
 
 A Local web application that aims to act as a personal database of Magic the Gathering cards, collections and decks.
 
