@@ -1,8 +1,8 @@
 # Deck Wolf
 
-A Local web application that aims to act as a personal database of Magic the Gathering cards, collections and decks.
+A Local web application that aims to act as a personal database of Magic the Gathering cards, collections and decks. It's a way for me to organize my Magic collection and maybe it can be of some use to you as well.
 
-This is a personal project with no commercial aspirations. The project is currently in progress and is incomplete. Many features are not yet implemented and the ones that are may be unstable.
+This is a personal project with no commercial aspirations. The project is currently in progress and is incomplete. Many features are not yet implemented and the ones that are may be unstable or incomplete.
 
 ## How to Use
 
