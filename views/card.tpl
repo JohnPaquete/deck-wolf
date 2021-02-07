@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-% import viewtilities as util
+% import src.viewtilities as util
 % import math
 <div class="container">
     <div class="mt-3">

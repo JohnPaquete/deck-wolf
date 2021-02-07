@@ -1,4 +1,4 @@
-% import viewtilities as util
+% import src.viewtilities as util
 <tr>
     <td>{{quantity}}x</td>
     % if model is not None:

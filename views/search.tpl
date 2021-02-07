@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-% import viewtilities as util
+% import src.viewtilities as util
 % import math
 
 % first = (model.page - 1) * model.cards_per_page

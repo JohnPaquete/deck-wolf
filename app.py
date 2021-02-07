@@ -1,7 +1,7 @@
 from bottle import Bottle, run, template, static_file, request, redirect
-from bottle_sqlite import SQLitePlugin
-from models import Schema
-from service import DeckMakerService
+from src.bottle_sqlite import SQLitePlugin
+from src.models import Schema
+from src.service import DeckMakerService
 
 app = Bottle()
 sqlite_plugin = SQLitePlugin(dbfile='data/test.db')

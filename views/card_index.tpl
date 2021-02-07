@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-% import viewtilities as util
+% import src.viewtilities as util
 <div class="container">
     <div class="mt-5">
         <h1 class="text-center mb-5">{{util.random_tutor()}} Your Cards</h1>

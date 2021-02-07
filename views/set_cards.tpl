@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-% import viewtilities as util
+% import src.viewtilities as util
 <div class="container">
     <div class="row mt-2">
         <div class="col-md d-flex">

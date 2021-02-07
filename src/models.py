@@ -342,20 +342,20 @@ class Card:
 
     @classmethod
     def get_random(cls, db):
-        query = f"SELECT * FROM cards LIMIT 1 OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM cards), 1);"
+        query = "SELECT * FROM cards LIMIT 1 OFFSET ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM cards), 1);"
         row = db.execute(query).fetchone()
         return cls(data=row)
 
     @classmethod
-    def get_by_name(cls, db, card_id):
-        query = f"SELECT * FROM cards WHERE id = \'{card_id}\';"
+    def get_by_name(cls, db, name):
+        query = f"SELECT * FROM cards WHERE name LIKE \"{name}\";"
         row = db.execute(query).fetchone()
         return cls(data=row)
 
     @classmethod
     def get_by_query(cls, db, q):
         clauses = q.decode()
-        query = f"SELECT * FROM cards WHERE "
+        query = "SELECT * FROM cards WHERE "
         count = 0
         for key, value in clauses.items():
             if key == 'q':
@@ -363,7 +363,7 @@ class Card:
                     query += ", "
                 query += f"name like \'%{value}%\'"
                 count += 1
-        query += f" GROUP BY oracle_id HAVING MAX(released);"
+        query += " GROUP BY oracle_id HAVING MAX(released);"
 
         if count <= 0:
             return []
@@ -386,7 +386,7 @@ class OracleCard(Card):
     @classmethod
     def get_by_query(cls, db, q):
         clauses = q.decode()
-        query = f"SELECT * FROM oracle_cards WHERE "
+        query = "SELECT * FROM oracle_cards WHERE "
         count = 0
         for key, value in clauses.items():
             if key == 'q':
@@ -394,7 +394,7 @@ class OracleCard(Card):
                     query += ", "
                 query += f"name like \"%{value}%\""
                 count += 1
-        query += f";"
+        query += ";"
 
         if count <= 0:
             return []

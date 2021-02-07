@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-% import viewtilities as util
+% import src.viewtilities as util
 <div class="container">
     <div class="py-3">
         <form class="form-inline" method="GET">
