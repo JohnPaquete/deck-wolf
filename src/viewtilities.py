@@ -35,7 +35,9 @@ def rarity(s):
 
 def currency(s, prefix):
     if s is not None:
-        return prefix + s
+        if prefix is not None:
+            return str(prefix) + str(s)
+        return str(s)
     return '--'
 
 def random_tutor():
