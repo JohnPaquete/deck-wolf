@@ -208,3 +208,15 @@ def sort_dict_by_cmc(k, d):
     if d[k] is None or d[k]['card'] is None:
         return -1
     return d[k]['card'].card.cmc
+
+def deck_card_text_color(c):
+    if c is not None:
+        if c.card.rarity == 'common':
+            return 'text-common'
+        if c.card.rarity == 'uncommon':
+            return 'text-uncommon'
+        if c.card.rarity == 'rare':
+            return 'text-rare'
+        if c.card.rarity == 'mythic':
+            return 'text-mythic'
+    return "text-danger"

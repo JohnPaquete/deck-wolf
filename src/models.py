@@ -508,6 +508,15 @@ class Collection:
         query = f"SELECT * FROM collection WHERE id = \'{card_id}\';"
         row = db.execute(query).fetchone()
         return cls(data=row, card_id=card_id, oracle_id=oracle_id)
+
+    @classmethod
+    def get_list_by_oracle(cls, db, oracle_id):
+        query = f"SELECT * FROM collection WHERE oracle_id = \'{oracle_id}\';"
+        rows = db.execute(query).fetchall()
+        collection = []
+        for c in rows:
+            collection.append(cls(data=c))
+        return collection
     
     @classmethod
     def get_all(cls, db):
@@ -687,6 +696,7 @@ class FullDeck:
             raise ValueError('No deck data.')
         self.maindeck_cards = {}
         self.sideboard_cards = {}
+        self.missing_cards = {}
         self.commander = None
         self.partner = None
         self.companion = None
@@ -745,6 +755,38 @@ class FullDeck:
             cards[name]['quantity'] += quantity
             self.card_total += quantity
         return cards
+
+    def get_missing_cards(self):
+        if self.commander is not None:
+            if sum(c.quantity for c in self.commander.collection) < 1:
+                self.add_card_by_type(self.missing_cards, self.commander.card.name, self.commander, 'Commander', 1)
+        if self.partner is not None:
+            if sum(c.quantity for c in self.partner.collection) < 1:
+                self.add_card_by_type(self.missing_cards, self.partner.card.name, self.partner, 'Partner', 1)
+        if self.companion is not None:
+            if sum(c.quantity for c in self.companion.collection) < 1:
+                self.add_card_by_type(self.missing_cards, self.companion.card.name, self.companion, 'Companion', 1)
+        
+        for name in self.maindeck_cards:
+            if self.maindeck_cards[name]['card'] is not None:
+                collection_total = sum(c.quantity for c in self.maindeck_cards[name]['card'].collection)
+                if collection_total < self.maindeck_cards[name]['quantity']:
+                    self.add_card_by_type(self.missing_cards, self.maindeck_cards[name]['card'].card.name, self.maindeck_cards[name]['card'], self.card_type(self.maindeck_cards[name]['card']), self.maindeck_cards[name]['quantity'] - collection_total)
+        
+        for name in self.sideboard_cards:
+            if self.sideboard_cards[name]['card'] is not None:
+                collection_total = sum(c.quantity for c in self.sideboard_cards[name]['card'].collection)
+                if collection_total < self.sideboard_cards[name]['quantity']:
+                    self.add_card_by_type(self.missing_cards, self.sideboard_cards[name]['card'].card.name, self.sideboard_cards[name]['card'], self.card_type(self.sideboard_cards[name]['card']), self.sideboard_cards[name]['quantity'] - collection_total)
+
+    def add_card_by_type(self, dictionary, name, card, card_type, quantity):
+        if card_type not in dictionary:
+            dictionary[card_type] = {}
+        if name not in dictionary[card_type]:
+            dictionary[card_type][name] = {}
+            dictionary[card_type][name]['quantity'] = 0
+        dictionary[card_type][name]['card'] = card
+        dictionary[card_type][name]['quantity'] += quantity
     
     def card_type(self, card):
         if card is None or card.card.type_line is None:
@@ -803,6 +845,7 @@ class FullDeck:
         row = db.execute(query).fetchone()
         fd = cls(deck=Deck(data=row))
         fd.get_cards(db)
+        fd.get_missing_cards()
         fd.validate()
         return fd
     
@@ -810,6 +853,7 @@ class FullDeck:
     def get_by_deck(cls, db, deck):
         fd = cls(deck=deck)
         fd.get_cards(db)
+        fd.get_missing_cards()
         fd.validate()
         return fd
 
@@ -838,25 +882,25 @@ class DeckCard:
     @classmethod
     def get_by_id(cls, db, card_id):
         c = Card.get_by_id(db, card_id)
-        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        q = Collection.get_list_by_oracle(db, c.oracle_id)
         return cls(card=c, collection=q)
     
     @classmethod
     def get_by_oracle_id(cls, db, card_id):
         c = OracleCard.get_by_id(db, card_id)
-        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        q = Collection.get_list_by_oracle(db, c.oracle_id)
         return cls(card=c, collection=q)
 
     @classmethod
     def get_by_name(cls, db, name):
         c = OracleCard.get_by_name(db, name)
-        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        q = Collection.get_list_by_oracle(db, c.oracle_id)
         return cls(card=c, collection=q)
     
     @classmethod
     def get_random_card(cls, db):
         c = Card.get_random(db)
-        q = Collection.get_by_id(db, c.id, c.oracle_id)
+        q = Collection.get_list_by_oracle(db, c.oracle_id)
         return cls(card=c, collection=q)
 
 

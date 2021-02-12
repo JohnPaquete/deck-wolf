@@ -23,6 +23,12 @@ The program will attempt to retrieve the lastest card information from Scryfall 
 pip install requets
 ```
 
+## Testing
+
+```
+python3 -m unittest -v run_tests.py
+```
+
 ## References
 
 - All card data is gathered from the Scryfall api. Scryfall can be found at [scryfall.com](https://scryfall.com/)
