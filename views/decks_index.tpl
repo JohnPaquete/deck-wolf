@@ -73,7 +73,7 @@ end
                 <td class="align-middle text-capitalize">{{fd.deck.format}}</td>
                 <td class="align-middle">{{util.is_valid(fd.deck.valid)}}</td>
                 <td class="align-middle text-center"><a href="/decks/edit/{{fd.deck.id}}"><i class="fa fa-lg fa-edit"></i></a></td>
-                <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{fd.deck.name}}" href="/decks/{{fd.deck.id}}"><i class="fa fa-lg fa-trash"></i></a></td>
+                <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{fd.deck.name}}" href="/decks/{{fd.deck.id}}"><i class="fa-lg far fa-trash-alt"></i></a></td>
             </tr>
             % end
         </tbody>

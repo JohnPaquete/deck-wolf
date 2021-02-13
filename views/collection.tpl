@@ -33,7 +33,7 @@ end
         <div class="col-md d-flex">
             <i class="fa fa-fw fa-3x fa-archive mr-2"></i>
             <div>
-                <p class="h4 mb-0">{{len(model.cards)}} Cards in Your Collection</p>
+                <p class="h4 mb-0">My Collection ({{len(model.cards)}}) <a class="ml-1 text-primary" href="/collection/wishlist"><i class="far fa-list-alt"></i></a></p>
                 <p class="mb-0 text-muted">Total Value of ${{util.total_price_usd(model.cards)}} USD</p>
             </div>
         </div>
@@ -42,7 +42,7 @@ end
             <select class="custom-select mr-sm-2" name="order" id="order">
                 <option {{util.selected(query.order, 'name')}} value="name">Name</option>
                 <option {{util.selected(query.order, 'set')}} value="set">Set</option>
-                <option {{util.selected(query.order, 'release')}} value="release">Release Date</option>
+                <option {{util.selected(query.order, 'release')}} value="release">Released</option>
                 <option {{util.selected(query.order, 'rarity')}} value="rarity">Rarity</option>
                 <option {{util.selected(query.order, 'quantity')}} value="quantity">Quantity</option>
             </select>
@@ -62,7 +62,7 @@ end
                 <th>Name</th>
                 <th>Set</th>
                 <th>Rarity</th>
-                <th>Release Date</th>
+                <th>Released</th>
                 <th>Quantity</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -79,7 +79,7 @@ end
                 <td class="align-middle">{{fc.card.released}}</td>
                 <td class="align-middle">{{fc.collection.quantity}}</td>
                 <td class="align-middle text-center"><a href="/cards/{{fc.card.id}}"><i class="fa fa-lg fa-edit"></i></a></td>
-                <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{fc.card.name}}" data-quantity="{{fc.collection.quantity}}" href="/collection/{{fc.collection.id}}"><i class="fa fa-lg fa-trash"></i></a></td>
+                <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{fc.card.name}}" data-quantity="{{fc.collection.quantity}}" href="/collection/{{fc.collection.id}}"><i class="fa-lg far fa-trash-alt"></i></a></td>
             </tr>
             % end
         </tbody>

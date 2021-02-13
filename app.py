@@ -127,6 +127,7 @@ def card_autocomplete(db):
 
 # 404 page
 @app.error(404)
+@app.error(405)
 def error404(error):
     return template('card_404')
 
