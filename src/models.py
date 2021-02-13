@@ -703,6 +703,7 @@ class FullDeck:
         self.card_total = 0
         self.card_count = 0
         self.error = {}
+        self.preview = None
 
     def get_cards(self, db):
         try:

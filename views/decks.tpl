@@ -72,6 +72,7 @@ end
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-2 border-right pr-1 py-2">
+                    <div class="w-100 mb-2"><div class="card-preview" style="height: 6rem;  background-image: url('/assets/img/card_back.jpg');" data-placement="top" data-toggle="tooltip" title="placeholder"></div></div>
                     <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="/decks/edit/{{model.deck.id}}"><span class="far fa-edit mr-1"></span>Edit</a>
                     <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="#"><span class="far fa-copy mr-1"></span>Edit Copy</a>
                     <a class="btn btn-outline-primary text-left w-100 mr-sm-1 px-2 mb-1" href="#"><span class="fas fa-download mr-1"></span>Download</a>

@@ -7365,16 +7365,16 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .text-common {
-  color: #bbbbbb !important;
+  color: #cccccc !important;
 }
 .text-uncommon {
-  color: #617a8b !important;
+  color: #637981 !important;
 }
 .text-rare {
-  color: #ceb47c !important;
+  color: #ecdc8c !important;
 }
 .text-mythic {
-  color: #ce5f20 !important;
+  color: #f5661b !important;
 }
 
 .body-sizing {
