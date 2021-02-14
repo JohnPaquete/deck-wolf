@@ -74,7 +74,7 @@ end
                 <td class="align-middle">{{pb.binder.created.strftime("%a %b %d, %Y %I:%M:%S %p")}}</a></td>
                 <td class="align-middle">{{pb.binder.updated.strftime("%a %b %d, %Y %I:%M:%S %p")}}</td>
                 <td class="align-middle text-capitalize">{{pb.binder.general}}</td>
-                <td class="align-middle text-center"><a href="#"><i class="fa fa-lg fa-edit"></i></a></td>
+                <td class="align-middle text-center"><a data-toggle="modal" data-target="#edit-modal" data-name="{{pb.binder.name}}" data-general="{{pb.binder.general}}" href="/collection/binders/{{pb.binder.id}}"><i class="fa fa-lg fa-edit"></i></a></td>
                 <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{pb.binder.name}}" href="/collection/binders/{{pb.binder.id}}"><i class="fa-lg far fa-trash-alt"></i></a></td>
             </tr>
             % end
@@ -147,7 +147,7 @@ end
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirm-modal-label">New Binder</h5>
+                <h5 class="modal-title" id="create-modal-label">New Binder</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -163,6 +163,40 @@ end
                         <div class="col-md-3">
                             <label for="create-general" class="col-form-label">Specific:</label>
                             <select class="custom-select" name="general" id="create-general">
+                                <option selected value="0">General</option>
+                                <option value="1">Specific</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit-modal-label">Edit Binder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="modal-form" action="" method="POST">
+                <input type="hidden" name="method" value="UPDATE"> 
+                <div class="modal-body">
+                    <div class="form-group form-row">
+                        <div class="col-md-9">
+                            <label for="edit-name" class="col-form-label">Name:</label>
+                            <input type="text" class="form-control" name="name" id="edit-name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="edit-general" class="col-form-label">Specific:</label>
+                            <select class="custom-select" name="general" id="edit-general">
                                 <option selected value="0">General</option>
                                 <option value="1">Specific</option>
                             </select>

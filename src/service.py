@@ -73,7 +73,8 @@ class DeckMakerService:
                 print('ERROR - - Invalid binder name already exits. Failed to create')
         elif form.get('method') == 'UPDATE':
             try:
-                pass
+                data = (item, form.get('name'), None, None, int(form.get('general')))
+                m.Binder(data=data).save(db)
             except ValueError:
                 print('ERROR - - Invalid binder name already exits. Failed to update')
         elif form.get('method') == 'DELETE':

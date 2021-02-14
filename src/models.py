@@ -987,7 +987,7 @@ class Binder:
                 query = f"INSERT OR IGNORE INTO binders (id, name, created, updated, general) " \
                         f"VALUES ({self.id}, {val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {self.general});"
                 db.execute(query)
-                query = f"UPDATE binders name = {val(self.name)}, updated = {val(str(datetime.now()))}, general = {self.general} WHERE id = {self.id};"
+                query = f"UPDATE binders SET name = {val(self.name)}, updated = {val(str(datetime.now()))}, general = {self.general} WHERE id = {self.id};"
             db.execute(query)
         except sqlite3.Error:
             raise ValueError('Binder name already in use.')
