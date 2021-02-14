@@ -24,7 +24,8 @@
             <div class="collapse" id="collection_form">
                 <form class="mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <div class="input-group">
-                        <input type="hidden" name="method" value="POST"> 
+                        <input type="hidden" name="method" value="POST">
+                        <input type="hidden" name="route" value="COLLECTION">
                         <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" aria-describedby="quantity" value="{{model.collection.quantity}}" min="0">
                         <button class="btn btn-outline-primary" type="submit">Apply</button>
                     </div>
@@ -34,7 +35,8 @@
             <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#binder_form" aria-expanded="false" aria-controls="binder_form"><i class="fas fa-book-open mr-2"></i>Add to Binder</button>
             <div class="collapse" id="binder_form">
                 <form class="mt-2" action="" method="POST">
-                    <input type="hidden" name="method" value="POST"> 
+                    <input type="hidden" name="method" value="POST">
+                    <input type="hidden" name="route" value="BINDER">
                     <div class="input-group mb-2">
                         <select class="custom-select" name="id" id="binder-id" required>
                             <option value="" selected disabled hidden>Select Binder</option>

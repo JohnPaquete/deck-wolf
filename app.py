@@ -32,7 +32,7 @@ def card(item, db):
 # Posting of the collection form on card pages
 @app.route('/cards/:item', method='POST')
 def card_post(item, db):
-    DeckMakerService().collection_post(db, item, request.forms)
+    DeckMakerService().card_post(db, item, request.forms)
     redirect(f"/cards/{item}")
 
 # Card page by oracle id

@@ -561,7 +561,9 @@ class Collection:
         elif self.quantity == '0':
             self.delete(db)
         else:
-            query = f"INSERT OR REPLACE INTO collection (id, oracle_id, quantity) VALUES (\'{self.id}\', \'{self.oracle_id}\', {self.quantity});"
+            query = f"INSERT OR IGNORE INTO collection (id, oracle_id, quantity) VALUES (\'{self.id}\', \'{self.oracle_id}\', {self.quantity});"
+            db.execute(query)
+            query = f"UPDATE collection SET oracle_id = \'{self.oracle_id}\', quantity = {self.quantity} WHERE id = \'{self.id}\';"
             db.execute(query)
             
     def delete(self, db):

@@ -22,6 +22,12 @@ class DeckMakerService:
             return template('card', model=m.FullCard.get_by_id(db, item), binders=m.Binder.get_all(db))
         except ValueError:
             return template('card_404')
+    
+    def card_post(self, db, item, form):
+        if form.get("route") == "COLLECTION":
+            self.collection_post(db, item, form)
+        elif form.get("route") == "BINDER":
+            self.binders_card_post(db, item, form)
 
     def oracle_card(self, db, item):
         try:
@@ -85,6 +91,18 @@ class DeckMakerService:
                 print('ERROR - - Invalid binder id. Failed to delete')
         else:
             print('ERROR - - Unknown binder operation.')
+    
+    def binders_card_post(self, db, item, form):
+        if form.get('method') == 'DELETE':
+            try:
+                pass
+            except ValueError:
+                print('ERROR - - Invalid card id in collection. Failed to delete.')
+        else:
+            try:
+                pass
+            except ValueError:
+                print('ERROR - - Invalid card id in collection. Failed to save')
 
     def decks_index(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))
