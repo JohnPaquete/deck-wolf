@@ -38,7 +38,7 @@
                     <input type="hidden" name="method" value="POST">
                     <input type="hidden" name="route" value="BINDER">
                     <div class="input-group mb-2">
-                        <select class="custom-select" name="id" id="binder-id" required>
+                        <select class="custom-select" name="binder_id" id="binder-id" required>
                             <option value="" selected disabled hidden>Select Binder</option>
                             % for b in binders:
                             <option value="{{b.id}}">{{b.name}}</option>
@@ -46,7 +46,7 @@
                         </select>
                     </div>
                     <div class="input-group">
-                        <input type="number" class="form-control rounded-right mr-1" name="quantity" id="binder-quantity" aria-describedby="binder-quantity" value="{{model.collection.quantity}}" min="0">
+                        <input type="number" class="form-control rounded-right mr-1" name="quantity" id="binder-quantity" aria-describedby="binder-quantity" value="1" min="1">
                         <button class="btn btn-outline-primary" type="submit">Apply</button>
                     </div>
                 </form>

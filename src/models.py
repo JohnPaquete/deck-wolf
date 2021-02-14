@@ -180,7 +180,7 @@ class Schema:
     
     def create_binder_cards_table(self):
         query = """CREATE TABLE IF NOT EXISTS binder_cards (
-                  id TEXT PRIMARY KEY,
+                  id TEXT,
                   oracle_id TEXT,
                   quantity INTEGER NOT NULL,
                   cover INTEGER DEFAULT 0,
@@ -188,7 +188,8 @@ class Schema:
                   FOREIGN KEY (binder_id)
                     REFERENCES binders (id)
                       ON UPDATE CASCADE
-                      ON DELETE CASCADE
+                      ON DELETE CASCADE,
+                  PRIMARY KEY (id, binder_id)
                 );
                 """
         self.cursor.execute(query)
@@ -999,6 +1000,54 @@ class Binder:
             raise ValueError('Invalid Binder value.')
         else:
             query = f"DELETE FROM binders WHERE id = \'{self.id}\';"
+            db.execute(query)
+
+class BinderCard:
+    def __init__(self, data=None):
+        if data is not None:
+            self.id = data[0]
+            self.oracle_id = data[1]
+            self.quantity = data[2]
+            self.cover = data[3]
+            self.binder_id = data[4]
+        else:
+            raise ValueError('No match found in database.')
+    
+    @classmethod
+    def get_by_id(cls, db, id, binder_id):
+        query = f"SELECT * FROM binder_cards WHERE id = \'{id}\' AND binder_id = {binder_id};"
+        row = db.execute(query).fetchone()
+        return cls(row)
+    
+    @classmethod
+    def get_all(cls, db, binder_id):
+        query = f"SELECT * FROM binder_cards WHERE binder_id = {binder_id};"
+        rows = db.execute(query).fetchall()
+        bc = []
+        for r in rows:
+            bc.append(cls(data=r))
+        return bc
+
+    def save(self, db):
+        if self.id is None or self.binder_id is None:
+            raise ValueError('Invalid BinderCard value.')
+        elif self.quantity == '0':
+            self.delete(db)
+        else:
+            query = f"INSERT OR IGNORE INTO binder_cards (id, oracle_id, quantity, cover, binder_id) VALUES (\'{self.id}\', \'{self.oracle_id}\', {self.quantity}, {self.cover}, {self.binder_id});"
+            db.execute(query)
+            query = f"UPDATE binder_cards SET oracle_id = \'{self.oracle_id}\', quantity = {self.quantity}, cover = {self.cover} WHERE id = \'{self.id}\' AND binder_id = {self.binder_id};"
+            db.execute(query)
+            query = f"UPDATE binders SET updated = {val(str(datetime.now()))} WHERE id = {self.binder_id};"
+            db.execute(query)
+
+    def delete(self, db):
+        if self.id is None or self.binder_id is None:
+            raise ValueError('Invalid BinderCard value.')
+        else:
+            query = f"DELETE FROM binder_cards WHERE id = \'{self.id}\' AND binder_id = {self.binder_id};"
+            db.execute(query)
+            query = f"UPDATE binders SET updated = {val(str(datetime.now()))} WHERE id = {self.binder_id};"
             db.execute(query)
 
 class PreviewBinder:

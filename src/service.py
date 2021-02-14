@@ -97,12 +97,22 @@ class DeckMakerService:
             try:
                 pass
             except ValueError:
-                print('ERROR - - Invalid card id in collection. Failed to delete.')
+                print('ERROR - - Invalid binder card id. Failed to delete.')
         else:
             try:
-                pass
+                card = m.Card.get_by_id(db, item)
+                if form.get('cover') != None:
+                    cover = int(form.get('cover'))
+                else:
+                    try:
+                        b = m.BinderCard.get_by_id(db, item, int(form.get('binder_id')))
+                        cover = b.cover
+                    except ValueError:
+                        cover = 0
+                data = (item, card.oracle_id, int(form.get('quantity')), cover, int(form.get('binder_id')))
+                m.BinderCard(data=data).save(db)
             except ValueError:
-                print('ERROR - - Invalid card id in collection. Failed to save')
+                print('ERROR - - Invalid binder card id. Failed to save')
 
     def decks_index(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))
