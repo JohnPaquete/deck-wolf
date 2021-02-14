@@ -946,7 +946,7 @@ class DeckSearch:
         return cls(preview_decks=d, decks_per_page=r, page=p)
 
 class Binder:
-    def __init__(self, data=None, name=None, general=0):
+    def __init__(self, data=None):
         if data is not None:
             self.id = data[0]
             self.name = data[1]
@@ -959,12 +959,6 @@ class Binder:
             except Exception:
                 self.updated = datetime.now()
             self.general = data[4]
-        elif name is not None:
-            self.id = None
-            self.name = name
-            self.created = None
-            self.updated = None
-            self.general = general
         else:
             raise ValueError('No match found in database.')
     

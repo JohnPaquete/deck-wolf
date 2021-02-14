@@ -29,7 +29,7 @@ end
         <div class="col-md d-flex">
             <i class="fa-fw fa-3x fas fa-book-open mr-2"></i>
             <div>
-                <p class="h4 mb-0">{{len(model.preview_binders)}} Binders in Your Library <a class="ml-1 text-primary" href="/decks/create"><i class="far fa-plus-square"></i></a></p>
+                <p class="h4 mb-0">{{len(model.preview_binders)}} Binders in Your Library <a class="ml-1 text-primary"data-toggle="modal" data-target="#create-modal"><i class="far fa-plus-square"></i></a></p>
                 <p class="mb-0 text-muted">Placeholder</p>
             </div>
         </div>
@@ -124,23 +124,58 @@ end
 <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="confirm-modal-label">Are you sure?</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-modal-label">Are you sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <strong class="modal-info"></strong> will be deleted.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form class="modal-form" method="POST">
+                    <input type="hidden" name="method" value="DELETE"> 
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-            <strong class="modal-info"></strong> will be deleted.
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</div>
+<div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-modal-label">New Binder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <form class="modal-form" action="" method="POST">
-                <input type="hidden" name="method" value="DELETE"> 
-                <button type="submit" class="btn btn-danger">Confirm</button>
+                <input type="hidden" name="method" value="CREATE"> 
+                <div class="modal-body">
+                    <div class="form-group form-row">
+                        <div class="col-md-9">
+                            <label for="create-name" class="col-form-label">Name:</label>
+                            <input type="text" class="form-control" name="name" id="create-name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="create-general" class="col-form-label">Specific:</label>
+                            <select class="custom-select" name="general" id="create-general">
+                                <option selected value="0">General</option>
+                                <option value="1">Specific</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
             </form>
-        </div>
         </div>
     </div>
 </div>
 <script src="/assets/js/confirm_modal.js" type="text/javascript" defer></script>
+<script src="/assets/js/edit_modal.js" type="text/javascript" defer></script>
