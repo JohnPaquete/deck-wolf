@@ -13,19 +13,19 @@ class DeckMakerService:
 
     def card_random(self, db):
         try:
-            return template('card', model=m.FullCard.get_random_card(db))
+            return template('card', model=m.FullCard.get_random_card(db), binders=m.Binder.get_all(db))
         except ValueError:
             return template('card_404')
 
     def card(self, db, item):
         try:
-            return template('card', model=m.FullCard.get_by_id(db, item))
+            return template('card', model=m.FullCard.get_by_id(db, item), binders=m.Binder.get_all(db))
         except ValueError:
             return template('card_404')
 
     def oracle_card(self, db, item):
         try:
-            return template('card', model=m.FullCard.get_by_oracle_id(db, item))
+            return template('card', model=m.FullCard.get_by_oracle_id(db, item), binders=m.Binder.get_all(db))
         except ValueError:
             return template('card_404')
 

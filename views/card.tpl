@@ -20,9 +20,9 @@
             % if (model.card.artist is not None):
             <p class="mt-1 font-italic">Illustrated by {{model.card.artist}}</p>
             % end
-            <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#collection_form" aria-expanded="false" aria-controls="collection_form">Add to Collection</button>
+            <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#collection_form" aria-expanded="false" aria-controls="collection_form"><i class="fas fa-archive mr-2"></i>Add to Collection</button>
             <div class="collapse" id="collection_form">
-                <form class=" mt-2" action="/cards/{{model.card.id}}" method="POST">
+                <form class="mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <div class="input-group">
                         <input type="hidden" name="method" value="POST"> 
                         <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" aria-describedby="quantity" value="{{model.collection.quantity}}" min="0">
@@ -30,6 +30,26 @@
                     </div>
                 </form>
             </div>
+            % if len(binders) > 0:
+            <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#binder_form" aria-expanded="false" aria-controls="binder_form"><i class="fas fa-book-open mr-2"></i>Add to Binder</button>
+            <div class="collapse" id="binder_form">
+                <form class="mt-2" action="" method="POST">
+                    <input type="hidden" name="method" value="POST"> 
+                    <div class="input-group mb-2">
+                        <select class="custom-select" name="id" id="binder-id" required>
+                            <option value="" selected disabled hidden>Select Binder</option>
+                            % for b in binders:
+                            <option value="{{b.id}}">{{b.name}}</option>
+                            % end
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" class="form-control rounded-right mr-1" name="quantity" id="binder-quantity" aria-describedby="binder-quantity" value="{{model.collection.quantity}}" min="0">
+                        <button class="btn btn-outline-primary" type="submit">Apply</button>
+                    </div>
+                </form>
+            </div>
+            % end
         </div>
         <div class="col-lg-4 mb-2">
             % if (model.card.faces is not None and len(model.card.faces) > 0):
