@@ -60,6 +60,29 @@ class DeckMakerService:
                 m.Collection(data=(item, card.oracle_id, form.get('quantity'))).save(db)
             except ValueError:
                 print('ERROR - - Invalid card id in collection. Failed to save')
+    
+    def binders_index(self, db, query):
+        return template('binders_index', query=query, model=m.BinderSearch.get_all(db, query))
+    
+    def binders_post(self, db, form, item=None):
+        if form.get('method') == 'CREATE':
+            try:
+                pass
+            except ValueError:
+                print('ERROR - - Invalid binder name already exits. Failed to create')
+        elif form.get('method') == 'UPDATE':
+            try:
+                pass
+            except ValueError:
+                print('ERROR - - Invalid binder name already exits. Failed to update')
+        elif form.get('method') == 'DELETE':
+            try:
+                data= (item, None, None, None, None)
+                m.Binder(data=data).delete(db)
+            except ValueError:
+                print('ERROR - - Invalid binder id. Failed to delete')
+        else:
+            print('ERROR - - Unknown binder operation.')
 
     def decks_index(self, db, query):
         return template('decks_index', query=query, model=m.DeckSearch.get_all(db, query))

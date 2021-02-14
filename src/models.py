@@ -24,6 +24,8 @@ class Schema:
         self.create_rulings_table()
         self.create_collection_table()
         self.create_decks_table()
+        self.create_binders_table()
+        self.create_binder_cards_table()
 
     def create_record_table(self):
         query = """CREATE TABLE IF NOT EXISTS records (
@@ -161,6 +163,32 @@ class Schema:
                   partner TEXT,
                   companion TEXT,
                   valid INTEGER NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+
+    def create_binders_table(self):
+        query = """CREATE TABLE IF NOT EXISTS binders (
+                  id INTEGER PRIMARY KEY,
+                  name TEXT NOT NULL UNIQUE,
+                  created TEXT,
+                  updated TEXT,
+                  general INTEGER NOT NULL
+                );
+                """
+        self.cursor.execute(query)
+    
+    def create_binder_cards_table(self):
+        query = """CREATE TABLE IF NOT EXISTS binder_cards (
+                  id TEXT PRIMARY KEY,
+                  oracle_id TEXT,
+                  quantity INTEGER NOT NULL,
+                  cover INTEGER DEFAULT 0,
+                  binder_id INTEGER NOT NULL,
+                  FOREIGN KEY (binder_id)
+                    REFERENCES binders (id)
+                      ON UPDATE CASCADE
+                      ON DELETE CASCADE
                 );
                 """
         self.cursor.execute(query)
@@ -904,7 +932,6 @@ class DeckCard:
         q = Collection.get_list_by_oracle(db, c.oracle_id)
         return cls(card=c, collection=q)
 
-
 class DeckSearch:
     def __init__(self, preview_decks=None, decks_per_page=60, page=1):
         self.preview_decks = preview_decks
@@ -917,6 +944,100 @@ class DeckSearch:
         r = int(q.get('results') or 60)
         p = int(q.get('page') or 1)
         return cls(preview_decks=d, decks_per_page=r, page=p)
+
+class Binder:
+    def __init__(self, data=None, name=None, general=0):
+        if data is not None:
+            self.id = data[0]
+            self.name = data[1]
+            try:
+                self.created = datetime.strptime(data[2], "%Y-%m-%d %H:%M:%S.%f")
+            except Exception:
+                self.created = datetime.now()
+            try:
+                self.updated = datetime.strptime(data[3], "%Y-%m-%d %H:%M:%S.%f")
+            except Exception:
+                self.updated = datetime.now()
+            self.general = data[4]
+        elif name is not None:
+            self.id = None
+            self.name = name
+            self.created = None
+            self.updated = None
+            self.general = general
+        else:
+            raise ValueError('No match found in database.')
+    
+    @classmethod
+    def get_by_id(cls, db, id):
+        query = f"SELECT * FROM binders WHERE id = {id};"
+        row = db.execute(query).fetchone()
+        return cls(row)
+    
+    @classmethod
+    def get_all(cls, db):
+        query = f"SELECT * FROM binders;"
+        rows = db.execute(query).fetchall()
+        binders = []
+        for r in rows:
+            binders.append(cls(data=r))
+        return binders
+
+    def save(self, db):
+        if self.name is None:
+            raise ValueError('Invalid Binder value.')
+        try:
+            if self.id is None:
+                query = f"INSERT INTO binders (name, created, updated, general) VALUES ({val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {self.general});"
+            else:
+                query = f"INSERT OR IGNORE INTO binders (id, name, created, updated, general) " \
+                        f"VALUES ({self.id}, {val(self.name)}, {val(str(datetime.now()))}, {val(str(datetime.now()))}, {self.general});"
+                db.execute(query)
+                query = f"UPDATE binders name = {val(self.name)}, updated = {val(str(datetime.now()))}, general = {self.general} WHERE id = {self.id};"
+            db.execute(query)
+        except sqlite3.Error:
+            raise ValueError('Binder name already in use.')
+
+    def delete(self, db):
+        if self.id is None:
+            raise ValueError('Invalid Binder value.')
+        else:
+            query = f"DELETE FROM binders WHERE id = \'{self.id}\';"
+            db.execute(query)
+
+class PreviewBinder:
+    def __init__(self, binder=None, cover=None):
+        if binder is not None:
+            self.binder = binder
+        else:
+            raise ValueError('No binder data.')
+        self.cover = cover
+    
+    @classmethod
+    def get_all(cls, db):
+        binders = Binder.get_all(db)
+        previews = []
+        for b in binders:
+            query = f"SELECT * FROM binder_cards WHERE binder_id = {b.id} AND cover = 1"
+            row = db.execute(query).fetchone()
+            c = None
+            if row is not None:
+                c = Card.get_by_id(db, row[0])
+            previews.append(cls(binder=b, cover=c))
+        return previews
+
+class BinderSearch:
+    def __init__(self, preview_binders=None, binders_per_page=60, page=1):
+        self.preview_binders = preview_binders
+        self.binders_per_page = binders_per_page
+        self.page = page
+
+    @classmethod
+    def get_all(cls, db, q):
+        b = PreviewBinder.get_all(db)
+        r = int(q.get('results') or 60)
+        p = int(q.get('page') or 1)
+        return cls(preview_binders=b, binders_per_page=r, page=p)
 
 def store_faces(data):
     if data is None:

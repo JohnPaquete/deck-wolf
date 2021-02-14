@@ -175,6 +175,15 @@ def full_card_image(full_card, key):
                 return face.get('image_uris').get(key)
     return '/assets/img/card_back.jpg'
 
+def card_image(card, key):
+    if card.image_uris.get(key) is not None:
+        return card.image_uris.get(key)
+    elif card.faces is not None and len(card.faces) > 0:
+        for face in card.faces:
+            if face.get('image_uris') is not None and face.get('image_uris').get(key) is not None:
+                return face.get('image_uris').get(key)
+    return '/assets/img/card_back.jpg'
+
 def is_valid(b):
     if b == 1:
         return 'Valid'

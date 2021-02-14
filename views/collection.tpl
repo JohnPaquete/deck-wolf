@@ -33,7 +33,7 @@ end
         <div class="col-md d-flex">
             <i class="fa fa-fw fa-3x fa-archive mr-2"></i>
             <div>
-                <p class="h4 mb-0">My Collection ({{len(model.cards)}}) <a class="ml-1 text-primary" href="/collection/wishlist"><i class="far fa-list-alt"></i></a></p>
+                <p class="h4 mb-0">My Collection ({{len(model.cards)}}) <a class="ml-1 text-primary" href="/collection/binders"><i class="fas fa-book-open"></i></a></p>
                 <p class="mb-0 text-muted">Total Value of ${{util.total_price_usd(model.cards)}} USD</p>
             </div>
         </div>
