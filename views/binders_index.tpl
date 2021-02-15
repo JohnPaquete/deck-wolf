@@ -70,7 +70,7 @@ end
                 % else:
                 <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('/assets/img/card_back.jpg');"></div></td>
                 % end
-                <td class="align-middle"><a href="/colection/binders/{{pb.binder.id}}">{{pb.binder.name}}</a></td>
+                <td class="align-middle"><a href="/collection/binders/{{pb.binder.id}}">{{pb.binder.name}}</a></td>
                 <td class="align-middle">{{pb.binder.created.strftime("%a %b %d, %Y %I:%M:%S %p")}}</a></td>
                 <td class="align-middle">{{pb.binder.updated.strftime("%a %b %d, %Y %I:%M:%S %p")}}</td>
                 <td class="align-middle text-capitalize">{{pb.binder.general}}</td>

@@ -70,6 +70,12 @@ class DeckMakerService:
     def binders_index(self, db, query):
         return template('binders_index', query=query, model=m.BinderSearch.get_all(db, query))
     
+    def binders(self, db, query, item):
+        try:
+            return template('binders', query=query, model=None)
+        except ValueError:
+            return template('card_404')
+    
     def binders_post(self, db, form, item=None):
         if form.get('method') == 'CREATE':
             try:

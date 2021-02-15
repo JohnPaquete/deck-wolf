@@ -66,7 +66,7 @@ def collection_post(item, db):
 # Binders index page
 @app.route('/collection/binders')
 @app.route('/collection/binders/')
-def binders(db):
+def binders_index(db):
     return DeckMakerService().binders_index(db, request.query)
 
 # Binder delete and edit by id
@@ -75,6 +75,12 @@ def binders(db):
 def binders_delete(db):
     DeckMakerService().binders_post(db, request.forms)
     redirect("/collection/binders/")
+
+# Binder view page by id
+@app.route('/collection/binders/:item')
+@app.route('/collection/binders/:item/')
+def binders(db, item):
+    return DeckMakerService().binders(db, request.query, item)
 
 # Binder delete and edit by id
 @app.route('/collection/binders/:item', method='POST')
