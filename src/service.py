@@ -72,7 +72,7 @@ class DeckMakerService:
     
     def binders(self, db, query, item):
         try:
-            return template('binders', query=query, model=None)
+            return template('binders', query=query, model=m.FullBinder.get_by_id(db, item))
         except ValueError:
             return template('card_404')
     
@@ -115,7 +115,7 @@ class DeckMakerService:
                         cover = b.cover
                     except ValueError:
                         cover = 0
-                data = (item, card.oracle_id, int(form.get('quantity')), cover, int(form.get('binder_id')))
+                data = (card, None, int(form.get('quantity')), cover, int(form.get('binder_id')))
                 m.BinderCard(data=data).save(db)
             except ValueError:
                 print('ERROR - - Invalid binder card id. Failed to save')

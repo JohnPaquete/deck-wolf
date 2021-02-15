@@ -1005,8 +1005,8 @@ class Binder:
 class BinderCard:
     def __init__(self, data=None):
         if data is not None:
-            self.id = data[0]
-            self.oracle_id = data[1]
+            self.card = data[0]
+            self.collection = data[1]
             self.quantity = data[2]
             self.cover = data[3]
             self.binder_id = data[4]
@@ -1017,7 +1017,10 @@ class BinderCard:
     def get_by_id(cls, db, id, binder_id):
         query = f"SELECT * FROM binder_cards WHERE id = \'{id}\' AND binder_id = {binder_id};"
         row = db.execute(query).fetchone()
-        return cls(row)
+        if row is None:
+            raise ValueError('No match found in database.')
+        c = Card.get_by_id(db, id)
+        return cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), row[2], row[3], row[4]))
     
     @classmethod
     def get_all(cls, db, binder_id):
@@ -1025,30 +1028,51 @@ class BinderCard:
         rows = db.execute(query).fetchall()
         bc = []
         for r in rows:
-            bc.append(cls(data=r))
+            c = Card.get_by_id(db, r[0])
+            bc.append(cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), r[2], r[3], r[4])))
         return bc
 
     def save(self, db):
-        if self.id is None or self.binder_id is None:
+        if self.card is None or self.binder_id is None:
             raise ValueError('Invalid BinderCard value.')
         elif self.quantity == '0':
             self.delete(db)
         else:
-            query = f"INSERT OR IGNORE INTO binder_cards (id, oracle_id, quantity, cover, binder_id) VALUES (\'{self.id}\', \'{self.oracle_id}\', {self.quantity}, {self.cover}, {self.binder_id});"
+            query = f"INSERT OR IGNORE INTO binder_cards (id, oracle_id, quantity, cover, binder_id) VALUES (\'{self.card.id}\', \'{self.card.oracle_id}\', {self.quantity}, {self.cover}, {self.binder_id});"
             db.execute(query)
-            query = f"UPDATE binder_cards SET oracle_id = \'{self.oracle_id}\', quantity = {self.quantity}, cover = {self.cover} WHERE id = \'{self.id}\' AND binder_id = {self.binder_id};"
+            query = f"UPDATE binder_cards SET oracle_id = \'{self.card.oracle_id}\', quantity = {self.quantity}, cover = {self.cover} WHERE id = \'{self.card.id}\' AND binder_id = {self.binder_id};"
             db.execute(query)
             query = f"UPDATE binders SET updated = {val(str(datetime.now()))} WHERE id = {self.binder_id};"
             db.execute(query)
 
     def delete(self, db):
-        if self.id is None or self.binder_id is None:
+        if self.card is None or self.binder_id is None:
             raise ValueError('Invalid BinderCard value.')
         else:
-            query = f"DELETE FROM binder_cards WHERE id = \'{self.id}\' AND binder_id = {self.binder_id};"
+            query = f"DELETE FROM binder_cards WHERE id = \'{self.card.id}\' AND binder_id = {self.binder_id};"
             db.execute(query)
             query = f"UPDATE binders SET updated = {val(str(datetime.now()))} WHERE id = {self.binder_id};"
             db.execute(query)
+
+class FullBinder:
+    def __init__(self, binder=None, cover=None, cards=None):
+        if binder is not None:
+            self.binder = binder
+        else:
+            raise ValueError('No binder data.')
+        self.cover = cover
+        self.cards = cards
+
+    @classmethod
+    def get_by_id(cls, db, id):
+        b = Binder.get_by_id(db, id)
+        query = f"SELECT * FROM binder_cards WHERE binder_id = {b.id} AND cover = 1"
+        row = db.execute(query).fetchone()
+        c = None
+        if row is not None:
+            c = Card.get_by_id(db, row[0])
+        bc = BinderCard.get_all(db, b.id)
+        return cls(binder=b, cover=c, cards=bc)
 
 class PreviewBinder:
     def __init__(self, binder=None, cover=None):
@@ -1067,7 +1091,7 @@ class PreviewBinder:
             row = db.execute(query).fetchone()
             c = None
             if row is not None:
-                c = Card.get_by_id(db, row[0])
+                c = BinderCard.get_by_id(db, row[0], b.id)
             previews.append(cls(binder=b, cover=c))
         return previews
 

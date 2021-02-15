@@ -66,7 +66,7 @@ end
                 % pb = filtered_list[x]
             <tr>
                 % if pb.cover is not None:
-                <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('{{util.card_image(pb.cover, 'art_crop')}}');" data-placement="bottom" data-toggle="tooltip" title="{{pb.cover.artist}}"></div></td>
+                <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('{{util.card_image(pb.cover.card, 'art_crop')}}');" data-placement="bottom" data-toggle="tooltip" title="{{pb.cover.card.artist}}"></div></td>
                 % else:
                 <td><div class="card-preview" style="width: 5.5rem; height: 4rem;  background-image: url('/assets/img/card_back.jpg');"></div></td>
                 % end
