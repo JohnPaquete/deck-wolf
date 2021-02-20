@@ -73,7 +73,7 @@ end
                 <td class="align-middle"><a href="/collection/binders/{{pb.binder.id}}">{{pb.binder.name}}</a></td>
                 <td class="align-middle">{{pb.binder.created.strftime("%a %b %d, %Y %I:%M:%S %p")}}</a></td>
                 <td class="align-middle">{{pb.binder.updated.strftime("%a %b %d, %Y %I:%M:%S %p")}}</td>
-                <td class="align-middle text-capitalize">{{pb.binder.general}}</td>
+                <td class="align-middle text-capitalize">{{util.is_general(pb.binder.general)}}</td>
                 <td class="align-middle text-center"><a data-toggle="modal" data-target="#edit-modal" data-name="{{pb.binder.name}}" data-general="{{pb.binder.general}}" href="/collection/binders/{{pb.binder.id}}"><i class="fa fa-lg fa-edit"></i></a></td>
                 <td class="align-middle text-center"><a data-toggle="modal" data-target="#confirm-modal" data-name="{{pb.binder.name}}" href="/collection/binders/{{pb.binder.id}}"><i class="fa-lg far fa-trash-alt"></i></a></td>
             </tr>
