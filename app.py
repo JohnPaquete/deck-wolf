@@ -87,7 +87,10 @@ def binders(db, item):
 @app.route('/collection/binders/:item/', method='POST')
 def binders_delete(db, item):
     DeckMakerService().binders_post(db, request.forms, item=item)
-    redirect("/collection/binders/")
+    if request.forms.get('redirect') is not None:
+        redirect(request.forms.get('redirect'))
+    else:
+        redirect("/collection/binders/")
 
 # Deck index page
 @app.route('/decks')

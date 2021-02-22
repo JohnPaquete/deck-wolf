@@ -555,6 +555,13 @@ class Collection:
         for c in rows:
             collection.append(cls(data=c))
         return collection
+    
+    def get_total_quantity(db, oracle_id):
+        query = f"SELECT SUM(quantity) FROM collection WHERE oracle_id = \'{oracle_id}\';"
+        row = db.execute(query).fetchone()
+        if row is not None:
+            return row[0]
+        return 0
 
     def save(self, db):
         if self.id is None or self.quantity is None:
@@ -1010,6 +1017,7 @@ class BinderCard:
             self.quantity = data[2]
             self.cover = data[3]
             self.binder_id = data[4]
+            self.collection_total = data[5]
         else:
             raise ValueError('No match found in database.')
     
@@ -1020,7 +1028,7 @@ class BinderCard:
         if row is None:
             raise ValueError('No match found in database.')
         c = Card.get_by_id(db, id)
-        return cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), row[2], row[3], row[4]))
+        return cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), row[2], row[3], row[4], Collection.get_total_quantity(db, c.oracle_id)))
     
     @classmethod
     def get_all(cls, db, binder_id):
@@ -1029,7 +1037,7 @@ class BinderCard:
         bc = []
         for r in rows:
             c = Card.get_by_id(db, r[0])
-            bc.append(cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), r[2], r[3], r[4])))
+            bc.append(cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), r[2], r[3], r[4], Collection.get_total_quantity(db, c.oracle_id))))
         return bc
 
     def save(self, db):

@@ -115,7 +115,7 @@ class DeckMakerService:
                         cover = b.cover
                     except ValueError:
                         cover = 0
-                data = (card, None, int(form.get('quantity')), cover, int(form.get('binder_id')))
+                data = (card, None, int(form.get('quantity')), cover, int(form.get('binder_id'), 0))
                 m.BinderCard(data=data).save(db)
             except ValueError:
                 print('ERROR - - Invalid binder card id. Failed to save')

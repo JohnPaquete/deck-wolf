@@ -14,11 +14,32 @@
                 <p class="mb-0 text-muted text-capitalize">{{util.is_general(model.binder.general)}} · Created {{model.binder.created.strftime("%a %b %d, %Y")}}</p>
             </div>
         </div>
-        <div class="col-md-6">
-
+        <div class="col-md-6 d-flex justify-content-end align-items-end">
+            <form class="form-inline" method="GET">
+                <label class="mr-sm-2" for="order">Order By</label>
+                <select class="custom-select mr-sm-2" name="order" id="order">
+                    <option {{util.selected(query.order, 'name')}} value="name">Name</option>
+                    <option {{util.selected(query.order, 'release')}} value="release">Release Date</option>
+                    <option {{util.selected(query.order, 'rarity')}} value="rarity">Rarity</option>
+                    <option {{util.selected(query.order, 'cmc')}} value="cmc">CMC</option>
+                    <option {{util.selected(query.order, 'color')}} value="color">Color</option>
+                    <option {{util.selected(query.order, 'power')}} value="power">Power</option>
+                    <option {{util.selected(query.order, 'toughness')}} value="toughness">Toughnes</option>
+                    <option {{util.selected(query.order, 'price')}} value="price">Price</option>
+                </select>
+                <label class="mr-sm-2" for="direction">|</label>
+                <select class="custom-select mr-sm-3" name="direction" id="direction">
+                    <option {{util.selected(query.direction, 'asc')}} value="asc">Asc</option>
+                    <option {{util.selected(query.direction, 'desc')}} value="desc">Desc</option>
+                </select>
+                <button class="btn btn-outline-primary" type="submit">Apply</button>
+            </form>
         </div>
     </div>
     <hr class="my-2"></hr>
+    <div class="d-flex flex-wrap justify-content-between">
+
+    </div>
 </div>
 <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -30,7 +51,8 @@
                 </button>
             </div>
             <form class="modal-form" action="" method="POST">
-                <input type="hidden" name="method" value="UPDATE"> 
+                <input type="hidden" name="method" value="UPDATE">
+                <input type="hidden" name="redirect" value="/collection/binders/{{model.binder.id}}">
                 <div class="modal-body">
                     <div class="form-group form-row">
                         <div class="col-md-9">
