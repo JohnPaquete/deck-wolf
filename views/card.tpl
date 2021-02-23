@@ -34,7 +34,7 @@
             % if len(binders) > 0:
             <button type="button" class="mt-1 btn btn-outline-primary btn-block" data-toggle="collapse" data-target="#binder_form" aria-expanded="false" aria-controls="binder_form"><i class="fas fa-book-open mr-2"></i>Add to Binder</button>
             <div class="collapse" id="binder_form">
-                <form class="mt-2" action="" method="POST">
+                <form class="mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <input type="hidden" name="method" value="POST">
                     <input type="hidden" name="route" value="BINDER">
                     <div class="input-group mb-2">

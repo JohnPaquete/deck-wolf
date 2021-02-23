@@ -1017,7 +1017,6 @@ class BinderCard:
             self.quantity = data[2]
             self.cover = data[3]
             self.binder_id = data[4]
-            self.collection_total = data[5]
         else:
             raise ValueError('No match found in database.')
     
@@ -1028,7 +1027,7 @@ class BinderCard:
         if row is None:
             raise ValueError('No match found in database.')
         c = Card.get_by_id(db, id)
-        return cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), row[2], row[3], row[4], Collection.get_total_quantity(db, c.oracle_id)))
+        return cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), row[2], row[3], row[4]))
     
     @classmethod
     def get_all(cls, db, binder_id):
@@ -1037,7 +1036,7 @@ class BinderCard:
         bc = []
         for r in rows:
             c = Card.get_by_id(db, r[0])
-            bc.append(cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), r[2], r[3], r[4], Collection.get_total_quantity(db, c.oracle_id))))
+            bc.append(cls(data=(c, Collection.get_by_id(db, c.id, c.oracle_id), r[2], r[3], r[4])))
         return bc
 
     def save(self, db):
@@ -1070,6 +1069,16 @@ class FullBinder:
             raise ValueError('No binder data.')
         self.cover = cover
         self.cards = cards
+        self.collection_totals = {}
+    
+    def get_collection_totals(self, db):
+        query = f"SELECT oracle_id, COUNT(oracle_id), SUM(quantity) FROM binder_cards WHERE binder_id = {self.binder.id} GROUP BY oracle_id;"
+        rows = db.execute(query).fetchall()
+        for r in rows:
+            self.collection_totals[r[0]] = {}
+            self.collection_totals[r[0]]['count'] = r[1]
+            self.collection_totals[r[0]]['needed'] = r[2]
+            self.collection_totals[r[0]]['owned'] = Collection.get_total_quantity(db, r[0])
 
     @classmethod
     def get_by_id(cls, db, id):
@@ -1080,7 +1089,9 @@ class FullBinder:
         if row is not None:
             c = Card.get_by_id(db, row[0])
         bc = BinderCard.get_all(db, b.id)
-        return cls(binder=b, cover=c, cards=bc)
+        fb = cls(binder=b, cover=c, cards=bc)
+        fb.get_collection_totals(db)
+        return fb
 
 class PreviewBinder:
     def __init__(self, binder=None, cover=None):
