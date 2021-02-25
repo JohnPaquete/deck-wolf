@@ -559,7 +559,7 @@ class Collection:
     def get_total_quantity(db, oracle_id):
         query = f"SELECT SUM(quantity) FROM collection WHERE oracle_id = \'{oracle_id}\';"
         row = db.execute(query).fetchone()
-        if row is not None:
+        if row is not None and row[0] is not None:
             return row[0]
         return 0
 

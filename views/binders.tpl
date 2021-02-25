@@ -38,7 +38,41 @@
     </div>
     <hr class="my-2"></hr>
     <div class="d-flex flex-wrap justify-content-between">
-
+        % for bc in model.cards:
+            % card = bc.card
+        <div class="grid-item position-relative my-1">
+            
+            % if card.image_uris.get('normal') is not None:
+            <a href="/cards/{{card.id}}"><img class="w-100 card-rounded" src="{{card.image_uris.get('normal')}}" alt="{{card.name}}"></a>
+            % elif card.faces is not None and len(card.faces) > 0:
+                % include('partial/multi_card_grid_image.tpl')
+                % carousel_count += 1
+            % else:
+            <a href="/cards/{{card.id}}"><img class="w-100 card-rounded" src="/assets/img/card_back.jpg" alt="{{card.name}}"></a>
+            % end
+            <a class="position-absolute text-primary text-outline" style="top:3rem; left:1.25rem;" href=""><i class="fas fa-lg fa-bookmark"></i></a>
+            <a class="position-absolute text-primary text-outline" style="top:3rem; right:1.25rem;" href=""><i class="fas fa-lg fa-trash-alt"></i></a>
+            % if model.binder.general == 0:
+                % if model.collection_totals[card.oracle_id]['owned'] < model.collection_totals[card.oracle_id]['needed']:
+            <p class="h4 position-absolute text-danger text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</p>
+                % else:
+            <p class="h4 position-absolute text-primary text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</p>
+                % end
+            % else:
+                % if bc.collection.quantity < bc.quantity:
+            <p class="h4 position-absolute text-danger text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{bc.collection.quantity}}/{{bc.quantity}}</p>
+                % else:
+            <p class="h4 position-absolute text-primary text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{bc.collection.quantity}}/{{bc.quantity}}</p>
+                % end
+            % end
+        </div>
+        % end
+        <div class="grid-item my-1">
+        </div>
+        <div class="grid-item my-1">
+        </div>
+        <div class="grid-item my-1">
+        </div>
     </div>
 </div>
 <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
