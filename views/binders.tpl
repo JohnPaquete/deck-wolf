@@ -75,6 +75,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
 <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -86,6 +88,7 @@
             </div>
             <form class="modal-form" action="" method="POST">
                 <input type="hidden" name="method" value="UPDATE">
+                <input type="hidden" name="route" value="BINDER">
                 <input type="hidden" name="redirect" value="/collection/binders/{{model.binder.id}}">
                 <div class="modal-body">
                     <div class="form-group form-row">

@@ -36,7 +36,7 @@
             <div class="collapse" id="binder_form">
                 <form class="mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <input type="hidden" name="method" value="POST">
-                    <input type="hidden" name="route" value="BINDER">
+                    <input type="hidden" name="route" value="BINDERCARD">
                     <div class="input-group mb-2">
                         <select class="custom-select" name="binder_id" id="binder-id" required>
                             <option value="" selected disabled hidden>Select Binder</option>

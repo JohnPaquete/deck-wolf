@@ -1006,6 +1006,8 @@ class Binder:
         if self.id is None:
             raise ValueError('Invalid Binder value.')
         else:
+            query = f"DELETE FROM binder_cards WHERE binder_id = \'{self.id}\';"
+            db.execute(query)
             query = f"DELETE FROM binders WHERE id = \'{self.id}\';"
             db.execute(query)
 
@@ -1045,6 +1047,9 @@ class BinderCard:
         elif self.quantity == '0':
             self.delete(db)
         else:
+            if self.cover == 1:
+                query = f"UPDATE binder_cards SET cover = 0 WHERE binder_id = {self.binder_id};"
+                db.execute(query)
             query = f"INSERT OR IGNORE INTO binder_cards (id, oracle_id, quantity, cover, binder_id) VALUES (\'{self.card.id}\', \'{self.card.oracle_id}\', {self.quantity}, {self.cover}, {self.binder_id});"
             db.execute(query)
             query = f"UPDATE binder_cards SET oracle_id = \'{self.card.oracle_id}\', quantity = {self.quantity}, cover = {self.cover} WHERE id = \'{self.card.id}\' AND binder_id = {self.binder_id};"

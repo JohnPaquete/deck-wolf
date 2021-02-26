@@ -26,8 +26,8 @@ class DeckMakerService:
     def card_post(self, db, item, form):
         if form.get("route") == "COLLECTION":
             self.collection_post(db, item, form)
-        elif form.get("route") == "BINDER":
-            self.binders_card_post(db, item, form)
+        elif form.get("route") == "BINDERCARD":
+            self.binder_card_post(db, item, form)
 
     def oracle_card(self, db, item):
         try:
@@ -75,8 +75,16 @@ class DeckMakerService:
             return template('binders', query=query, model=m.FullBinder.get_by_id(db, item))
         except ValueError:
             return template('card_404')
-    
+
     def binders_post(self, db, form, item=None):
+        if form.get("route") == "BINDER":
+            self.binder_post(db, form, item=item)
+        elif form.get("route") == "BINDERCARD":
+            self.binder_card_post(db, item, form)
+        else:
+            print('ERROR - - Unknown binder post route.')
+
+    def binder_post(self, db, form, item=None):
         if form.get('method') == 'CREATE':
             try:
                 data = (None, form.get('name'), None, None, int(form.get('general')))
@@ -98,7 +106,7 @@ class DeckMakerService:
         else:
             print('ERROR - - Unknown binder operation.')
     
-    def binders_card_post(self, db, item, form):
+    def binder_card_post(self, db, item, form):
         if form.get('method') == 'DELETE':
             try:
                 pass

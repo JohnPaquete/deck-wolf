@@ -137,6 +137,7 @@ end
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <form class="modal-form" method="POST">
                     <input type="hidden" name="method" value="DELETE"> 
+                    <input type="hidden" name="route" value="BINDER">
                     <button type="submit" class="btn btn-danger">Confirm</button>
                 </form>
             </div>
@@ -154,6 +155,7 @@ end
             </div>
             <form class="modal-form" action="" method="POST">
                 <input type="hidden" name="method" value="CREATE"> 
+                <input type="hidden" name="route" value="BINDER">
                 <div class="modal-body">
                     <div class="form-group form-row">
                         <div class="col-md-9">
@@ -188,6 +190,7 @@ end
             </div>
             <form class="modal-form" action="" method="POST">
                 <input type="hidden" name="method" value="UPDATE"> 
+                <input type="hidden" name="route" value="BINDER">
                 <div class="modal-body">
                     <div class="form-group form-row">
                         <div class="col-md-9">
