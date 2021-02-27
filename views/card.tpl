@@ -37,6 +37,7 @@
                 <form class="mt-2" action="/cards/{{model.card.id}}" method="POST">
                     <input type="hidden" name="method" value="POST">
                     <input type="hidden" name="route" value="BINDERCARD">
+                    <input type="hidden" name="card_id" value="{{model.card.id}}">
                     <div class="input-group mb-2">
                         <select class="custom-select" name="binder_id" id="binder-id" required>
                             <option value="" selected disabled hidden>Select Binder</option>

@@ -9,7 +9,7 @@
             % else:
             <td><div class="card-preview rounded mr-3" style="width: 8rem; height: 6rem;  background-image: url('/assets/img/card_back.jpg');"></div></td>
             % end
-            <div >
+            <div>
                 <h1 class="mb-0">{{model.binder.name}} <a class="align-top h4 text-primary" data-toggle="modal" data-target="#edit-modal" data-name="{{model.binder.name}}" data-general="{{model.binder.general}}" href="/collection/binders/{{model.binder.id}}"><i class="fa fa-edit"></i></a></h1>
                 <p class="mb-0 text-muted text-capitalize">{{util.is_general(model.binder.general)}} · Created {{model.binder.created.strftime("%a %b %d, %Y")}}</p>
             </div>
@@ -40,7 +40,7 @@
     <div class="d-flex flex-wrap justify-content-between">
         % for bc in model.cards:
             % card = bc.card
-        <div class="grid-item position-relative my-1">
+        <div class="grid-item bg-dark p-2 border border-secondary my-1">
             
             % if card.image_uris.get('normal') is not None:
             <a href="/cards/{{card.id}}"><img class="w-100 card-rounded" src="{{card.image_uris.get('normal')}}" alt="{{card.name}}"></a>
@@ -50,21 +50,35 @@
             % else:
             <a href="/cards/{{card.id}}"><img class="w-100 card-rounded" src="/assets/img/card_back.jpg" alt="{{card.name}}"></a>
             % end
-            <a class="position-absolute text-primary text-outline" style="top:3rem; left:1.25rem;" href=""><i class="fas fa-lg fa-bookmark"></i></a>
-            <a class="position-absolute text-primary text-outline" style="top:3rem; right:1.25rem;" href=""><i class="fas fa-lg fa-trash-alt"></i></a>
-            % if model.binder.general == 0:
-                % if model.collection_totals[card.oracle_id]['owned'] < model.collection_totals[card.oracle_id]['needed']:
-            <p class="h4 position-absolute text-danger text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</p>
-                % else:
-            <p class="h4 position-absolute text-primary text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</p>
-                % end
-            % else:
-                % if bc.collection.quantity < bc.quantity:
-            <p class="h4 position-absolute text-danger text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{bc.collection.quantity}}/{{bc.quantity}}</p>
-                % else:
-            <p class="h4 position-absolute text-primary text-outline font-weight-bold" style="bottom:0.25rem; left:1.25rem;">{{bc.collection.quantity}}/{{bc.quantity}}</p>
-                % end
-            % end
+            <div class="mt-2 d-flex justify-content-between">
+                <div>
+                    % if model.binder.general == 0:
+                        % if model.collection_totals[card.oracle_id]['owned'] < model.collection_totals[card.oracle_id]['needed']:
+                            % text_class = "text-danger"
+                        % else:
+                            % text_class = "text-success"
+                        % end
+                    <span class="h4 mb-0 {{text_class}} font-weight-bold">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</span>
+                    % else:
+                        % if bc.collection.quantity < bc.quantity:
+                            % text_class = "text-danger"
+                        % else:
+                            % text_class = "text-success"
+                        % end
+                    <span class="h4 mb-0 {{text_class}} font-weight-bold">{{bc.collection.quantity}}/{{bc.quantity}}</span>
+                    % end
+                    <a class="text-primary" href=""><i class="fa fa-lg fa-edit"></i></a>
+                </div>
+                <div>
+                    % if bc.cover == 1:
+                        % text_class = "text-warning"
+                    % else:
+                        % text_class = "text-primary"
+                    % end
+                    <a class="{{text_class}} mr-2" href=""><i class="fas fa-lg fa-bookmark"></i></a>
+                    <a data-toggle="modal" data-target="#binder-card-modal" data-name="{{card.name}}" data-id="{{card.id}}" href="/collection/binders/{{model.binder.id}}" class="text-danger"><i class="fas fa-lg fa-trash-alt"></i></a>
+                </div>
+            </div>
         </div>
         % end
         <div class="grid-item my-1">
@@ -77,6 +91,32 @@
 </div>
 
 <!-- Modal -->
+<div class="modal fade" id="binder-card-modal" tabindex="-1" role="dialog" aria-labelledby="binder-card-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="binder-card-modal-label">Are you sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <strong class="modal-info"></strong> will be removed from this binder.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form class="modal-form" method="POST">
+                    <input type="hidden" name="method" value="DELETE"> 
+                    <input type="hidden" name="route" value="BINDERCARD">
+                    <input type="hidden" name="redirect" value="/collection/binders/{{model.binder.id}}">
+                    <input type="hidden" name="binder_id" value="{{model.binder.id}}">
+                    <input class="card-id" type="hidden" name="card_id" value="">
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -113,4 +153,5 @@
         </div>
     </div>
 </div>
+<script src="/assets/js/binder_card_modal.js" type="text/javascript" defer></script>
 <script src="/assets/js/edit_modal.js" type="text/javascript" defer></script>

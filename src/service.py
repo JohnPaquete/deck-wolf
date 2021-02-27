@@ -27,7 +27,7 @@ class DeckMakerService:
         if form.get("route") == "COLLECTION":
             self.collection_post(db, item, form)
         elif form.get("route") == "BINDERCARD":
-            self.binder_card_post(db, item, form)
+            self.binder_card_post(db, form)
 
     def oracle_card(self, db, item):
         try:
@@ -80,7 +80,7 @@ class DeckMakerService:
         if form.get("route") == "BINDER":
             self.binder_post(db, form, item=item)
         elif form.get("route") == "BINDERCARD":
-            self.binder_card_post(db, item, form)
+            self.binder_card_post(db, form)
         else:
             print('ERROR - - Unknown binder post route.')
 
@@ -106,20 +106,22 @@ class DeckMakerService:
         else:
             print('ERROR - - Unknown binder operation.')
     
-    def binder_card_post(self, db, item, form):
+    def binder_card_post(self, db, form):
         if form.get('method') == 'DELETE':
             try:
-                pass
+                card = m.Card.get_by_id(db, form.get('card_id'))
+                data = (card, None, 0, 0, int(form.get('binder_id')))
+                m.BinderCard(data=data).delete(db)
             except ValueError:
                 print('ERROR - - Invalid binder card id. Failed to delete.')
         else:
             try:
-                card = m.Card.get_by_id(db, item)
+                card = m.Card.get_by_id(db, form.get('card_id'))
                 if form.get('cover') != None:
                     cover = int(form.get('cover'))
                 else:
                     try:
-                        b = m.BinderCard.get_by_id(db, item, int(form.get('binder_id')))
+                        b = m.BinderCard.get_by_id(db, form.get('card_id'), int(form.get('binder_id')))
                         cover = b.cover
                     except ValueError:
                         cover = 0
