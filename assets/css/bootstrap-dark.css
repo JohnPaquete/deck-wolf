@@ -7384,3 +7384,8 @@ a.text-dark:hover, a.text-dark:focus {
 .text-outline {
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
+
+.fa-md {
+  font-size:1.5rem;
+  line-height:1.5rem;
+}

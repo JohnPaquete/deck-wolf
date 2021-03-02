@@ -67,16 +67,16 @@
                         % end
                     <span class="h4 mb-0 {{text_class}} font-weight-bold">{{bc.collection.quantity}}/{{bc.quantity}}</span>
                     % end
-                    <a class="text-primary" href=""><i class="fa fa-lg fa-edit"></i></a>
-                </div>
-                <div>
                     % if bc.cover == 1:
                         % text_class = "text-warning"
                     % else:
                         % text_class = "text-primary"
                     % end
-                    <a class="{{text_class}} mr-2" href=""><i class="fas fa-lg fa-bookmark"></i></a>
-                    <a data-toggle="modal" data-target="#binder-card-modal" data-name="{{card.name}}" data-id="{{card.id}}" href="/collection/binders/{{model.binder.id}}" class="text-danger"><i class="fas fa-lg fa-trash-alt"></i></a>
+                    <span class="{{text_class}} mr-2"></a><i class="fas fa-md fa-bookmark"></i></span>
+                </div>
+                <div>
+                    <a data-toggle="modal" data-target="#binder-card-edit-modal" data-name="{{card.name}}" data-id="{{card.id}}" data-quantity="{{bc.quantity}}" data-cover="{{bc.cover}}" href="/collection/binders/{{model.binder.id}}" class="text-primary" href=""><i class="fa fa-md fa-edit"></i></a>
+                    <a data-toggle="modal" data-target="#binder-card-delete-modal" data-name="{{card.name}}" data-id="{{card.id}}" href="/collection/binders/{{model.binder.id}}" class="text-danger"><i class="fas fa-md fa-trash-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -91,11 +91,11 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="binder-card-modal" tabindex="-1" role="dialog" aria-labelledby="binder-card-modal-label" aria-hidden="true">
+<div class="modal fade binder-card-modal" id="binder-card-delete-modal" tabindex="-1" role="dialog" aria-labelledby="binder-card-delete-modal-label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="binder-card-modal-label">Are you sure?</h5>
+                <h5 class="modal-title" id="binder-card-delete-modal-label">Are you sure?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -114,6 +114,44 @@
                     <button type="submit" class="btn btn-danger">Confirm</button>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade binder-card-modal" id="binder-card-edit-modal" tabindex="-1" role="dialog" aria-labelledby="binder-card-edit-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="binder-card-edit-modal-label">Edit: <strong class="modal-info"></strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="modal-form" method="POST">
+                <input type="hidden" name="method" value="UPDATE"> 
+                <input type="hidden" name="route" value="BINDERCARD">
+                <input type="hidden" name="redirect" value="/collection/binders/{{model.binder.id}}">
+                <input type="hidden" name="binder_id" value="{{model.binder.id}}">
+                <input class="card-id" type="hidden" name="card_id" value="">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-9">
+                            <label for="binder-quantity">Quantity:</label>
+                            <input type="number" class="form-control rounded-right mr-1 card-quantity" name="quantity" id="binder-quantity" aria-describedby="binder-quantity" value="1" min="1">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="binder-cover">Cover:</label>
+                            <select class="custom-select card-cover" name="cover" id="binder-cover">
+                                <option selected value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
