@@ -38,6 +38,33 @@
     </div>
     <hr class="my-2"></hr>
     <div class="d-flex flex-wrap justify-content-between">
+        <% 
+        carousel_count = 0
+        if (query.get('order') is not None):
+            r = False
+            if (query.get('direction') == 'desc'):
+                r = True
+            end
+            if (query.get('order') == 'name'):
+                model.cards.sort(key=lambda x: x.card.name, reverse=r)
+            elif (query.get('order') == 'release'):
+                model.cards.sort(key=lambda x: x.card.released, reverse=r)
+            elif (query.get('order') == 'rarity'):
+                model.cards.sort(key=lambda x: util.sort_by_rarity(x.card), reverse=r)
+            elif (query.get('order') == 'cmc'):
+                model.cards.sort(key=lambda x: x.card.cmc, reverse=r)
+            elif (query.get('order') == 'color'):
+                model.cards.sort(key=lambda x: x.card.color_identity, reverse=r)
+            elif (query.get('order') == 'power'):
+                model.cards.sort(key=lambda x: util.sort_by_power(x.card), reverse=r)
+            elif (query.get('order') == 'toughness'):
+                model.cards.sort(key=lambda x: util.sort_by_toughness(x.card), reverse=r)
+            elif (query.get('order') == 'price'):
+                model.cards.sort(key=lambda x: util.sort_by_price(x.card), reverse=r)
+            end
+        end
+        %>
+
         % for bc in model.cards:
             % card = bc.card
         <div class="grid-item bg-dark p-2 border border-secondary my-1">
@@ -68,11 +95,8 @@
                     <span class="h4 mb-0 {{text_class}} font-weight-bold">{{bc.collection.quantity}}/{{bc.quantity}}</span>
                     % end
                     % if bc.cover == 1:
-                        % text_class = "text-warning"
-                    % else:
-                        % text_class = "text-primary"
+                    <span class="text-warning mr-2"></a><i class="fas fa-md fa-bookmark"></i></span>
                     % end
-                    <span class="{{text_class}} mr-2"></a><i class="fas fa-md fa-bookmark"></i></span>
                 </div>
                 <div>
                     <a data-toggle="modal" data-target="#binder-card-edit-modal" data-name="{{card.name}}" data-id="{{card.id}}" data-quantity="{{bc.quantity}}" data-cover="{{bc.cover}}" href="/collection/binders/{{model.binder.id}}" class="text-primary" href=""><i class="fa fa-md fa-edit"></i></a>
