@@ -424,6 +424,7 @@ class OracleCard(Card):
                 query += f"name like \"%{value}%\""
                 count += 1
         query += ";"
+        print(query)
 
         if count <= 0:
             return []

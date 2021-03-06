@@ -166,6 +166,12 @@ class DeckMakerService:
 
     def search(self, db, query):
         return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
+    
+    def advanced_search(self, db):
+        try:
+            return template('advanced_search', model=m.SetList.get_all(db))
+        except ValueError:
+            return template('card_404')
 
     def card_autocomplete(self, db, json):
         data = m.OracleCard.autocomplete_name(db, json.get('term'))

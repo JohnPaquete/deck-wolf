@@ -143,6 +143,12 @@ def decks_delete(db, item):
 def search(db):
     return DeckMakerService().search(db, request.query)
 
+# Advanced search page
+@app.route('/advanced-search')
+@app.route('/advanced-search/')
+def card_random(db):
+    return DeckMakerService().advanced_search(db)
+
 # Static file for assets
 @app.route('/assets/<filepath:path>')
 def asset(filepath):

@@ -14,7 +14,11 @@
             </div>
         </div>
         <form class="col-md form-inline justify-content-end" method="GET">
-            <input type="hidden" id="q" name="q" value="{{query.q}}">
+            % for key in query:
+                % if key != 'order' and key != 'direction':
+            <input type="hidden" id="{{key}}" name="{{key}}" value="{{query.get(key)}}">
+                % end
+            % end
             <label class="mr-sm-2" for="order">Order By</label>
             <select class="custom-select mr-sm-2" name="order" id="order">
                 <option {{util.selected(query.order, 'name')}} value="name">Name</option>
