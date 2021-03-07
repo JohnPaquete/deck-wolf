@@ -120,7 +120,7 @@
                     <div class="col-md-1"></div>
                     <input type="number" class="form-control col-md-3 rounded-right" name="loyalty" id="loyalty" value="">
                 </div>
-                <p class="mb-0 mt-1 font-italic text-muted">The text that appears in the type-line of the card.</p>
+                <p class="mb-0 mt-1 font-italic text-muted">Filter by stat lines of the card.</p>
             </div>
         </div>
         <div class="form-group row mb-0 py-3 border-bottom">
@@ -186,6 +186,19 @@
                     </div>
                 </div>
                 <p class="mb-0 mt-1 font-italic text-muted">Filter by the rarity of a card.</p>
+            </div>
+        </div>
+        <div class="form-group row mb-0 py-3 border-bottom">
+            <label for="type" class="col-sm-2 col-form-label"><i class="fas fa-filter mr-2"></i>Filters</label>
+            <div class="col-sm-6">
+                <div class="custom-control custom-checkbox mr-3">
+                    <input type="checkbox" class="custom-control-input" name="all-prints" id="customCheck11">
+                    <label class="custom-control-label" for="customCheck11">Include All Prints</label>
+                </div>
+                <div class="custom-control custom-checkbox mr-3">
+                    <input type="checkbox" class="custom-control-input" name="extra" id="customCheck12">
+                    <label class="custom-control-label" for="customCheck12">Include Extra Cards</label>
+                </div>
             </div>
         </div>
         <div class="form-group row mb-0 py-3">

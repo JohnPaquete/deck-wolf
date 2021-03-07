@@ -386,14 +386,131 @@ class Card:
         clauses = q.decode()
         query = "SELECT * FROM cards WHERE "
         count = 0
-        for key, value in clauses.items():
-            if key == 'q':
-                if count > 1:
-                    query += ", "
-                query += f"name like \'%{value}%\'"
-                count += 1
-        query += " GROUP BY oracle_id HAVING MAX(released);"
 
+        print(dict(clauses))
+        if not is_empty(clauses.get('q')):
+            query += f"name LIKE \'%{clauses.get('q')}%\'"
+            count += 1
+        
+        if not is_empty(clauses.get('text')):
+            args = clauses.get('text').split()
+            query += arg_next(count, 'AND') + '('
+            temp = 0
+            for arg in args:
+                query += f"{arg_next(temp, 'AND')}oracle_text LIKE \'%{arg}%\'"
+                temp += 1
+            query += ')'
+            count += 1
+        
+        if not is_empty(clauses.get('type')):
+            args = clauses.get('type').split()
+            query += arg_next(count, 'AND') + '('
+            temp = 0
+            for arg in args:
+                query += f"{arg_next(temp, 'AND')}type_line LIKE \'%{arg}%\'"
+                temp += 1
+            query += ')'
+            count += 1
+        
+        colors = {}
+        colors['W'] = clauses.get('color-white') == 'on'
+        colors['U'] = clauses.get('color-blue') == 'on'
+        colors['B'] = clauses.get('color-black') == 'on'
+        colors['R'] = clauses.get('color-red') == 'on'
+        colors['G'] = clauses.get('color-green') == 'on'
+        colors['colorless'] = clauses.get('color-colorless') == 'on'
+
+        if colors['W'] or colors['U'] or colors['B'] or colors['R'] or colors['G'] or colors['colorless']:
+            query += f"{arg_next(count, 'AND')}("
+            if clauses.get('color-filter') == 'most':
+                query += '('
+                temp = 0
+                for key, value in colors.items():
+                    if value:
+                        symbol = ''
+                        if key != 'colorless':
+                            symbol = f'%{key}%'
+                        query += f"{arg_next(temp, 'OR')}color_identity LIKE \'{symbol}\'" 
+                        temp += 1
+                query += ')'
+                for key, value in colors.items():
+                    if not value:
+                        symbol = ''
+                        if key != 'colorless':
+                            symbol = f'%{key}%'
+                        query += f"{arg_next(temp, 'AND')}color_identity NOT LIKE \'{symbol}\'" 
+                        temp += 1
+            elif clauses.get('color-filter') == 'including':
+                temp = 0
+                for key, value in colors.items():
+                    if value:
+                        symbol = ''
+                        if key != 'colorless':
+                            symbol = f'%{key}%'
+                        query += f"{arg_next(temp, 'AND')}color_identity LIKE \'{symbol}\'"
+                        temp += 1
+            else:
+                query += f"color_identity {is_not(colors['W'])}LIKE \'%W%\' AND color_identity {is_not(colors['U'])}LIKE \'%U%\' AND color_identity {is_not(colors['B'])}LIKE \'%B%\' AND color_identity {is_not(colors['R'])}LIKE \'%R%\' AND color_identity {is_not(colors['G'])}LIKE \'%G%\' AND color_identity {is_not(colors['colorless'])}LIKE \'\'"
+            query += ')'
+            count += 1
+
+        if not is_empty(clauses.get('cmc')):
+            query += f"{arg_next(count, 'AND')} CAST(cmc AS REAL) {comparison(clauses.get('cmc-compare'))} {clauses.get('cmc')}"
+            count += 1
+
+        if not is_empty(clauses.get('power')):
+            query += f"{arg_next(count, 'AND')} CAST(power AS REAL) {comparison(clauses.get('power-compare'))} {clauses.get('power')}"
+            count += 1
+
+        if not is_empty(clauses.get('toughness')):
+            query += f"{arg_next(count, 'AND')} CAST(toughness AS REAL) {comparison(clauses.get('toughness-compare'))} {clauses.get('toughness')}"
+            count += 1
+
+        if not is_empty(clauses.get('loyalty')):
+            query += f"{arg_next(count, 'AND')} CAST(loyalty AS REAL) {comparison(clauses.get('loyalty-compare'))} {clauses.get('loyalty')}"
+            count += 1
+
+        if not is_empty(clauses.get('format')):
+            legality = 'legal'
+            if not is_empty(clauses.get('legality')):
+                legality = clauses.get('legality')
+            query += f"{arg_next(count, 'AND')}legalities LIKE \'%\"{clauses.get('format')}\": \"{legality}\"%\'"
+            count += 1
+
+        if not is_empty(clauses.get('set')):
+            query += f"{arg_next(count, 'AND')}set_code = \'{clauses.get('set')}\'"
+            count += 1
+        
+        close = ''
+        if clauses.get('rarity-common') == 'on' or clauses.get('rarity-uncommon') == 'on' or clauses.get('rarity-rare') == 'on' or clauses.get('rarity-mythic') == 'on':
+            query += arg_next(count, 'AND') + '('
+            close = ')'
+            temp = 0
+            count += 1
+        if clauses.get('rarity-common') == 'on':
+            query += f"{arg_next(temp, 'OR')}rarity = \'common\'"
+            temp += 1
+        if clauses.get('rarity-uncommon') == 'on':
+            query += f"{arg_next(temp, 'OR')}rarity = \'uncommon\'"
+            temp += 1
+        if clauses.get('rarity-rare') == 'on':
+            query += f"{arg_next(temp, 'OR')}rarity = \'rare\'"
+            temp += 1
+        if clauses.get('rarity-mythic') == 'on':
+            query += f"{arg_next(temp, 'OR')}rarity = \'mythic\'"
+        query += close
+
+        if clauses.get('extra') != 'on':
+            query += arg_next(count, 'AND')
+            query += "(type_line NOT LIKE \'%token%\' AND type_line NOT LIKE \'%plane %\' AND type_line NOT LIKE \'%plane\' AND type_line NOT LIKE \'%scheme%\' AND type_line NOT LIKE \'%emblem%\' AND type_line NOT LIKE \'%phenomenon%\' AND type_line NOT LIKE \'%vanguard%\' AND type_line NOT LIKE \'%card%\')"
+            count += 1
+
+        if clauses.get('all-prints') != 'on':
+            query += " GROUP BY oracle_id HAVING MAX(released)"
+        
+        query += ';'
+
+        print(query)
         if count <= 0:
             return []
         rows = db.execute(query).fetchall()
@@ -424,7 +541,6 @@ class OracleCard(Card):
                 query += f"name like \"%{value}%\""
                 count += 1
         query += ";"
-        print(query)
 
         if count <= 0:
             return []
@@ -670,7 +786,7 @@ class CardSearch:
     
     @classmethod
     def get_by_query(cls, db, q):
-        c = OracleCard.get_by_query(db, q)
+        c = Card.get_by_query(db, q)
         r = int(q.get('results') or 60)
         p = int(q.get('page') or 1)
         return cls(cards=c, cards_per_page=r, page=p)
@@ -1156,3 +1272,33 @@ def val(data):
     if type(data) is float:
         return data
     return f"\"{data}\""
+
+def is_empty(q):
+    if q is None or q == '':
+        return True
+    return False
+
+def arg_next(count, seperator):
+    if count > 0:
+        return f' {seperator} '
+    return ''
+
+def comparison(q):
+    if q == 'eq':
+        return '='
+    if q == 'not-eq':
+        return '!='
+    if q == 'less':
+        return '<'
+    if q == 'less-or':
+        return '<='
+    if q == 'great':
+        return '>'
+    if q == 'great-or':
+        return '>='
+    return '='
+
+def is_not(q):
+    if not q:
+        return 'NOT '
+    return ''
