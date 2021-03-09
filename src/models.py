@@ -387,7 +387,6 @@ class Card:
         query = "SELECT * FROM cards WHERE "
         count = 0
 
-        print(dict(clauses))
         if not is_empty(clauses.get('q')):
             query += f"name LIKE \'%{clauses.get('q')}%\'"
             count += 1
@@ -510,7 +509,6 @@ class Card:
         
         query += ';'
 
-        print(query)
         if count <= 0:
             return []
         rows = db.execute(query).fetchall()
