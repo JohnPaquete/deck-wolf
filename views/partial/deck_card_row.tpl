@@ -2,7 +2,7 @@
 <tr>
     <td>{{quantity}}x</td>
     % if model is not None:
-    <td><a class="text-light" href="/cards/{{model.card.id}}">{{name}}</a></td>
+    <td><a class="text-light" rel="popover" data-img="{{util.card_image(model.card, 'normal')}}" href="/cards/{{model.card.id}}">{{name}}</a></td>
     <td>{{model.card.mana_cost}}</td>
     % if tab == 'paper':
     <td class="text-right text-success">{{util.card_cost(model.card, tab)}}</td>

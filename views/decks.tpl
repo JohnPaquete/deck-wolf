@@ -111,10 +111,11 @@ end
                 % for card_type in model.missing_cards:
                 <p class="font-weight-bold mb-1">{{card_type}} ({{len(model.missing_cards[card_type])}})</p>
                     % for name in model.missing_cards[card_type]:
-                        <p class="ml-2 mb-1 {{util.deck_card_text_color(model.missing_cards[card_type][name]['card'])}}">{{model.missing_cards[card_type][name]['quantity']}}x <a class="text-light" href="/cards/{{model.missing_cards[card_type][name]['card'].card.id}}">{{name}}</a></p>
+                        <p class="ml-2 mb-1 {{util.deck_card_text_color(model.missing_cards[card_type][name]['card'])}}">{{model.missing_cards[card_type][name]['quantity']}}x <a class="text-light" rel="popover" data-img="{{util.card_image(model.missing_cards[card_type][name]['card'].card, 'normal')}}" href="/cards/{{model.missing_cards[card_type][name]['card'].card.id}}">{{name}}</a></p>
                     % end
                 % end
             % end
         </div>
     </div>
 </div>
+<script src="/assets/js/popover_preview.js" type="text/javascript" defer></script>

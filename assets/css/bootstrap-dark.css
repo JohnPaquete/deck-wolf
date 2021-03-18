@@ -7378,7 +7378,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .body-sizing {
-  min-height: 80vh !important;;
+  min-height: 80vh !important;
 }
 
 .text-outline {
@@ -7388,4 +7388,28 @@ a.text-dark:hover, a.text-dark:focus {
 .fa-md {
   font-size:1.5rem;
   line-height:1.5rem;
+}
+
+.popover {
+  background-color: #343a40 !important;
+}
+
+.popover-body {
+  padding: 0.25rem !important;
+}
+
+.bs-popover-top .arrow::after {
+  border-top-color: #343a40 !important;
+}
+
+.bs-popover-right .arrow::after {
+  border-right-color: #343a40 !important;
+}
+
+.bs-popover-bottom .arrow::after {
+  border-bottom-color: #343a40 !important;
+}
+
+.bs-popover-left .arrow::after {
+  border-left-color: #343a40 !important;
 }
