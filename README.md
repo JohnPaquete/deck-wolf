@@ -33,4 +33,5 @@ python3 -m unittest -v run_tests.py
 
 - All card data is gathered from the Scryfall api. Scryfall can be found at [scryfall.com](https://scryfall.com/)
 - All artwork and information shown about the cards are copyright Wizards of the Coast, LLC
-- The Bootstrap dark theme is sourced from [ForEvolve](https://github.com/ForEvolve/bootstrap-dark/)
+- Bootstrap dark theme is sourced from [ForEvolve](https://github.com/ForEvolve/bootstrap-dark/)
+- Magic: the Gathering mana symbol font is sourced from [Andrew Gioia](https://github.com/andrewgioia/mana)
