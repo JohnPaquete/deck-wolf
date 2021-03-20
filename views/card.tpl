@@ -60,7 +60,7 @@
             % else:
             <div class="card">
                 <div class="card-header h3">
-                    {{model.card.name}} {{model.card.mana_cost}}
+                    {{model.card.name}} {{!util.insert_symbols(model.card.mana_cost, 'ms-sm')}}
                 </div>
                 <div class="card-body">
                     % if (model.card.oracle_text is not None):
@@ -69,15 +69,15 @@
                     % count = 1
                     % for line in text:
                         % if (count == len(text)):
-                        <p class="card-text">{{line}}</p>
+                        <p class="card-text">{{!util.insert_symbols(line, 'ms-sm')}}</p>
                         % else:
-                        <p class="card-text mb-1">{{line}}</p>
+                        <p class="card-text mb-1">{{!util.insert_symbols(line, 'ms-sm')}}</p>
                         % end
                         % count += 1
                     % end
                     % end
                     % if (model.card.flavor_text is not None):
-                    <p class="card-text font-italic">{{model.card.flavor_text}}</p>
+                    <p class="card-text font-italic">{{!util.insert_symbols(model.card.flavor_text, 'ms-sm')}}</p>
                     % end
                     <hr></hr>
                     % if (model.card.power is not None and model.card.toughness is not None):

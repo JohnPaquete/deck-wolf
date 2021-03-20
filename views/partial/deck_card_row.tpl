@@ -1,9 +1,10 @@
 % import src.viewtilities as util
+% util.insert_symbols(model.card.mana_cost)
 <tr>
     <td>{{quantity}}x</td>
     % if model is not None:
     <td><a class="text-light" rel="popover" data-img="{{util.card_image(model.card, 'normal')}}" href="/cards/{{model.card.id}}">{{name}}</a></td>
-    <td>{{model.card.mana_cost}}</td>
+    <td>{{!util.insert_symbols(model.card.mana_cost, 'ms-shadow ms-sm')}}</td>
     % if tab == 'paper':
     <td class="text-right text-success">{{util.card_cost(model.card, tab)}}</td>
     % elif tab == 'mtgo':

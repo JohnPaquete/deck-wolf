@@ -7413,3 +7413,7 @@ a.text-dark:hover, a.text-dark:focus {
 .bs-popover-left .arrow::after {
   border-left-color: #343a40 !important;
 }
+
+.ms-sm {
+  font-size: 0.8em !important;
+}
