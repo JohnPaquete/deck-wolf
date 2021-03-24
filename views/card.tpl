@@ -200,7 +200,7 @@
             <div class="col-md-6">
             % end
                 <blockquote class="blockquote">
-                    <div style="line-height: 1.25"><small class="mb-0" >{{r.comment}}</small></div>
+                    <div style="line-height: 1.25"><small class="mb-0" >{{!util.insert_symbols(r.comment, 'ms-sm')}}</small></div>
                     <footer class="blockquote-footer">({{r.published_at}}) <cite title="Source Title">{{r.source}}</cite></footer>
                 </blockquote>
             % count += 1

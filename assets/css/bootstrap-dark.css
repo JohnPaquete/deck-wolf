@@ -7417,3 +7417,7 @@ a.text-dark:hover, a.text-dark:focus {
 .ms-sm {
   font-size: 0.8em !important;
 }
+
+.bg-black {
+  background-color: #111 !important; 
+}

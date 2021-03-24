@@ -5,7 +5,7 @@
 <%
 price_usd = Decimal('0.00')
 price_tix = Decimal('0.00')
-rarity = {'common': 0, 'uncommon': 0, 'rare': 0, 'mythic': 0}
+rarity = {'common': 0, 'uncommon': 0, 'rare': 0, 'mythic': 0, 'bonus': 0, 'special': 0}
 curr_card = 0
 
 if (model.commander is not None):

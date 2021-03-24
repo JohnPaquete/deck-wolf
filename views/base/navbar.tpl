@@ -18,12 +18,15 @@
                     <a class="nav-link" href="/collection/">Collection</a>
                 </li>
                 <li class="nav-item mx-1 align-items-center d-flex justify-content-center">
+                    <a class="nav-link" href="/collection/binders/">Binders</a>
+                </li>
+                <li class="nav-item mx-1 align-items-center d-flex justify-content-center">
                     <a class="nav-link" href="/decks/">Decks</a>
                 </li>
             </ul>
             <ul class="navbar-nav flex-row justify-content-center mt-2 mt-md-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="https://github.com/JohnPaquete/deck-maker" target="blank" data-placement="bottom" data-toggle="tooltip" title="View source">
+                    <a class="nav-link" href="https://github.com/JohnPaquete/deck-wolf" target="blank" data-placement="bottom" data-toggle="tooltip" title="View source">
                     <i class="fab fa-fw fa-2x fa-github-square"></i>
                     </a>
                 </li>

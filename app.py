@@ -149,6 +149,12 @@ def search(db):
 def card_random(db):
     return DeckMakerService().advanced_search(db)
 
+# Bout page
+@app.route('/about')
+@app.route('/about/')
+def card_random(db):
+    return template('about')
+
 # Static file for assets
 @app.route('/assets/<filepath:path>')
 def asset(filepath):

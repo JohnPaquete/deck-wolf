@@ -229,6 +229,10 @@ def deck_card_text_color(c):
             return 'text-rare'
         if c.card.rarity == 'mythic':
             return 'text-mythic'
+        if c.card.rarity == 'bonus':
+            return 'text-mythic'
+        if c.card.rarity == 'special':
+            return 'text-mythic'
     return "text-danger"
 
 def is_general(b):

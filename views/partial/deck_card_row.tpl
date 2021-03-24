@@ -1,5 +1,4 @@
 % import src.viewtilities as util
-% util.insert_symbols(model.card.mana_cost)
 <tr>
     <td>{{quantity}}x</td>
     % if model is not None:
