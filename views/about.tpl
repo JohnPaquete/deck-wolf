@@ -22,7 +22,7 @@
                 <p>The deck making tool allows you to create decks in a number of formats. Card names are entered manually but there is an autcomplete feature on the input fields to speed up the process. You can create a deck <a class="text-primary" href="/decks/">here</a>. If a card is not found in the database, it will be highlighted in red. The sidebar contains a list of cards that are missing from your collection if you want to complete the deck.</p>
             </div>
             <h2>Attribution</h2>
-            <div class=''>
+            <div>
                 <ul>
                     <li>All card data is gathered from the Scryfall API. Scryfall can be found at <a class="text-primary" href="https://scryfall.com/">scryfall.com</a>.</li>
                     <li>All artwork and information shown about the cards are copyright Wizards of the Coast, LLC.</li>

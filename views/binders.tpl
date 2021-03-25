@@ -83,14 +83,14 @@
                         % if model.collection_totals[card.oracle_id]['owned'] < model.collection_totals[card.oracle_id]['needed']:
                             % text_class = "text-danger"
                         % else:
-                            % text_class = "text-success"
+                            % text_class = "text-warning"
                         % end
                     <span class="h4 mb-0 {{text_class}} font-weight-bold">{{model.collection_totals[card.oracle_id]['owned']}}/{{model.collection_totals[card.oracle_id]['needed']}}</span>
                     % else:
                         % if bc.collection.quantity < bc.quantity:
                             % text_class = "text-danger"
                         % else:
-                            % text_class = "text-success"
+                            % text_class = "text-warning"
                         % end
                     <span class="h4 mb-0 {{text_class}} font-weight-bold">{{bc.collection.quantity}}/{{bc.quantity}}</span>
                     % end
@@ -100,7 +100,7 @@
                 </div>
                 <div>
                     <a data-toggle="modal" data-target="#binder-card-edit-modal" data-name="{{card.name}}" data-id="{{card.id}}" data-quantity="{{bc.quantity}}" data-cover="{{bc.cover}}" href="/collection/binders/{{model.binder.id}}" class="text-primary" href=""><i class="fa fa-md fa-edit"></i></a>
-                    <a data-toggle="modal" data-target="#binder-card-delete-modal" data-name="{{card.name}}" data-id="{{card.id}}" href="/collection/binders/{{model.binder.id}}" class="text-danger"><i class="fas fa-md fa-trash-alt"></i></a>
+                    <a data-toggle="modal" data-target="#binder-card-delete-modal" data-name="{{card.name}}" data-id="{{card.id}}" href="/collection/binders/{{model.binder.id}}" class="text-primary"><i class="fas fa-md fa-trash-alt"></i></a>
                 </div>
             </div>
         </div>

@@ -9,8 +9,8 @@ app.install(sqlite_plugin)
 
 # The home page
 @app.route('/')
-def index():
-    return DeckMakerService().index()
+def index(db):
+    return DeckMakerService().index(db)
 
 # Card index page
 @app.route('/cards')

@@ -5,8 +5,12 @@ class DeckMakerService:
     def __init__(self):
         pass
 
-    def index(self):
-        return template('index')
+    def index(self, db):
+        try:
+            model = (m.Card.get_random(db), m.Card.get_random(db), m.Card.get_random(db))
+        except ValueError:
+            model = None
+        return template('index', model=model)
 
     def card_index(self):
         return template('card_index')

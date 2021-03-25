@@ -11,7 +11,8 @@
             </select>
             <label class="mr-sm-2" for="type">Type</label>
             <select class="custom-select mr-sm-3" name="type" id="type">
-                <option value="">All</option>
+                <option value=""></option>
+                <option value="all">All</option>
                 % for t in model.set_types:
                     <option class="text-capitalize" {{util.selected(query.type, t)}} value="{{t}}">{{util.clean_text(t).title()}}</option>
                 % end
@@ -33,18 +34,20 @@
         <tbody>
             <% 
             filtered_list = model.sets
-            if (query.type != ''):
+            if query.type == '':
+                filtered_list = [item for item in filtered_list if item.set_type == 'expansion' or item.set_type == 'masters' or item.set_type == 'core' or item.set_type == 'draft_innovation']
+            elif query.type != '' and query.type != 'all':
                 filtered_list = [item for item in filtered_list if item.set_type == query.type]
             end
-            if (query.name != ''):
+            if query.name != '':
                 filtered_list = [item for item in filtered_list if query.name.lower() in item.name.lower()]
             end
             
-            if (query.order == 'release'):
+            if query.order == 'release':
                 filtered_list.sort(key=lambda item: item.released, reverse=True)
-            elif (query.order == 'name'):
+            elif query.order == 'name':
                 filtered_list.sort(key=lambda item: item.name)
-            elif (query.order == 'cards'):
+            elif query.order == 'cards':
                 filtered_list.sort(key=lambda item: item.card_count, reverse=True)
             else:
                 filtered_list.sort(key=lambda item: item.released, reverse=True)
