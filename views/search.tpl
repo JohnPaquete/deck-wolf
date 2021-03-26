@@ -9,7 +9,7 @@
         <div class="col-md d-flex">
             <i class="fa fa-fw fa-3x fa-search mr-2"></i>
             <div>
-                <p class="h4 mb-0">{{len(model.cards)}} Cards Found</p>
+                <p class="h4 mb-0">{{len(model.cards)}} Cards Found <a class="text-primary" data-toggle="modal" data-target="#collection-modal" href="/collection/"><i class="fa fa-fw fa-archive"></i></a> <a class="text-primary" data-toggle="modal" data-target="#binder-modal" href="/collection/binders/"><i class="fas fa-book-open"></i></a></p>
                 <p class="mb-0 text-muted">Displaying {{first + 1}}-{{last}}</p>
             </div>
         </div>
@@ -125,4 +125,89 @@
         </ul>
     </nav>
     % end
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="collection-modal" tabindex="-1" role="dialog" aria-labelledby="collection-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="modal-form" action="" method="POST">
+                <input type="hidden" name="route" value="COLLECTION">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="collection-modal-label">Are you sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-info mb-4"><strong>{{len(model.cards)}}</strong> cards will be added to your collection. Cards already in your collection will be ignored.</p>
+                    <div class="row">
+                        <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="binder-modal" tabindex="-1" role="dialog" aria-labelledby="binder-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            % if len(binders) > 0:
+            <form class="modal-form" action="" method="POST">
+                <input type="hidden" name="route" value="BINDER">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="binder-modal-label">Are you sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-info mb-4"><strong>{{len(model.cards)}}</strong> cards will be added to the selected binder. Cards already in the binder will be ignored.</p>
+                    <div class="row mb-2">
+                        <label for="binder_id" class="col-sm-2 col-form-label">Binder</label>
+                        <div class="col-sm-8">
+                            <select class="custom-select" name="binder_id" id="binder-id" required>
+                                <option value="" selected disabled hidden>Select Binder</option>
+                                % for b in binders:
+                                <option value="{{b.id}}">{{b.name}}</option>
+                                % end
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control rounded-right mr-1" name="quantity" id="quantity" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+            % else:
+            <div class="modal-header">
+                <h5 class="modal-title" id="binder-modal-label">Nothing to see here.</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-info mb-4">You have not created any binders to add these cards to.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger">Confirm</button>
+            </div>
+            % end
+        </div>
+    </div>
 </div>

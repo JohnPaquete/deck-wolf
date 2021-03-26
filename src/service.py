@@ -169,8 +169,38 @@ class DeckMakerService:
             print('ERROR - - Unknown deck operation.')
 
     def search(self, db, query):
-        return template('search', query=query, model=m.CardSearch.get_by_query(db, query))
+        try:
+            return template('search', query=query, model=m.CardSearch.get_by_query(db, query), binders=m.Binder.get_all(db))
+        except ValueError:
+            return template('card_404')
     
+    def search_post(self, db, query, form):
+        try:
+            cards = m.Card.get_by_query(db, query)
+            if form.get("route") == "COLLECTION":
+                for card in cards:
+                    try:
+                        coll = m.Collection.get_by_id(db, card.id, card.oracle_id)
+                        if coll.quantity == 0:
+                            coll.quantity = form.get("quantity") or 0
+                            coll.save(db)
+                    except ValueError:
+                        print('Error - - Bulk search addition failed to save collection card.')
+            elif form.get("route") == "BINDER":
+                for card in cards:
+                    try:
+                        try:
+                            b = m.BinderCard.get_by_id(db, card.id, int(form.get('binder_id')))
+                        except ValueError:
+                            data = (card, None, int(form.get('quantity')), 0, int(form.get('binder_id')))
+                            m.BinderCard(data=data).save(db)
+                    except ValueError:
+                        print('Error - - Bulk search addition failed to save binder card.')
+            else:
+                raise ValueError
+        except ValueError:
+            print('Error - - Bulk search addition failed to complete.')
+
     def advanced_search(self, db):
         try:
             return template('advanced_search', model=m.SetList.get_all(db))

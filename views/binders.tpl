@@ -67,7 +67,7 @@
 
         % for bc in model.cards:
             % card = bc.card
-        <div class="grid-item bg-black p-2 border border-secondary my-1">
+        <div class="grid-item bg-dark p-2 border border-secondary my-1">
             
             % if card.image_uris.get('normal') is not None:
             <a href="/cards/{{card.id}}"><img class="w-100 card-rounded" src="{{card.image_uris.get('normal')}}" alt="{{card.name}}"></a>

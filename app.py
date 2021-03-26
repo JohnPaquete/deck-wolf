@@ -143,6 +143,13 @@ def decks_delete(db, item):
 def search(db):
     return DeckMakerService().search(db, request.query)
 
+# Search index page
+@app.route('/search', method='POST')
+@app.route('/search/', method='POST')
+def search(db):
+    DeckMakerService().search_post(db, request.query, request.forms)
+    redirect('/search/?' + request.query_string)
+
 # Advanced search page
 @app.route('/advanced-search')
 @app.route('/advanced-search/')
